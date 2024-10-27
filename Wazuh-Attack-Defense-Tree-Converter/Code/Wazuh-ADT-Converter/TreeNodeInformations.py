@@ -99,7 +99,7 @@ class TreeNodeInformations:
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- conjuncted_children of node {self.name} has been succesfully set to {conjuncted_children}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set conjuncted_children of node {self.name} with id {self.id} to {conjuncted_children}. {TreeNodeInformations.get_conjuncted_children_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set conjuncted_children of node {self.name} with id {self.id} to {conjuncted_children}  of type {type(conjuncted_children)}. {TreeNodeInformations.get_conjuncted_children_allow_criteria()}")
 
     # ============================================
     # <node root=""> operations
@@ -125,7 +125,7 @@ class TreeNodeInformations:
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- root of node {self.name} has been succesfully set to {root}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set root of node {self.name} with id {self.id} to {root}. {TreeNodeInformations.get_root_allow_criteria()}")
+            ExitUtils.exit_with_error(f'You cannot set <node root=""> of node {self.name} with id {self.id} to {root} of type {type(root)}. {TreeNodeInformations.get_root_allow_criteria()}')
     
 
     # ============================================
@@ -147,13 +147,13 @@ class TreeNodeInformations:
     def get_type_allow_criteria() -> str:
         return "It must be 'atk' or 'def'."
 
-    def set_type(self, type : str):
-        self.node_tag_attributes["type"] = type
+    def set_type(self, type_ : str):
+        self.node_tag_attributes["type"] = type_
         if self.validate_node_type():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- type of node {self.name} has been succesfully set to {type}")
+                PrintUtils.print_in_green(f"- type of node {self.name} has been succesfully set to {type_}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set type of node {self.name} with id {self.id} to {type}. {TreeNodeInformations.get_type_allow_criteria()}")
+            ExitUtils.exit_with_error(f'You cannot set <node type="" of node {self.name} with id {self.id} to {type_} of type {type(type_)}. {TreeNodeInformations.get_type_allow_criteria()}')
 
 
 
@@ -182,7 +182,7 @@ class TreeNodeInformations:
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- <path> of node {self.name} has been succesfully set to {path}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <path> of node {self.name} with id {self.id} to {path}. {TreeNodeInformations.get_path_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <path> of node {self.name} with id {self.id} to {path} of type {type(path)}. {TreeNodeInformations.get_path_allow_criteria()}")
 
 
     # ============================================
@@ -205,7 +205,7 @@ class TreeNodeInformations:
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- <id> of node {self.name} has been succesfully set to {id}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <id> of node {self.name} with id {self.id} to {id}. {TreeNodeInformations.get_id_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <id> of node {self.name} with id {self.id} to {id} of type {type(id)}. {TreeNodeInformations.get_id_allow_criteria()}")
 
 
     # ============================================
@@ -229,7 +229,7 @@ class TreeNodeInformations:
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- <name> of node {self.name} has been succesfully set to {name}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <name> of node {self.name} with id {self.id} to {name}. {TreeNodeInformations.get_name_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <name> of node {self.name} with id {self.id} to {name} of type {type(name)}. {TreeNodeInformations.get_name_allow_criteria()}")
 
 
 
@@ -258,7 +258,7 @@ class TreeNodeInformations:
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <frequency> of node {self.name} has been succesfully set to {frequency}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <frequency> of node {self.name} with id {self.id} to {frequency}. {TreeNodeInformations.get_wrc_frequency_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <frequency> of node {self.name} with id {self.id} to {frequency} of type {type(frequency)}. {TreeNodeInformations.get_wrc_frequency_allow_criteria()}")
 
 
     # ============================================
@@ -281,7 +281,7 @@ class TreeNodeInformations:
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <timeframe> of node {self.name} has been succesfully set to {timeframe}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <timeframe> of node {self.name} with id {self.id} to {timeframe}. {TreeNodeInformations.get_wrc_timeframe_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <timeframe> of node {self.name} with id {self.id} to {timeframe} of type {type(timeframe)}. {TreeNodeInformations.get_wrc_timeframe_allow_criteria()}")
 
 
     # ============================================
@@ -304,7 +304,7 @@ class TreeNodeInformations:
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <ignore> of node {self.name} has been succesfully set to {ignore}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <ignore> of node {self.name} with id {self.id} to {ignore}. {TreeNodeInformations.get_wrc_ignore_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <ignore> of node {self.name} with id {self.id} to {ignore} of type {type(ignore)}. {TreeNodeInformations.get_wrc_ignore_allow_criteria()}")
 
 
     # ============================================
@@ -336,7 +336,7 @@ class TreeNodeInformations:
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <already_existing_id> of node {self.name} has been succesfully set to {already_existing_id}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <already_existing_id> of node {self.name} with id {self.id} to {already_existing_id}. {TreeNodeInformations.get_wrc_already_existing_id_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <already_existing_id> of node {self.name} with id {self.id} to {already_existing_id} of type {type(already_existing_id)}. {TreeNodeInformations.get_wrc_already_existing_id_allow_criteria()}")
 
 
     # ============================================
@@ -457,4 +457,9 @@ class TreeNodeInformations:
         
 
 
-
+def test():
+    # Normal node with all default entries
+    t = TreeNodeInformations()
+    t.set_path("/")
+    t.set_id(1)
+    t.validate_all()
