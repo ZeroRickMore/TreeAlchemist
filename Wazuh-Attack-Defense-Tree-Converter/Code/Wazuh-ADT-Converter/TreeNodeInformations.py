@@ -32,7 +32,7 @@ class TreeNodeInformations:
                 wrc_ignore_after        : int = None, #Set this to None by default because it is not mandatory and can be omitted
                 wrc_already_existing_id : int = None, #Set this to None by default because it is not mandatory and can be omitted
                 match_list              : List[Match] = None, #Set this to None by default because it is not mandatory and can be omitted
-
+                regex_list              : List[Regex] = None, #Set this to None by default because it is not mandatory and can be omitted
                 ):
         
         # <node conjuncted_children="" root="" type=""
@@ -56,6 +56,7 @@ class TreeNodeInformations:
             "ignore"                :   wrc_ignore_after,
             "already_existing_id"   :   wrc_already_existing_id,
             "match"                 :   match_list,
+            "regex"                 :   regex_list,
         }
 
         self.children = []
@@ -359,6 +360,29 @@ class TreeNodeInformations:
         # else: is covered inside of match.validate_all() already
 
 
+    # ============================================
+    # <regex> operations
+    # ============================================
+    
+    def get_wrc_regex(self) -> int:
+        return self.wazuh_rule_config["regex"]
+
+    def validate_wrc_regex(self) -> bool:
+        # Type check
+        if not self.wazuh_rule_config["regex"] is None:
+            for regex in self.wazuh_rule_config["regex"]:
+                if not isinstance(regex, Regex):
+                    return False
+                regex.validate_all()          
+
+    def set_wrc_regex(self, regex : int):
+        self.wazuh_rule_config["regex"] = regex
+        if self.validate_wrc_regex():
+            if self.print_diagnostics:
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <regex> entries of node {self.name} have been succesfully set to: {[_ for _ in regex]}")
+        # else: is covered inside of match.validate_all() already
+
+
     # ========================================================================================
     # Out of <wazuh_rule_config>
     # ========================================================================================
@@ -402,6 +426,8 @@ class TreeNodeInformations:
             ExitUtils.exit_with_error(f"{error_prefix} <already_existing_id> in <wazuh_rule_config>. {TreeNodeInformations.get_wrc_already_existing_id_allow_criteria()}")
         
         self.validate_wrc_match()
+
+        self.validate_wrc_regex()
         
 
 
