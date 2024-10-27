@@ -352,7 +352,7 @@ class TreeNodeInformations:
                     return False
                 match.validate_all()          
 
-    def set_wrc_match(self, match : str):
+    def set_wrc_match(self, match : List[Match]):
         self.wazuh_rule_config["match"] = match
         if self.validate_wrc_match():
             if self.print_diagnostics:
@@ -375,7 +375,7 @@ class TreeNodeInformations:
                     return False
                 regex.validate_all()          
 
-    def set_wrc_regex(self, regex : str):
+    def set_wrc_regex(self, regex : List[Regex]):
         self.wazuh_rule_config["regex"] = regex
         if self.validate_wrc_regex():
             if self.print_diagnostics:
