@@ -1,0 +1,43 @@
+<tree>
+    <!-- Guess Sudo Password root node -->
+    <node root="yes">
+        <path>/</path>
+        <id>0</id>
+        <name>Guess Sudo Password</name>
+        <wazuh_rule_config>
+            <match>session opened for user </match> <!-- NOTE: This is also captured by rule 5501. Let's see how it goes. -->
+            <description>The user failed to insert the sudo password 2 times, but then managed to go sudo.</description>
+            <ignore_after>120</ignore_after>
+        </wazuh_rule_config>
+    </node>
+
+
+    <!-- Brute Force Attack node -->
+    <node>
+        <path>/0/</path>
+        <id>1</id>
+        <name>Brute Force Attack to sudo password</name>
+        <wazuh_rule_config>
+            <frequency>2</frequency> <!-- I recognize that the 2 child nodes are the same node repeated. -->
+            <ignore_after>120</ignore_after>
+            <description>The user failed to insert the sudo password twice.</description>
+        </wazuh_rule_config>
+    </node>
+
+
+    <!-- Password Failure node -->
+    <node>
+        <path>/0/1/</path>
+        <id>2</id>
+        <name>Password Failure 1</name>
+        <wazuh_rule_config>
+            <ignore_after>120</ignore_after>
+            <match>incorrect password attempt</match> <!-- NOTE: This is also captured by rule 5401. Let's see how it goes. -->
+            <description>The user failed to insert the sudo password once.</description>
+        </wazuh_rule_config>
+    </node>
+
+
+    <!-- Conjunctions section -->
+    <!-- There are no conjunctions to insert -->
+</tree>
