@@ -33,6 +33,7 @@ class TreeNodeInformations:
                 wrc_already_existing_id : int = None, #Set this to None by default because it is not mandatory and can be omitted
                 match_list              : List[Match] = None, #Set this to None by default because it is not mandatory and can be omitted
                 regex_list              : List[Regex] = None, #Set this to None by default because it is not mandatory and can be omitted
+                freq_srcip              : List[FreqSrcip] = None #Set this to None by default because it is not mandatory and can be omitted
                 ):
         
         # <node conjuncted_children="" root="" type=""
@@ -57,6 +58,7 @@ class TreeNodeInformations:
             "already_existing_id"   :   wrc_already_existing_id,
             "match"                 :   match_list,
             "regex"                 :   regex_list,
+            "srcip"                 :   freq_srcip,
         }
 
         self.children = []
@@ -383,6 +385,28 @@ class TreeNodeInformations:
         # else: is covered inside of match.validate_all() already
 
 
+    # ============================================
+    # <srcip> operations | NOTE: sull'xml è <freq_srcip>
+    # ============================================
+    
+    def get_wrc_srcip(self) -> int:
+        return self.wazuh_rule_config["srcip"]
+
+    def validate_wrc_srcip(self) -> bool:
+        # Type check
+        if not self.wazuh_rule_config["srcip"] is None:
+            for srcip in self.wazuh_rule_config["srcip"]:
+                if not isinstance(srcip, FreqSrcip):
+                    return False
+                srcip.validate_all()          
+
+    def set_wrc_srcip(self, srcip : List[FreqSrcip]):
+        self.wazuh_rule_config["srcip"] = srcip
+        if self.validate_wrc_srcip():
+            if self.print_diagnostics:
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <freq_srcip> entries of node {self.name} have been succesfully set to: {[_ for _ in srcip]}")
+        # else: is covered inside of match.validate_all() already
+
     # ========================================================================================
     # Out of <wazuh_rule_config>
     # ========================================================================================
@@ -428,6 +452,8 @@ class TreeNodeInformations:
         self.validate_wrc_match()
 
         self.validate_wrc_regex()
+
+        self.validate_wrc_srcip()
         
 
 
