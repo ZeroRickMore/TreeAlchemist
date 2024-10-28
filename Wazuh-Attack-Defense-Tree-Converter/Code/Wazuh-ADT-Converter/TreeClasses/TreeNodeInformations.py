@@ -56,7 +56,8 @@ class TreeNodeInformations:
                 freq_different_srcip    : bool = False, #Set this to False by default because it is not mandatory and can be omitted
                 freq_same_srcport       : bool = False, #Set this to False by default because it is not mandatory and can be omitted
                 freq_different_srcport  : bool = False, #Set this to False by default because it is not mandatory and can be omitted
-                freq_same_location      : bool = False, #Set this to False by default because it is not mandatory and can be omitted              
+                freq_same_location      : bool = False, #Set this to False by default because it is not mandatory and can be omitted     
+                freq_same_srcuser       : bool = False, #Set this to False by default because it is not mandatory and can be omitted            
                 ):
         
         # <node conjuncted_children="" root="" type=""
@@ -92,6 +93,7 @@ class TreeNodeInformations:
             "same_srcport"          :   freq_same_srcport,
             "different_srcport"     :   freq_different_srcport,
             "same_location"         :   freq_same_location,
+            "same_srcuser"          :   freq_same_srcuser,
         }
 
     # ============================================
@@ -695,6 +697,28 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
             ExitUtils.exit_with_error(f"You cannot set <weekday> of node {self.get_name()} with id {self.get_id()} to {same_location} of type {type(same_location)}. {TreeNodeInformations.get_wrc_same_location_allow_criteria()}")
 
 
+    # ============================================
+    # <same_srcuser> operations
+    # ============================================
+
+    def get_wrc_same_srcuser(self) -> str:
+        return self.wazuh_rule_config["same_srcuser"]
+
+    def validate_wrc_same_srcuser(self) -> bool:
+        return isinstance(self.get_wrc_same_srcuser(), bool)
+
+    @staticmethod
+    def get_wrc_same_srcuser_allow_criteria() -> str:
+        return "Must just be <freq_same_srcuser /> tag."
+
+    def set_wrc_same_srcuser(self, same_srcuser : str):
+        self.wazuh_rule_config["same_srcuser"] = same_srcuser
+        if self.validate_wrc_same_srcuser():
+            if self.print_diagnostics:
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_same_srcuser> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {same_srcuser}")
+        else:
+            ExitUtils.exit_with_error(f"You cannot set <weekday> of node {self.get_name()} with id {self.get_id()} to {same_srcuser} of type {type(same_srcuser)}. {TreeNodeInformations.get_wrc_same_srcuser_allow_criteria()}")
+
 
 
 
@@ -774,6 +798,12 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
         if not self.validate_wrc_same_location():
             ExitUtils.exit_with_error(f"{error_prefix} <freq_same_location> in <wazuh_rule_config>. {TreeNodeInformations.get_wrc_same_location_allow_criteria()} {self.get_wrc_same_location()} of type {type(self.get_wrc_same_location())} {error_suffix}")
    
+        if not self.validate_wrc_same_srcuser():
+            ExitUtils.exit_with_error(f"{error_prefix} <freq_same_srcuser> in <wazuh_rule_config>. {TreeNodeInformations.get_wrc_same_srcuser_allow_criteria()} {self.get_wrc_same_srcuser()} of type {type(self.get_wrc_same_srcuser())} {error_suffix}")
+   
+
+
+
 
     # ============================================
     # General to_string
