@@ -586,7 +586,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     # <same_srcip> operations
     # ============================================
     
-    def get_wrc_same_srcip(self) -> str:
+    def get_wrc_same_srcip(self) -> bool:
         return self.wazuh_rule_config["same_srcip"]
 
     def validate_wrc_same_srcip(self) -> bool:
@@ -596,7 +596,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     def get_wrc_same_srcip_allow_criteria() -> str:
         return "Must just be <freq_same_srcip /> tag."
 
-    def set_wrc_same_srcip(self, same_srcip : str):
+    def set_wrc_same_srcip(self, same_srcip : bool):
         self.wazuh_rule_config["same_srcip"] = same_srcip
         if self.validate_wrc_same_srcip():
             if self.print_diagnostics:
@@ -609,7 +609,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     # <different_srcip> operations
     # ============================================
     
-    def get_wrc_different_srcip(self) -> str:
+    def get_wrc_different_srcip(self) -> bool:
         return self.wazuh_rule_config["different_srcip"]
 
     def validate_wrc_different_srcip(self) -> bool:
@@ -619,7 +619,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     def get_wrc_different_srcip_allow_criteria() -> str:
         return "Must just be <freq_different_srcip /> tag."
 
-    def set_wrc_different_srcip(self, different_srcip : str):
+    def set_wrc_different_srcip(self, different_srcip : bool):
         self.wazuh_rule_config["different_srcip"] = different_srcip
         if self.validate_wrc_different_srcip():
             if self.print_diagnostics:
@@ -633,7 +633,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     # <same_srcport> operations
     # ============================================
 
-    def get_wrc_same_srcport(self) -> str:
+    def get_wrc_same_srcport(self) -> bool:
         return self.wazuh_rule_config["same_srcport"]
 
     def validate_wrc_same_srcport(self) -> bool:
@@ -643,7 +643,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     def get_wrc_same_srcport_allow_criteria() -> str:
         return "Must just be <freq_same_srcport /> tag."
 
-    def set_wrc_same_srcport(self, same_srcport : str):
+    def set_wrc_same_srcport(self, same_srcport : bool):
         self.wazuh_rule_config["same_srcport"] = same_srcport
         if self.validate_wrc_same_srcport():
             if self.print_diagnostics:
@@ -658,7 +658,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     # <different_srcport> operations
     # ============================================
 
-    def get_wrc_different_srcport(self) -> str:
+    def get_wrc_different_srcport(self) -> bool:
         return self.wazuh_rule_config["different_srcport"]
 
     def validate_wrc_different_srcport(self) -> bool:
@@ -668,7 +668,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     def get_wrc_different_srcport_allow_criteria() -> str:
         return "Must just be <freq_different_srcport /> tag."
 
-    def set_wrc_different_srcport(self, different_srcport : str):
+    def set_wrc_different_srcport(self, different_srcport : bool):
         self.wazuh_rule_config["different_srcport"] = different_srcport
         if self.validate_wrc_different_srcport():
             if self.print_diagnostics:
@@ -682,7 +682,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     # <same_location> operations
     # ============================================
 
-    def get_wrc_same_location(self) -> str:
+    def get_wrc_same_location(self) -> bool:
         return self.wazuh_rule_config["same_location"]
 
     def validate_wrc_same_location(self) -> bool:
@@ -692,7 +692,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     def get_wrc_same_location_allow_criteria() -> str:
         return "Must just be <freq_same_location /> tag."
 
-    def set_wrc_same_location(self, same_location : str):
+    def set_wrc_same_location(self, same_location : bool):
         self.wazuh_rule_config["same_location"] = same_location
         if self.validate_wrc_same_location():
             if self.print_diagnostics:
@@ -705,7 +705,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     # <same_srcuser> operations
     # ============================================
 
-    def get_wrc_same_srcuser(self) -> str:
+    def get_wrc_same_srcuser(self) -> bool:
         return self.wazuh_rule_config["same_srcuser"]
 
     def validate_wrc_same_srcuser(self) -> bool:
@@ -715,7 +715,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     def get_wrc_same_srcuser_allow_criteria() -> str:
         return "Must just be <freq_same_srcuser /> tag."
 
-    def set_wrc_same_srcuser(self, same_srcuser : str):
+    def set_wrc_same_srcuser(self, same_srcuser : bool):
         self.wazuh_rule_config["same_srcuser"] = same_srcuser
         if self.validate_wrc_same_srcuser():
             if self.print_diagnostics:
@@ -728,7 +728,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     # <different_srcuser> operations
     # ============================================
 
-    def get_wrc_different_srcuser(self) -> str:
+    def get_wrc_different_srcuser(self) -> bool:
         return self.wazuh_rule_config["different_srcuser"]
 
     def validate_wrc_different_srcuser(self) -> bool:
@@ -738,13 +738,39 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     def get_wrc_different_srcuser_allow_criteria() -> str:
         return "Must just be <freq_different_srcuser /> tag."
 
-    def set_wrc_different_srcuser(self, different_srcuser : str):
+    def set_wrc_different_srcuser(self, different_srcuser : bool):
         self.wazuh_rule_config["different_srcuser"] = different_srcuser
         if self.validate_wrc_different_srcuser():
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_different_srcuser> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {different_srcuser}")
         else:
             ExitUtils.exit_with_error(f"You cannot set <weekday> of node {self.get_name()} with id {self.get_id()} to {different_srcuser} of type {type(different_srcuser)}. {TreeNodeInformations.get_wrc_different_srcuser_allow_criteria()}")
+
+
+
+    # ============================================
+    # <description> operations
+    # ============================================
+
+    def get_wrc_description(self) -> str:
+        return self.wazuh_rule_config["description"]
+
+    def validate_wrc_description(self) -> bool:
+        return isinstance(self.get_wrc_description(), bool)
+
+    @staticmethod
+    def get_wrc_description_allow_criteria() -> str:
+        return "Must just be <freq_description /> tag."
+
+    def set_wrc_description(self, description : str):
+        self.wazuh_rule_config["description"] = description
+        if self.validate_wrc_description():
+            if self.print_diagnostics:
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_description> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {description}")
+        else:
+            ExitUtils.exit_with_error(f"You cannot set <weekday> of node {self.get_name()} with id {self.get_id()} to {description} of type {type(description)}. {TreeNodeInformations.get_wrc_description_allow_criteria()}")
+
+
 
 
     # ========================================================================================
