@@ -52,7 +52,8 @@ class TreeNodeInformations:
                 freq_dstport            : List[FreqDstport] = None, #Set this to None by default because it is not mandatory and can be omitted
                 time                    : str = None, #Set this to None by default because it is not mandatory and can be omitted
                 weekday                 : str = None, #Set this to None by default because it is not mandatory and can be omitted
-                freq_same_srcip              : bool = False, #Set this to False by default because it is not mandatory and can be omitted
+                freq_same_srcip         : bool = False, #Set this to False by default because it is not mandatory and can be omitted
+                freq_different_srcip    : bool = False, #Set this to False by default because it is not mandatory and can be omitted
                 ):
         
         # <node conjuncted_children="" root="" type=""
@@ -84,6 +85,7 @@ class TreeNodeInformations:
             "time"                  :   time,
             "weekday"               :   weekday,
             "same_srcip"            :   freq_same_srcip,
+            "different_srcip"       :   freq_different_srcip,
         }
 
     # ============================================
@@ -588,7 +590,30 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_same_srcip> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {same_srcip}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <weekday> of node {self.get_name()} with id {self.get_id()} to {same_srcip} of type {type(same_srcip)}. {TreeNodeInformations.get_wrc_weekday_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <weekday> of node {self.get_name()} with id {self.get_id()} to {same_srcip} of type {type(same_srcip)}. {TreeNodeInformations.get_wrc_same_srcip_allow_criteria()}")
+
+
+    # ============================================
+    # <different_srcip> operations
+    # ============================================
+    
+    def get_wrc_different_srcip(self) -> str:
+        return self.wazuh_rule_config["different_srcip"]
+
+    def validate_wrc_different_srcip(self) -> bool:
+        return isinstance(self.get_wrc_different_srcip(), bool)
+
+    @staticmethod
+    def get_wrc_different_srcip_allow_criteria() -> str:
+        return "Must just be <freq_different_srcip /> tag."
+
+    def set_wrc_different_srcip(self, different_srcip : str):
+        self.wazuh_rule_config["different_srcip"] = different_srcip
+        if self.validate_wrc_different_srcip():
+            if self.print_diagnostics:
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_different_srcip> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {different_srcip}")
+        else:
+            ExitUtils.exit_with_error(f"You cannot set <weekday> of node {self.get_name()} with id {self.get_id()} to {different_srcip} of type {type(different_srcip)}. {TreeNodeInformations.get_wrc_different_srcip_allow_criteria()}")
 
 
 
@@ -657,7 +682,9 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
         if not self.validate_wrc_same_srcip():
             ExitUtils.exit_with_error(f"{error_prefix} <freq_same_srcip> in <wazuh_rule_config>. {TreeNodeInformations.get_wrc_same_srcip_allow_criteria()} {self.get_wrc_same_srcip()} of type {type(self.get_wrc_same_srcip())} {error_suffix}")
   
-      
+        if not self.validate_wrc_different_srcip():
+            ExitUtils.exit_with_error(f"{error_prefix} <freq_different_srcip> in <wazuh_rule_config>. {TreeNodeInformations.get_wrc_different_srcip_allow_criteria()} {self.get_wrc_different_srcip()} of type {type(self.get_wrc_different_srcip())} {error_suffix}")
+    
 
     # ============================================
     # General to_string
