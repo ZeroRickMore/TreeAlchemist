@@ -51,8 +51,8 @@ class TreeNodeInformations:
                 freq_dstip              : List[FreqDstip] = None, #Set this to None by default because it is not mandatory and can be omitted
                 freq_srcport            : List[FreqSrcport] = None, #Set this to None by default because it is not mandatory and can be omitted
                 freq_dstport            : List[FreqDstport] = None, #Set this to None by default because it is not mandatory and can be omitted
-                time                    : str = None, #Set this to None by default because it is not mandatory and can be omitted
-                weekday                 : str = None, #Set this to None by default because it is not mandatory and can be omitted
+                time                    : str  = None, #Set this to None by default because it is not mandatory and can be omitted
+                weekday                 : str  = None, #Set this to None by default because it is not mandatory and can be omitted
                 freq_same_srcip         : bool = False, #Set this to False by default because it is not mandatory and can be omitted
                 freq_different_srcip    : bool = False, #Set this to False by default because it is not mandatory and can be omitted
                 freq_same_srcport       : bool = False, #Set this to False by default because it is not mandatory and can be omitted
@@ -61,7 +61,8 @@ class TreeNodeInformations:
                 freq_same_srcuser       : bool = False, #Set this to False by default because it is not mandatory and can be omitted            
                 freq_different_srcuser  : bool = False, #Set this to False by default because it is not mandatory and can be omitted 
                 description             : str  = None, #Set this to False by default because it is not mandatory and can be omitted 
-                info                    : Info = None, #Set this to False by default because it is not mandatory and can be omitted 
+                info                    : List[Info] = None, #Set this to False by default because it is not mandatory and can be omitted 
+                options                 : List[str]  = None, #Set this to False by default because it is not mandatory and can be omitted 
                 ):
         
         # <node conjuncted_children="" root="" type=""
@@ -101,6 +102,7 @@ class TreeNodeInformations:
             "different_srcuser"     :   freq_different_srcuser,
             "description"           :   description,
             "info"                  :   info,
+            "options"               :   options
         }
 
     # ============================================
@@ -777,23 +779,54 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     # ============================================
     # <info> operations
     # ============================================
-
-    def get_wrc_info(self) -> Info:
+    
+    def get_wrc_info(self) -> List[Info]:
         return self.wazuh_rule_config["info"]
 
     def validate_wrc_info(self) -> bool:
-        return self.get_wrc_info().validate_all()
+        # Type check
+        if not self.get_wrc_info() is None:
+            for info in self.get_wrc_info():
+                if not isinstance(info, Info):
+                    return False
+                info.validate_all()     
+        return True      
 
-    def set_wrc_info(self, info : Info):
-        self.wazuh_rule_config["info"] = info
+    def set_wrc_info(self, all_info : List[Info]):
+        self.wazuh_rule_config["info"] = all_info
         if self.validate_wrc_info():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <info> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {info}")
-        else:
-            ExitUtils.exit_with_error(f"You cannot set <info> of node {self.get_name()} with id {self.get_id()} to {info} of type {type(info)}. {TreeNodeInformations.get_wrc_info_allow_criteria()}")
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <info> entries of node {self.get_name()} with id {self.get_id()} have been succesfully set to: {[_.to_string() for _ in all_info]}")
         # else: is covered inside of info.validate_all() already
 
 
+    # ============================================
+    # <options> operations
+    # ============================================
+
+    def get_wrc_options(self) -> List[str]:
+        return self.wazuh_rule_config["options"]
+
+    def validate_wrc_options(self) -> bool:
+        # Type check
+        if not self.get_wrc_options() is None:
+            for options in self.get_wrc_options():
+                if not isinstance(options, str):
+                    return False
+                if not validations.is_allowed(allowed_values=["alert_by_email", "no_email_alert", "no_log", "no_full_log", "no_counter"], string=options):
+                    ExitUtils.exit_with_error(f"You cannot set <options> of node {self.get_name()} with id {self.get_id()} to {options} of type {type(options)}. {TreeNodeInformations.get_wrc_options_allow_criteria()}")
+        return True    
+
+    @staticmethod
+    def get_wrc_options_allow_criteria() -> str:
+        return 'Every <options> tag must contain one of the following strings: "alert_by_email", "no_email_alert", "no_log", "no_full_log", "no_counter".'
+
+    def set_wrc_options(self, options : str):
+        self.wazuh_rule_config["options"] = options
+        if self.validate_wrc_options():
+            if self.print_diagnostics:
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <options> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {options}")
+        # else: is covered inside of self.validate_wrc_options() already
 
 
     # ========================================================================================
@@ -882,6 +915,8 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
             ExitUtils.exit_with_error(f"{error_prefix} <description> in <wazuh_rule_config>. {TreeNodeInformations.get_wrc_description_allow_criteria()} {self.get_wrc_description()} of type {type(self.get_wrc_description())} {error_suffix}")
    
         self.validate_wrc_info()
+
+        self.validate_wrc_options()
 
     # ============================================
     # General to_string
