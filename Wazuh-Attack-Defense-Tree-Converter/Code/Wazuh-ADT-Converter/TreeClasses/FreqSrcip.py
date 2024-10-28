@@ -28,10 +28,10 @@ class FreqSrcip:
 
     def validate_wrc_srcip_negate(self) -> bool:
         # Type check
-        if not isinstance(self.negate, str):
+        if not isinstance(self.get_wrc_srcip_negate(), str):
             return False
         # Allowed values check
-        return validations.is_yes_or_no(self.negate)
+        return validations.is_yes_or_no(self.get_wrc_srcip_negate())
 
     @staticmethod
     def get_wrc_srcip_negate_allow_criteria():
@@ -55,10 +55,10 @@ class FreqSrcip:
 
     def validate_wrc_srcip_srcip(self) -> bool:
         # Type check
-        if not isinstance(self.srcip, str):
+        if not isinstance(self.get_wrc_srcip_srcip(), str):
             return False
         # Allowed values check
-        return validations.is_ip_address(string=self.srcip)
+        return validations.is_ip_address(string=self.get_wrc_srcip_srcip())
 
     @staticmethod
     def get_wrc_srcip_srcip_allow_criteria():

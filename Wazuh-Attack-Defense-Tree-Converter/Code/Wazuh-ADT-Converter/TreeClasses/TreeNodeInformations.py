@@ -51,6 +51,7 @@ class TreeNodeInformations:
                 freq_srcport            : List[FreqSrcport] = None, #Set this to None by default because it is not mandatory and can be omitted
                 freq_dstport            : List[FreqDstport] = None, #Set this to None by default because it is not mandatory and can be omitted
                 time                    : str = None, #Set this to None by default because it is not mandatory and can be omitted
+                weekday                 : str = None, #Set this to None by default because it is not mandatory and can be omitted
                 ):
         
         # <node conjuncted_children="" root="" type=""
@@ -80,6 +81,7 @@ class TreeNodeInformations:
             "srcport"               :   freq_srcport,
             "dstport"               :   freq_dstport,
             "time"                  :   time,
+            "weekday"               :   weekday,
         }
 
     # ============================================
@@ -94,7 +96,7 @@ class TreeNodeInformations:
         if not isinstance(self.node_tag_attributes["conjuncted_children"], str):
             return False
         # Allowed values check
-        return validations.is_yes_or_no(self.node_tag_attributes["conjuncted_children"])
+        return validations.is_yes_or_no(self.get_conjuncted_children())
     
     @staticmethod
     def get_conjuncted_children_allow_criteria() -> str:
@@ -104,9 +106,9 @@ class TreeNodeInformations:
         self.node_tag_attributes["conjuncted_children"] = conjuncted_children
         if self.validate_node_conjuncted_children():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- conjuncted_children of node {self.name} has been succesfully set to {conjuncted_children}")
+                PrintUtils.print_in_green(f"- conjuncted_children of node {self.get_name()} with id {self.get_id()} has been succesfully set to {conjuncted_children}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set conjuncted_children of node {self.name} with id {self.id} to {conjuncted_children}  of type {type(conjuncted_children)}. {TreeNodeInformations.get_conjuncted_children_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set conjuncted_children of node {self.get_name()} with id {self.get_id()} to {conjuncted_children}  of type {type(conjuncted_children)}. {TreeNodeInformations.get_conjuncted_children_allow_criteria()}")
 
     # ============================================
     # <node root=""> operations
@@ -130,9 +132,9 @@ class TreeNodeInformations:
         self.node_tag_attributes["root"] = root
         if self.validate_node_root():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- root of node {self.name} has been succesfully set to {root}")
+                PrintUtils.print_in_green(f"- root of node {self.get_name()} with id {self.get_id()} has been succesfully set to {root}")
         else:
-            ExitUtils.exit_with_error(f'You cannot set <node root=""> of node {self.name} with id {self.id} to {root} of type {type(root)}. {TreeNodeInformations.get_root_allow_criteria()}')
+            ExitUtils.exit_with_error(f'You cannot set <node root=""> of node {self.get_name()} with id {self.get_id()} to {root} of type {type(root)}. {TreeNodeInformations.get_root_allow_criteria()}')
     
 
     # ============================================
@@ -148,7 +150,7 @@ class TreeNodeInformations:
             return False
         # Allowed values check
         allowed_values = ["atk", "def"]
-        return validations.is_allowed(allowed_values=allowed_values, string=self.node_tag_attributes["type"])
+        return validations.is_allowed(allowed_values=allowed_values, string=self.get_type())
 
     @staticmethod
     def get_type_allow_criteria() -> str:
@@ -158,9 +160,9 @@ class TreeNodeInformations:
         self.node_tag_attributes["type"] = type_
         if self.validate_node_type():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- type of node {self.name} has been succesfully set to {type_}")
+                PrintUtils.print_in_green(f"- type of node {self.get_name()} with id {self.get_id()} has been succesfully set to {type_}")
         else:
-            ExitUtils.exit_with_error(f'You cannot set <node type="" of node {self.name} with id {self.id} to {type_} of type {type(type_)}. {TreeNodeInformations.get_type_allow_criteria()}')
+            ExitUtils.exit_with_error(f'You cannot set <node type="" of node {self.get_name()} with id {self.get_id()} to {type_} of type {type(type_)}. {TreeNodeInformations.get_type_allow_criteria()}')
 
 
 
@@ -177,7 +179,7 @@ class TreeNodeInformations:
             return False
         self.path = str(self.path) # Just to color the endswith() method. Yes.
         # Check if it ends with a /, basically that's the check we need. The existence of the path cannot be checked here.
-        return self.path.endswith(r"/")
+        return self.get_path().endswith(r"/")
 
     @staticmethod
     def get_path_allow_criteria() -> str:
@@ -187,9 +189,9 @@ class TreeNodeInformations:
         self.path = path
         if self.validate_path():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- <path> of node {self.name} has been succesfully set to {path}")
+                PrintUtils.print_in_green(f"- <path> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {path}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <path> of node {self.name} with id {self.id} to {path} of type {type(path)}. {TreeNodeInformations.get_path_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <path> of node {self.get_name()} with id {self.get_id()} to {path} of type {type(path)}. {TreeNodeInformations.get_path_allow_criteria()}")
 
 
     # ============================================
@@ -200,7 +202,7 @@ class TreeNodeInformations:
         return self.id
 
     def validate_id(self) -> bool:
-        return isinstance(self.id, int) and self.id >= 0
+        return isinstance(self.get_id(), int) and self.get_id() >= 0
 
     @staticmethod
     def get_id_allow_criteria() -> str:
@@ -210,9 +212,9 @@ class TreeNodeInformations:
         self.id = id
         if self.validate_id():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- <id> of node {self.name} has been succesfully set to {id}")
+                PrintUtils.print_in_green(f"- <id> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {id}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <id> of node {self.name} with id {self.id} to {id} of type {type(id)}. {TreeNodeInformations.get_id_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <id> of node {self.get_name()} with id {self.get_id()} to {id} of type {type(id)}. {TreeNodeInformations.get_id_allow_criteria()}")
 
 
     # ============================================
@@ -224,7 +226,7 @@ class TreeNodeInformations:
 
     def validate_name(self) -> bool:
         # Type check
-        return isinstance(self.name, str)
+        return isinstance(self.get_name(), str)
 
     @staticmethod
     def get_name_allow_criteria() -> str:
@@ -234,9 +236,9 @@ class TreeNodeInformations:
         self.name = name
         if self.validate_name():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- <name> of node {self.name} has been succesfully set to {name}")
+                PrintUtils.print_in_green(f"- <name> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {name}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <name> of node {self.name} with id {self.id} to {name} of type {type(name)}. {TreeNodeInformations.get_name_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <name> of node {self.get_name()} with id {self.get_id()} to {name} of type {type(name)}. {TreeNodeInformations.get_name_allow_criteria()}")
 
 
 
@@ -253,7 +255,7 @@ class TreeNodeInformations:
         return self.wazuh_rule_config["frequency"]
 
     def validate_wrc_frequency(self) -> bool:
-        return self.wazuh_rule_config["frequency"] is None or ( isinstance(self.wazuh_rule_config["frequency"], int) and ( self.wazuh_rule_config["frequency"] in range(2, 10000) ) )
+        return self.get_wrc_frequency() is None or ( isinstance(self.get_wrc_frequency(), int) and ( self.get_wrc_frequency() in range(2, 10000) ) )
 
     @staticmethod
     def get_wrc_frequency_allow_criteria() -> str:
@@ -263,9 +265,9 @@ class TreeNodeInformations:
         self.wazuh_rule_config["frequency"] = frequency
         if self.validate_wrc_frequency():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <frequency> of node {self.name} has been succesfully set to {frequency}")
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <frequency> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {frequency}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <frequency> of node {self.name} with id {self.id} to {frequency} of type {type(frequency)}. {TreeNodeInformations.get_wrc_frequency_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <frequency> of node {self.get_name()} with id {self.get_id()} to {frequency} of type {type(frequency)}. {TreeNodeInformations.get_wrc_frequency_allow_criteria()}")
 
 
     # ============================================
@@ -276,7 +278,7 @@ class TreeNodeInformations:
         return self.wazuh_rule_config["timeframe"]
 
     def validate_wrc_timeframe(self) -> bool:
-        return self.wazuh_rule_config["timeframe"] is None or ( isinstance(self.wazuh_rule_config["timeframe"], int) and ( self.wazuh_rule_config["timeframe"] in range(1, 100000) ) )
+        return self.get_wrc_timeframe() is None or ( isinstance(self.get_wrc_timeframe(), int) and ( self.get_wrc_timeframe() in range(1, 100000) ) )
 
     @staticmethod
     def get_wrc_timeframe_allow_criteria() -> str:
@@ -286,9 +288,9 @@ class TreeNodeInformations:
         self.wazuh_rule_config["timeframe"] = timeframe
         if self.validate_wrc_timeframe():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <timeframe> of node {self.name} has been succesfully set to {timeframe}")
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <timeframe> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {timeframe}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <timeframe> of node {self.name} with id {self.id} to {timeframe} of type {type(timeframe)}. {TreeNodeInformations.get_wrc_timeframe_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <timeframe> of node {self.get_name()} with id {self.get_id()} to {timeframe} of type {type(timeframe)}. {TreeNodeInformations.get_wrc_timeframe_allow_criteria()}")
 
 
     # ============================================
@@ -299,7 +301,7 @@ class TreeNodeInformations:
         return self.wazuh_rule_config["ignore"]
 
     def validate_wrc_ignore(self) -> bool:
-        return self.wazuh_rule_config["ignore"] is None or ( isinstance(self.wazuh_rule_config["ignore"], int) and ( self.wazuh_rule_config["ignore"] in range(1, 1000000) ) )
+        return self.get_wrc_ignore() is None or ( isinstance(self.get_wrc_ignore(), int) and ( self.get_wrc_ignore() in range(1, 1000000) ) )
 
     @staticmethod
     def get_wrc_ignore_allow_criteria() -> str:
@@ -309,9 +311,9 @@ class TreeNodeInformations:
         self.wazuh_rule_config["ignore"] = ignore
         if self.validate_wrc_ignore():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <ignore> of node {self.name} has been succesfully set to {ignore}")
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <ignore> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {ignore}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <ignore> of node {self.name} with id {self.id} to {ignore} of type {type(ignore)}. {TreeNodeInformations.get_wrc_ignore_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <ignore> of node {self.get_name()} with id {self.get_id()} to {ignore} of type {type(ignore)}. {TreeNodeInformations.get_wrc_ignore_allow_criteria()}")
 
 
     # ============================================
@@ -323,7 +325,7 @@ class TreeNodeInformations:
 
     def validate_wrc_already_existing_id(self) -> bool:
         # Type check
-        if not (self.wazuh_rule_config["already_existing_id"] is None or isinstance(self.wazuh_rule_config["already_existing_id"], int) ):
+        if not (self.get_wrc_already_existing_id() is None or isinstance(self.get_wrc_already_existing_id(), int) ):
             return False
         # This needs to be used on pre-existing rules, so no other tag needs to be present
         for wrc_tag in self.wazuh_rule_config:
@@ -341,9 +343,9 @@ class TreeNodeInformations:
         self.wazuh_rule_config["already_existing_id"] = already_existing_id
         if self.validate_wrc_already_existing_id():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <already_existing_id> of node {self.name} has been succesfully set to {already_existing_id}")
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <already_existing_id> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {already_existing_id}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <already_existing_id> of node {self.name} with id {self.id} to {already_existing_id} of type {type(already_existing_id)}. {TreeNodeInformations.get_wrc_already_existing_id_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <already_existing_id> of node {self.get_name()} with id {self.get_id()} to {already_existing_id} of type {type(already_existing_id)}. {TreeNodeInformations.get_wrc_already_existing_id_allow_criteria()}")
 
 
     # ============================================
@@ -355,8 +357,8 @@ class TreeNodeInformations:
 
     def validate_wrc_match(self) -> bool:
         # Type check
-        if not self.wazuh_rule_config["match"] is None:
-            for match in self.wazuh_rule_config["match"]:
+        if not self.get_wrc_match() is None:
+            for match in self.get_wrc_match():
                 if not isinstance(match, Match):
                     return False
                 match.validate_all()     
@@ -366,7 +368,7 @@ class TreeNodeInformations:
         self.wazuh_rule_config["match"] = all_match
         if self.validate_wrc_match():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <match> entries of node {self.name} have been succesfully set to: {[_.to_string() for _ in all_match]}")
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <match> entries of node {self.get_name()} with id {self.get_id()} have been succesfully set to: {[_.to_string() for _ in all_match]}")
         # else: is covered inside of match.validate_all() already
 
 
@@ -379,8 +381,8 @@ class TreeNodeInformations:
 
     def validate_wrc_regex(self) -> bool:
         # Type check
-        if not self.wazuh_rule_config["regex"] is None:
-            for regex in self.wazuh_rule_config["regex"]:
+        if not self.get_wrc_regex() is None:
+            for regex in self.get_wrc_regex():
                 if not isinstance(regex, Regex):
                     return False
                 regex.validate_all()     
@@ -390,7 +392,7 @@ class TreeNodeInformations:
         self.wazuh_rule_config["regex"] = all_regex
         if self.validate_wrc_regex():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <regex> entries of node {self.name} have been succesfully set to: {[_.to_string() for _ in all_regex]}")
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <regex> entries of node {self.get_name()} with id {self.get_id()} have been succesfully set to: {[_.to_string() for _ in all_regex]}")
         # else: is covered inside of match.validate_all() already
 
 
@@ -403,8 +405,8 @@ class TreeNodeInformations:
 
     def validate_wrc_srcip(self) -> bool:
         # Type check
-        if not self.wazuh_rule_config["srcip"] is None:
-            for srcip in self.wazuh_rule_config["srcip"]:
+        if not self.get_wrc_srcip() is None:
+            for srcip in self.get_wrc_srcip():
                 if not isinstance(srcip, FreqSrcip):
                     return False
                 srcip.validate_all()
@@ -414,7 +416,7 @@ class TreeNodeInformations:
         self.wazuh_rule_config["srcip"] = all_srcip
         if self.validate_wrc_srcip():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <freq_srcip> entries of node {self.name} have been succesfully set to: {[_.to_string() for _ in all_srcip]}")
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <freq_srcip> entries of node {self.get_name()} with id {self.get_id()} have been succesfully set to: {[_.to_string() for _ in all_srcip]}")
         # else: is covered inside of match.validate_all() already
 
 
@@ -427,8 +429,8 @@ class TreeNodeInformations:
 
     def validate_wrc_dstip(self) -> bool:
         # Type check
-        if not self.wazuh_rule_config["dstip"] is None:
-            for dstip in self.wazuh_rule_config["dstip"]:
+        if not self.get_wrc_dstip() is None:
+            for dstip in self.get_wrc_dstip():
                 if not isinstance(dstip, FreqDstip):
                     return False
                 dstip.validate_all()    
@@ -438,7 +440,7 @@ class TreeNodeInformations:
         self.wazuh_rule_config["dstip"] = all_dstip
         if self.validate_wrc_dstip():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <freq_dstip> entries of node {self.name} have been succesfully set to: {[_.to_string() for _ in all_dstip]}")
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <freq_dstip> entries of node {self.get_name()} with id {self.get_id()} have been succesfully set to: {[_.to_string() for _ in all_dstip]}")
         # else: is covered inside of match.validate_all() already
 
 
@@ -451,8 +453,8 @@ class TreeNodeInformations:
 
     def validate_wrc_srcport(self) -> bool:
         # Type check
-        if not self.wazuh_rule_config["srcport"] is None:
-            for srcport in self.wazuh_rule_config["srcport"]:
+        if not self.get_wrc_srcport() is None:
+            for srcport in self.get_wrc_srcport():
                 if not isinstance(srcport, FreqSrcport):
                     return False
                 srcport.validate_all()        
@@ -462,7 +464,7 @@ class TreeNodeInformations:
         self.wazuh_rule_config["srcport"] = all_srcport
         if self.validate_wrc_srcport():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <freq_srcport> entries of node {self.name} have been succesfully set to: {[_.to_string() for _ in all_srcport]}")
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <freq_srcport> entries of node {self.get_name()} with id {self.get_id()} have been succesfully set to: {[_.to_string() for _ in all_srcport]}")
         # else: is covered inside of match.validate_all() already
 
 
@@ -476,8 +478,8 @@ class TreeNodeInformations:
 
     def validate_wrc_dstport(self) -> bool:
         # Type check
-        if not self.wazuh_rule_config["dstport"] is None:
-            for dstport in self.wazuh_rule_config["dstport"]:
+        if not self.get_wrc_dstport() is None:
+            for dstport in self.get_wrc_dstport():
                 if not isinstance(dstport, FreqDstport):
                     return False
                 dstport.validate_all()
@@ -487,7 +489,7 @@ class TreeNodeInformations:
         self.wazuh_rule_config["dstport"] = all_dstport
         if self.validate_wrc_dstport():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <freq_dstport> entries of node {self.name} have been succesfully set to: {[_.to_string() for _ in all_dstport]}")
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <freq_dstport> entries of node {self.get_name()} with id {self.get_id()} have been succesfully set to: {[_.to_string() for _ in all_dstport]}")
         # else: is covered inside of match.validate_all() already
 
 
@@ -501,9 +503,9 @@ class TreeNodeInformations:
 
     def validate_wrc_time(self) -> bool:
         return (
-            self.wazuh_rule_config["time"] is None 
+            self.get_wrc_time() is None 
             or 
-            ( isinstance(self.wazuh_rule_config["time"], str) and ( validations.is_time_interval(self.wazuh_rule_config["time"]) ) )
+            ( isinstance(self.get_wrc_time(), str) and ( validations.is_time_interval(self.get_wrc_time()) ) )
         )
 
     @staticmethod
@@ -525,10 +527,43 @@ h am-h pm.\n
         self.wazuh_rule_config["time"] = time
         if self.validate_wrc_time():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <time> of node {self.name} has been succesfully set to {time}")
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <time> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {time}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <time> of node {self.name} with id {self.id} to {time} of type {type(time)}. {TreeNodeInformations.get_wrc_timeframe_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <time> of node {self.get_name()} with id {self.get_id()} to {time} of type {type(time)}. {TreeNodeInformations.get_wrc_time_allow_criteria()}")
 
+
+
+
+    # ============================================
+    # <weekday> operations
+    # ============================================
+    
+    def get_wrc_weekday(self) -> str:
+        return self.wazuh_rule_config["weekday"]
+
+    def validate_wrc_weekday(self) -> bool:
+        allowed_values = ["weekdays", "weekends"]
+        return (
+            self.get_wrc_weekday() is None 
+            or 
+            ( isinstance(self.get_wrc_weekday(), str) and ( validations.is_allowed(allowed_values=allowed_values, string=self.get_wrc_weekday()) or validations.is_weekday_range(s = self.get_wrc_weekday()) ) )
+        )
+
+    @staticmethod
+    def get_wrc_weekday_allow_criteria() -> str:
+
+        return '''\n
+It must be either "weekdays", "weekends", or match the "weekday - weekday" string,
+where weekday is any day of the week in lowercase, such as "monday - sunday".\n
+        '''
+
+    def set_wrc_weekday(self, weekday : str):
+        self.wazuh_rule_config["weekday"] = weekday
+        if self.validate_wrc_weekday():
+            if self.print_diagnostics:
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <weekday> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {weekday}")
+        else:
+            ExitUtils.exit_with_error(f"You cannot set <weekday> of node {self.get_name()} with id {self.get_id()} to {weekday} of type {type(weekday)}. {TreeNodeInformations.get_wrc_weekday_allow_criteria()}")
 
 
 
@@ -542,7 +577,7 @@ h am-h pm.\n
     # ============================================   
 
     def validate_all(self) -> bool:
-        error_prefix = f"The node {self.name} with id {self.id} failed validation on"
+        error_prefix = f"The node {self.get_name()} with id {self.get_id()} failed validation on"
         error_suffix = f"was given instead."
 
         if not self.validate_node_conjuncted_children():
@@ -590,7 +625,10 @@ h am-h pm.\n
 
         if not self.validate_wrc_time():
             ExitUtils.exit_with_error(f"{error_prefix} <time> in <wazuh_rule_config>. {TreeNodeInformations.get_wrc_time_allow_criteria()} {self.get_wrc_time()} of type {type(self.get_wrc_time())} {error_suffix}")
-        
+
+        if not self.validate_wrc_weekday():
+            ExitUtils.exit_with_error(f"{error_prefix} <weekday> in <wazuh_rule_config>. {TreeNodeInformations.get_wrc_weekday_allow_criteria()} {self.get_wrc_weekday()} of type {type(self.get_wrc_weekday())} {error_suffix}")
+       
 
     # ============================================
     # General to_string

@@ -31,10 +31,10 @@ class Match:
 
     def validate_wrc_match_negate(self) -> bool:
         # Type check
-        if not isinstance(self.negate, str):
+        if not isinstance(self.get_wrc_match_negate(), str):
             return False
         # Allowed values check
-        return validations.is_yes_or_no(self.negate)
+        return validations.is_yes_or_no(self.get_wrc_match_negate())
 
     @staticmethod
     def get_wrc_match_negate_allow_criteria() -> str:
@@ -58,10 +58,10 @@ class Match:
 
     def validate_wrc_match_type(self) -> bool:
         # Type check
-        if not isinstance(self.type, str):
+        if not isinstance(self.get_wrc_match_type(), str):
             return False
         # Allowed values check
-        return validations.is_osmatch_osregex_pcre2(self.type)
+        return validations.is_osmatch_osregex_pcre2(self.get_wrc_match_type())
 
     @staticmethod
     def get_wrc_match_type_allow_criteria() -> str:
@@ -85,7 +85,7 @@ class Match:
 
     def validate_wrc_match_match(self) -> bool:
         # Type check
-        if not (self.match is None or isinstance(self.match, str) ):
+        if not (self.get_wrc_match_match() is None or isinstance(self.get_wrc_match_match(), str) ):
             return False
         return True
 

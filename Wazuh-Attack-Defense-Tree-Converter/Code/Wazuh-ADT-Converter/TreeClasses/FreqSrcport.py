@@ -31,10 +31,10 @@ class FreqSrcport:
 
     def validate_wrc_srcport_negate(self) -> bool:
         # Type check
-        if not isinstance(self.negate, str):
+        if not isinstance(self.get_wrc_srcport_negate(), str):
             return False
         # Allowed values check
-        return validations.is_yes_or_no(self.negate)
+        return validations.is_yes_or_no(self.get_wrc_srcport_negate())
 
     @staticmethod
     def get_wrc_srcport_negate_allow_criteria():
@@ -58,10 +58,10 @@ class FreqSrcport:
 
     def validate_wrc_srcport_type(self) -> bool:
         # Type check
-        if not isinstance(self.type, str):
+        if not isinstance(self.get_wrc_srcport_type(), str):
             return False
         # Allowed values check
-        return validations.is_osmatch_osregex_pcre2(self.type)
+        return validations.is_osmatch_osregex_pcre2(self.get_wrc_srcport_type())
 
     @staticmethod
     def get_wrc_srcport_type_allow_criteria():
@@ -85,7 +85,7 @@ class FreqSrcport:
 
     def validate_wrc_srcport_srcport(self) -> bool:
         # Type check
-        if not (self.srcport is None or isinstance(self.srcport, str) ):
+        if not (self.get_wrc_srcport_srcport() is None or isinstance(self.get_wrc_srcport_srcport(), str) ):
             return False
         return True
 

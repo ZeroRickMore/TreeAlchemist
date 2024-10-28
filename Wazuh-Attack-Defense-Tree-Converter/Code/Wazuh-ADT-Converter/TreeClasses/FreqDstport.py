@@ -31,10 +31,10 @@ class FreqDstport:
 
     def validate_wrc_dstport_negate(self) -> bool:
         # Type check
-        if not isinstance(self.negate, str):
+        if not isinstance(self.get_wrc_dstport_negate(), str):
             return False
         # Allowed values check
-        return validations.is_yes_or_no(self.negate)
+        return validations.is_yes_or_no(self.get_wrc_dstport_negate())
 
     @staticmethod
     def get_wrc_dstport_negate_allow_criteria():
@@ -58,10 +58,10 @@ class FreqDstport:
 
     def validate_wrc_dstport_type(self) -> bool:
         # Type check
-        if not isinstance(self.type, str):
+        if not isinstance(self.get_wrc_dstport_type(), str):
             return False
         # Allowed values check
-        return validations.is_osmatch_osregex_pcre2(self.type)
+        return validations.is_osmatch_osregex_pcre2(self.get_wrc_dstport_type())
 
     @staticmethod
     def get_wrc_dstport_type_allow_criteria():
@@ -85,7 +85,7 @@ class FreqDstport:
 
     def validate_wrc_dstport_dstport(self) -> bool:
         # Type check
-        if not (self.dstport is None or isinstance(self.dstport, str) ):
+        if not (self.get_wrc_dstport_dstport() is None or isinstance(self.get_wrc_dstport_dstport(), str) ):
             return False
         return True
 

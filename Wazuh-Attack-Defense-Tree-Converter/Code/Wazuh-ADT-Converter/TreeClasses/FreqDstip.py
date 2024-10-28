@@ -28,10 +28,10 @@ class FreqDstip:
 
     def validate_wrc_dstip_negate(self) -> bool:
         # Type check
-        if not isinstance(self.negate, str):
+        if not isinstance(self.get_wrc_dstip_negate(), str):
             return False
         # Allowed values check
-        return validations.is_yes_or_no(self.negate)
+        return validations.is_yes_or_no(self.get_wrc_dstip_negate())
 
     @staticmethod
     def get_wrc_dstip_negate_allow_criteria():
@@ -55,10 +55,10 @@ class FreqDstip:
 
     def validate_wrc_dstip_dstip(self) -> bool:
         # Type check
-        if not isinstance(self.dstip, str):
+        if not isinstance(self.get_wrc_dstip_dstip(), str):
             return False
         # Allowed values check
-        return validations.is_ip_address(string=self.dstip)
+        return validations.is_ip_address(string=self.get_wrc_dstip_dstip())
 
     @staticmethod
     def get_wrc_dstip_dstip_allow_criteria():
