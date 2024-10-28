@@ -352,13 +352,14 @@ class TreeNodeInformations:
         for wrc_tag in self.wazuh_rule_config:
             if self.wazuh_rule_config[wrc_tag] == "already_existing_id":
                 continue
-            if self.wazuh_rule_config[wrc_tag] is not None:
+            if self.wazuh_rule_config[wrc_tag] is not None and (isinstance(self.wazuh_rule_config[wrc_tag], bool) and self.wazuh_rule_config[wrc_tag] == True):
+                PrintUtils.print_in_red(f"- ERROR: <already_existing_id> is present, but another tag is given: <{wrc_tag}>vwith value {self.wazuh_rule_config[wrc_tag]}.")
                 return False
         return True          
 
     @staticmethod
     def get_wrc_already_existing_id_allow_criteria() -> str:
-        return "It must be an integer, and every other tag inside of <wazuh_rules_config> MUST not be present."
+        return "It must be an integer, and every other tag inside of <wazuh_rules_config> MUST NOT be present."
 
     def set_wrc_already_existing_id(self, already_existing_id : int):
         self.wazuh_rule_config["already_existing_id"] = already_existing_id
@@ -931,13 +932,6 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
         to_string = ''
 
 
-def test():
-    # Normal node with all default entries
-    t = TreeNodeInformations()
-    t.set_path("/")
-    t.set_id(1)
-    t.validate_all()
 
 
-if __name__ == '__main__':
-    test()
+
