@@ -6,6 +6,7 @@ from Match import Match
 from Regex import Regex
 from FreqSrcip import FreqSrcip
 from FreqDstip import FreqDstip
+from FreqSrcport import FreqSrcport
 
 # Import scripts from above folder
 import sys
@@ -46,6 +47,7 @@ class TreeNodeInformations:
                 regex_list              : List[Regex] = None, #Set this to None by default because it is not mandatory and can be omitted
                 freq_srcip              : List[FreqSrcip] = None, #Set this to None by default because it is not mandatory and can be omitted
                 freq_dstip              : List[FreqDstip] = None, #Set this to None by default because it is not mandatory and can be omitted
+                freq_srcport            : List[FreqSrcport] = None, #Set this to None by default because it is not mandatory and can be omitted
                 ):
         
         # <node conjuncted_children="" root="" type=""
@@ -72,6 +74,7 @@ class TreeNodeInformations:
             "regex"                 :   regex_list,
             "srcip"                 :   freq_srcip,
             "dstip"                 :   freq_dstip,
+            "srcport"               :   freq_srcport,
         }
 
         self.children = []
@@ -444,6 +447,27 @@ class TreeNodeInformations:
         # else: is covered inside of match.validate_all() already
 
 
+    # ============================================
+    # <srcport> operations | NOTE: sull'xml è <freq_srcport>
+    # ============================================
+    
+    def get_wrc_srcport(self) -> int:
+        return self.wazuh_rule_config["srcport"]
+
+    def validate_wrc_srcport(self) -> bool:
+        # Type check
+        if not self.wazuh_rule_config["srcport"] is None:
+            for srcport in self.wazuh_rule_config["srcport"]:
+                if not isinstance(srcport, FreqSrcport):
+                    return False
+                srcport.validate_all()          
+
+    def set_wrc_srcport(self, all_srcport : List[FreqSrcport]):
+        self.wazuh_rule_config["srcport"] = all_srcport
+        if self.validate_wrc_srcport():
+            if self.print_diagnostics:
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <freq_srcport> entries of node {self.name} have been succesfully set to: {[_.to_string() for _ in all_srcport]}")
+        # else: is covered inside of match.validate_all() already
 
 
 
@@ -498,6 +522,8 @@ class TreeNodeInformations:
         self.validate_wrc_srcip()
 
         self.validate_wrc_dstip()
+
+        self.validate_wrc_srcport()
 
 
     # ============================================
