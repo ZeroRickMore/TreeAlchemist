@@ -8,6 +8,7 @@ from FreqSrcip import FreqSrcip
 from FreqDstip import FreqDstip
 from FreqSrcport import FreqSrcport
 from FreqDstport import FreqDstport
+from Info import Info
 
 # Import scripts from above folder
 import sys
@@ -60,6 +61,7 @@ class TreeNodeInformations:
                 freq_same_srcuser       : bool = False, #Set this to False by default because it is not mandatory and can be omitted            
                 freq_different_srcuser  : bool = False, #Set this to False by default because it is not mandatory and can be omitted 
                 description             : str  = None, #Set this to False by default because it is not mandatory and can be omitted 
+                info                    : Info = None, #Set this to False by default because it is not mandatory and can be omitted 
                 ):
         
         # <node conjuncted_children="" root="" type=""
@@ -97,7 +99,8 @@ class TreeNodeInformations:
             "same_location"         :   freq_same_location,
             "same_srcuser"          :   freq_same_srcuser,
             "different_srcuser"     :   freq_different_srcuser,
-            "description"           :   description
+            "description"           :   description,
+            "info"                  :   info,
         }
 
     # ============================================
@@ -409,7 +412,7 @@ class TreeNodeInformations:
         if self.validate_wrc_regex():
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <regex> entries of node {self.get_name()} with id {self.get_id()} have been succesfully set to: {[_.to_string() for _ in all_regex]}")
-        # else: is covered inside of match.validate_all() already
+        # else: is covered inside of regex.validate_all() already
 
 
     # ============================================
@@ -433,7 +436,7 @@ class TreeNodeInformations:
         if self.validate_wrc_srcip():
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <freq_srcip> entries of node {self.get_name()} with id {self.get_id()} have been succesfully set to: {[_.to_string() for _ in all_srcip]}")
-        # else: is covered inside of match.validate_all() already
+        # else: is covered inside of freqsrcip.validate_all() already
 
 
     # ============================================
@@ -457,7 +460,7 @@ class TreeNodeInformations:
         if self.validate_wrc_dstip():
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <freq_dstip> entries of node {self.get_name()} with id {self.get_id()} have been succesfully set to: {[_.to_string() for _ in all_dstip]}")
-        # else: is covered inside of match.validate_all() already
+        # else: is covered inside of freqdstip.validate_all() already
 
 
     # ============================================
@@ -481,7 +484,7 @@ class TreeNodeInformations:
         if self.validate_wrc_srcport():
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <freq_srcport> entries of node {self.get_name()} with id {self.get_id()} have been succesfully set to: {[_.to_string() for _ in all_srcport]}")
-        # else: is covered inside of match.validate_all() already
+        # else: is covered inside of freqsrcport.validate_all() already
 
 
 
@@ -506,7 +509,7 @@ class TreeNodeInformations:
         if self.validate_wrc_dstport():
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <freq_dstport> entries of node {self.get_name()} with id {self.get_id()} have been succesfully set to: {[_.to_string() for _ in all_dstport]}")
-        # else: is covered inside of match.validate_all() already
+        # else: is covered inside of freqdstport.validate_all() already
 
 
 
@@ -771,6 +774,26 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
             ExitUtils.exit_with_error(f"You cannot set <description> of node {self.get_name()} with id {self.get_id()} to {description} of type {type(description)}. {TreeNodeInformations.get_wrc_description_allow_criteria()}")
 
 
+    # ============================================
+    # <info> operations
+    # ============================================
+
+    def get_wrc_info(self) -> Info:
+        return self.wazuh_rule_config["info"]
+
+    def validate_wrc_info(self) -> bool:
+        return self.get_wrc_info().validate_all()
+
+    def set_wrc_info(self, info : Info):
+        self.wazuh_rule_config["info"] = info
+        if self.validate_wrc_info():
+            if self.print_diagnostics:
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <info> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {info}")
+        else:
+            ExitUtils.exit_with_error(f"You cannot set <info> of node {self.get_name()} with id {self.get_id()} to {info} of type {type(info)}. {TreeNodeInformations.get_wrc_info_allow_criteria()}")
+        # else: is covered inside of info.validate_all() already
+
+
 
 
     # ========================================================================================
@@ -858,7 +881,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
         if not self.validate_wrc_description():
             ExitUtils.exit_with_error(f"{error_prefix} <description> in <wazuh_rule_config>. {TreeNodeInformations.get_wrc_description_allow_criteria()} {self.get_wrc_description()} of type {type(self.get_wrc_description())} {error_suffix}")
    
-
+        self.validate_wrc_info()
 
     # ============================================
     # General to_string
