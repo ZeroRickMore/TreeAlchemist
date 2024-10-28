@@ -110,19 +110,19 @@ class FreqSrcport:
         error_suffix = f"was given instead."
 
         if not self.validate_wrc_srcport_negate():
-            ExitUtils.exit_with_error(f'{error_prefix} <freq_srcip negate="{self.get_wrc_srcport_negate()}"> in <wazuh_rule_config>. {FreqSrcport.get_wrc_srcport_negate_allow_criteria()} {self.get_wrc_srcport_negate()} of type {type(self.get_wrc_srcport_negate())} {error_suffix}')
+            ExitUtils.exit_with_error(f'{error_prefix} <freq_srcport negate="{self.get_wrc_srcport_negate()}"> in <wazuh_rule_config>. {FreqSrcport.get_wrc_srcport_negate_allow_criteria()} {self.get_wrc_srcport_negate()} of type {type(self.get_wrc_srcport_negate())} {error_suffix}')
         if not self.validate_wrc_srcport_type():
-            ExitUtils.exit_with_error(f'{error_prefix} <freq_srcip type="{self.get_wrc_srcport_type()}"> in <wazuh_rule_config>. {FreqSrcport.get_wrc_srcport_type_allow_criteria()} {self.get_wrc_srcport_type()} of type {type(self.get_wrc_srcport_type())} {error_suffix}')
+            ExitUtils.exit_with_error(f'{error_prefix} <freq_srcport type="{self.get_wrc_srcport_type()}"> in <wazuh_rule_config>. {FreqSrcport.get_wrc_srcport_type_allow_criteria()} {self.get_wrc_srcport_type()} of type {type(self.get_wrc_srcport_type())} {error_suffix}')
         if not self.validate_wrc_srcport_srcport():
-            ExitUtils.exit_with_error(f'{error_prefix} <freq_srcip>{self.get_wrc_srcport_srcport()}</freq_srcip> in <wazuh_rule_config>. {FreqSrcport.get_wrc_srcport_srcport_allow_criteria()} {self.get_wrc_srcport_srcport()} of type {type(self.get_wrc_srcport_srcport())} {error_suffix}')
-        #PrintUtils.print_in_green(f"- Validation of a <freq_srcip> related to {self.relative_node_name} was succesful!")
+            ExitUtils.exit_with_error(f'{error_prefix} <freq_srcport>{self.get_wrc_srcport_srcport()}</freq_srcport> in <wazuh_rule_config>. {FreqSrcport.get_wrc_srcport_srcport_allow_criteria()} {self.get_wrc_srcport_srcport()} of type {type(self.get_wrc_srcport_srcport())} {error_suffix}')
+        #PrintUtils.print_in_green(f"- Validation of a <freq_srcport> related to {self.relative_node_name} was succesful!")
 
     # ============================================
     # Print
     # ============================================
 
     def to_string(self):
-        print(f'<srcip negate="{self.get_wrc_srcport_negate()}" type="{self.get_wrc_srcport_type()}">{self.get_wrc_srcport_srcport()}</srcip>')
+        print(f'<srcport negate="{self.get_wrc_srcport_negate()}" type="{self.get_wrc_srcport_type()}">{self.get_wrc_srcport_srcport()}</srcport>')
 
 
 
