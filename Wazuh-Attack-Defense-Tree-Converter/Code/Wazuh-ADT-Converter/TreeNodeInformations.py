@@ -21,7 +21,7 @@ class TreeNodeInformations:
     print_diagnostics = True
     # This has way too many arguments...
     def __init__(self,
-                node_conjuncted_children    : str = "no", 
+                node_conjuncted_children: str = "no", 
                 node_root               : str = "no", 
                 node_type               : str = "atk",
                 path                    : str = "",
