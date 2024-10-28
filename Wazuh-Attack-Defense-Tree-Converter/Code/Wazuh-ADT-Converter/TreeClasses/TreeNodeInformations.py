@@ -50,6 +50,7 @@ class TreeNodeInformations:
                 freq_dstip              : List[FreqDstip] = None, #Set this to None by default because it is not mandatory and can be omitted
                 freq_srcport            : List[FreqSrcport] = None, #Set this to None by default because it is not mandatory and can be omitted
                 freq_dstport            : List[FreqDstport] = None, #Set this to None by default because it is not mandatory and can be omitted
+                time                    : str = None, #Set this to None by default because it is not mandatory and can be omitted
                 ):
         
         # <node conjuncted_children="" root="" type=""
@@ -78,21 +79,8 @@ class TreeNodeInformations:
             "dstip"                 :   freq_dstip,
             "srcport"               :   freq_srcport,
             "dstport"               :   freq_dstport,
+            "time"                  :   time,
         }
-
-        self.children = []
-
-    def add_child(self, child_node):
-        self.children.append(child_node)
-
-    def __repr__(self, level=0):
-        # A string representation of the tree for easy visualization
-        ret = "  " * level + f"{self.value}\n"
-        for child in self.children:
-            ret += child.__repr__(level + 1)
-        return ret
-    
-
 
     # ============================================
     # <node conjuncted_children=""> operations
@@ -362,7 +350,7 @@ class TreeNodeInformations:
     # <match> operations
     # ============================================
     
-    def get_wrc_match(self) -> int:
+    def get_wrc_match(self) -> List[Match]:
         return self.wazuh_rule_config["match"]
 
     def validate_wrc_match(self) -> bool:
@@ -386,7 +374,7 @@ class TreeNodeInformations:
     # <regex> operations
     # ============================================
     
-    def get_wrc_regex(self) -> int:
+    def get_wrc_regex(self) -> List[Regex]:
         return self.wazuh_rule_config["regex"]
 
     def validate_wrc_regex(self) -> bool:
@@ -410,7 +398,7 @@ class TreeNodeInformations:
     # <srcip> operations | NOTE: sull'xml è <freq_srcip>
     # ============================================
     
-    def get_wrc_srcip(self) -> int:
+    def get_wrc_srcip(self) -> List[FreqSrcip]:
         return self.wazuh_rule_config["srcip"]
 
     def validate_wrc_srcip(self) -> bool:
@@ -434,7 +422,7 @@ class TreeNodeInformations:
     # <dstip> operations | NOTE: sull'xml è <freq_dstip>
     # ============================================
     
-    def get_wrc_dstip(self) -> int:
+    def get_wrc_dstip(self) -> List[FreqDstip]:
         return self.wazuh_rule_config["dstip"]
 
     def validate_wrc_dstip(self) -> bool:
@@ -458,7 +446,7 @@ class TreeNodeInformations:
     # <srcport> operations | NOTE: sull'xml è <freq_srcport>
     # ============================================
     
-    def get_wrc_srcport(self) -> int:
+    def get_wrc_srcport(self) -> List[FreqSrcport]:
         return self.wazuh_rule_config["srcport"]
 
     def validate_wrc_srcport(self) -> bool:
@@ -483,7 +471,7 @@ class TreeNodeInformations:
     # <dstport> operations | NOTE: sull'xml è <freq_dstport>
     # ============================================
 
-    def get_wrc_dstport(self) -> int:
+    def get_wrc_dstport(self) -> List[FreqDstport]:
         return self.wazuh_rule_config["dstport"]
 
     def validate_wrc_dstport(self) -> bool:
@@ -501,6 +489,47 @@ class TreeNodeInformations:
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <freq_dstport> entries of node {self.name} have been succesfully set to: {[_.to_string() for _ in all_dstport]}")
         # else: is covered inside of match.validate_all() already
+
+
+
+    # ============================================
+    # <time> operations
+    # ============================================
+    
+    def get_wrc_time(self) -> str:
+        return self.wazuh_rule_config["time"]
+
+    def validate_wrc_time(self) -> bool:
+        return (
+            self.wazuh_rule_config["time"] is None 
+            or 
+            ( isinstance(self.wazuh_rule_config["time"], str) and ( validations.is_time_interval(self.wazuh_rule_config["time"]) ) )
+        )
+
+    @staticmethod
+    def get_wrc_time_allow_criteria() -> str:
+
+        return '''\n
+It must be a time interval matching one of these formats:
+hh:mm-hh:mm
+hh:mm am-hh:mm pm
+hh-hh
+h am-h pm
+h:mm-h:mm
+h:mm am-h:mm pm
+h-h
+h am-h pm.\n
+        '''
+
+    def set_wrc_time(self, time : str):
+        self.wazuh_rule_config["time"] = time
+        if self.validate_wrc_time():
+            if self.print_diagnostics:
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <time> of node {self.name} has been succesfully set to {time}")
+        else:
+            ExitUtils.exit_with_error(f"You cannot set <time> of node {self.name} with id {self.id} to {time} of type {type(time)}. {TreeNodeInformations.get_wrc_timeframe_allow_criteria()}")
+
+
 
 
 
@@ -559,6 +588,9 @@ class TreeNodeInformations:
 
         self.validate_wrc_dstport()
 
+        if not self.validate_wrc_time():
+            ExitUtils.exit_with_error(f"{error_prefix} <time> in <wazuh_rule_config>. {TreeNodeInformations.get_wrc_time_allow_criteria()} {self.get_wrc_time()} of type {type(self.get_wrc_time())} {error_suffix}")
+        
 
     # ============================================
     # General to_string
