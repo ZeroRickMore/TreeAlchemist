@@ -1,4 +1,9 @@
 import validations
+
+# Import scripts from above folder
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from terminal_UI_utils import PrintUtils, ExitUtils
 
 
@@ -116,3 +121,18 @@ class Match:
 
     def to_string(self):
         print(f'<match negate="{self.get_wrc_match_negate()}" type="{self.get_wrc_match_type()}">{self.get_wrc_match_match()}</match>')
+
+
+
+
+
+
+def test():
+    m = Match()
+    m.validate_all()
+    m.to_string()
+
+
+
+if __name__ == '__main__':
+    test()

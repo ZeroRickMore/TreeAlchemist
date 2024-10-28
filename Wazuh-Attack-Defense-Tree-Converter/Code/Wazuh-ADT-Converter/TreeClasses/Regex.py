@@ -1,5 +1,11 @@
 import validations
+
+# Import scripts from above folder
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from terminal_UI_utils import PrintUtils, ExitUtils
+
 
 class Regex:
     
@@ -116,3 +122,15 @@ class Regex:
     def to_string(self):
         print(f'<regex negate="{self.get_wrc_regex_negate()}" type="{self.get_wrc_regex_type()}">{self.get_wrc_regex_regex()}</regex>')
 
+
+
+
+def test():
+    r = Regex()
+    r.validate_all()
+    r.to_string()
+
+
+
+if __name__ == '__main__':
+    test()
