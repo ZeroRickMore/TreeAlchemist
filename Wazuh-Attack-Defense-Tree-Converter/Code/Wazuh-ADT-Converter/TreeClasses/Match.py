@@ -46,7 +46,7 @@ class Match:
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <match negate=""> of node {self.relative_node_name} has been succesfully set to {negate}')
         else:
-            ExitUtils.exit_with_error(f'You cannot set <match negate=""> of node {self.relative_node_name} to {negate}. {Match.get_wrc_match_negate_allow_criteria()}')
+            ExitUtils.exit_with_error(f'You cannot set <match negate=""> of node {self.relative_node_name} to {negate} of type {type(negate)}. {Match.get_wrc_match_negate_allow_criteria()}')
 
 
     # ============================================
@@ -67,13 +67,13 @@ class Match:
     def get_wrc_match_type_allow_criteria() -> str:
         return "It must be 'osmatch' or 'osregex' or 'pcre2'."
 
-    def set_wrc_match_type(self, type : str):
-        self.type = type
+    def set_wrc_match_type(self, type_ : str):
+        self.type = type_
         if self.validate_wrc_match_type():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <match type=""> of node {self.relative_node_name} has been succesfully set to {type}')
+                PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <match type=""> of node {self.relative_node_name} has been succesfully set to {type_}')
         else:
-            ExitUtils.exit_with_error(f'You cannot set <match type=""> of node {self.relative_node_name} to {type}. {Match.get_wrc_match_type_allow_criteria()}')
+            ExitUtils.exit_with_error(f'You cannot set <match type=""> of node {self.relative_node_name} to {type_} of type {type(type_)}. {Match.get_wrc_match_type_allow_criteria()}')
 
 
     # ============================================
@@ -99,7 +99,7 @@ class Match:
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <match> of node {self.relative_node_name} has been succesfully set to {match}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <match> of node {self.relative_node_name} to {match}. {Match.get_wrc_match_match_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <match> of node {self.relative_node_name} to {match} of type {type(match)}. {Match.get_wrc_match_match_allow_criteria()}")
 
     # ============================================
     # Validate All
@@ -107,12 +107,14 @@ class Match:
 
     def validate_all(self):
         error_prefix = f"The node {self.relative_node_name} failed validation on"
+        error_suffix = f"was given instead."
+
         if not self.validate_wrc_match_negate():
-            ExitUtils.exit_with_error(f'{error_prefix} <match negate="{self.get_wrc_match_negate()}"> in <wazuh_rule_config>. {Match.get_wrc_match_negate_allow_criteria()}')
+            ExitUtils.exit_with_error(f'{error_prefix} <match negate="{self.get_wrc_match_negate()}"> in <wazuh_rule_config>. {Match.get_wrc_match_negate_allow_criteria()} {self.get_wrc_match_negate()} of type {type(self.get_wrc_match_negate())} {error_suffix}')
         if not self.validate_wrc_match_type():
-            ExitUtils.exit_with_error(f'{error_prefix} <match type="{self.get_wrc_match_type()}"> in <wazuh_rule_config>. {Match.get_wrc_match_type_allow_criteria()}')
+            ExitUtils.exit_with_error(f'{error_prefix} <match type="{self.get_wrc_match_type()}"> in <wazuh_rule_config>. {Match.get_wrc_match_type_allow_criteria()} {self.get_wrc_match_type()} of type {type(self.get_wrc_match_type())} {error_suffix}')
         if not self.validate_wrc_match_match():
-            ExitUtils.exit_with_error(f'{error_prefix} <match>{self.get_wrc_match_match()}</match> in <wazuh_rule_config>. {Match.get_wrc_match_match_allow_criteria()}')
+            ExitUtils.exit_with_error(f'{error_prefix} <match>{self.get_wrc_match_match()}</match> in <wazuh_rule_config>. {Match.get_wrc_match_match_allow_criteria()} {self.get_wrc_match_match()} of type {type(self.get_wrc_match_match())} {error_suffix}')
         #PrintUtils.print_in_green(f"- Validation of a <match> related to {self.relative_node_name} was succesful!")
 
     # ============================================
