@@ -1,7 +1,18 @@
-from terminal_UI_utils import PrintUtils, ExitUtils
 import validations
-from TagClasses import *
 from typing import List
+
+# Support classes import
+from Match import Match
+from Regex import Regex
+from FreqSrcip import FreqSrcip
+from FreqDstip import FreqDstip
+
+# Import scripts from above folder
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from terminal_UI_utils import PrintUtils, ExitUtils
+
 
 '''
 How to add an extra tag?
@@ -33,7 +44,8 @@ class TreeNodeInformations:
                 wrc_already_existing_id : int = None, #Set this to None by default because it is not mandatory and can be omitted
                 match_list              : List[Match] = None, #Set this to None by default because it is not mandatory and can be omitted
                 regex_list              : List[Regex] = None, #Set this to None by default because it is not mandatory and can be omitted
-                freq_srcip              : List[FreqSrcip] = None #Set this to None by default because it is not mandatory and can be omitted
+                freq_srcip              : List[FreqSrcip] = None, #Set this to None by default because it is not mandatory and can be omitted
+                freq_dstip              : List[FreqDstip] = None, #Set this to None by default because it is not mandatory and can be omitted
                 ):
         
         # <node conjuncted_children="" root="" type=""
@@ -59,6 +71,7 @@ class TreeNodeInformations:
             "match"                 :   match_list,
             "regex"                 :   regex_list,
             "srcip"                 :   freq_srcip,
+            "dstip"                 :   freq_dstip,
         }
 
         self.children = []
@@ -354,11 +367,11 @@ class TreeNodeInformations:
                     return False
                 match.validate_all()          
 
-    def set_wrc_match(self, match : List[Match]):
-        self.wazuh_rule_config["match"] = match
+    def set_wrc_match(self, all_match : List[Match]):
+        self.wazuh_rule_config["match"] = all_match
         if self.validate_wrc_match():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <match> entries of node {self.name} have been succesfully set to: {[_ for _ in match]}")
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <match> entries of node {self.name} have been succesfully set to: {[_.to_string() for _ in all_match]}")
         # else: is covered inside of match.validate_all() already
 
 
@@ -377,11 +390,11 @@ class TreeNodeInformations:
                     return False
                 regex.validate_all()          
 
-    def set_wrc_regex(self, regex : List[Regex]):
-        self.wazuh_rule_config["regex"] = regex
+    def set_wrc_regex(self, all_regex : List[Regex]):
+        self.wazuh_rule_config["regex"] = all_regex
         if self.validate_wrc_regex():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <regex> entries of node {self.name} have been succesfully set to: {[_ for _ in regex]}")
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <regex> entries of node {self.name} have been succesfully set to: {[_.to_string() for _ in all_regex]}")
         # else: is covered inside of match.validate_all() already
 
 
@@ -400,12 +413,40 @@ class TreeNodeInformations:
                     return False
                 srcip.validate_all()          
 
-    def set_wrc_srcip(self, srcip : List[FreqSrcip]):
-        self.wazuh_rule_config["srcip"] = srcip
+    def set_wrc_srcip(self, all_srcip : List[FreqSrcip]):
+        self.wazuh_rule_config["srcip"] = all_srcip
         if self.validate_wrc_srcip():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <freq_srcip> entries of node {self.name} have been succesfully set to: {[_ for _ in srcip]}")
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <freq_srcip> entries of node {self.name} have been succesfully set to: {[_.to_string() for _ in all_srcip]}")
         # else: is covered inside of match.validate_all() already
+
+
+    # ============================================
+    # <dstip> operations | NOTE: sull'xml è <freq_dstip>
+    # ============================================
+    
+    def get_wrc_dstip(self) -> int:
+        return self.wazuh_rule_config["dstip"]
+
+    def validate_wrc_dstip(self) -> bool:
+        # Type check
+        if not self.wazuh_rule_config["dstip"] is None:
+            for dstip in self.wazuh_rule_config["dstip"]:
+                if not isinstance(dstip, FreqDstip):
+                    return False
+                dstip.validate_all()          
+
+    def set_wrc_dstip(self, all_dstip : List[FreqDstip]):
+        self.wazuh_rule_config["dstip"] = all_dstip
+        if self.validate_wrc_dstip():
+            if self.print_diagnostics:
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <freq_dstip> entries of node {self.name} have been succesfully set to: {[_.to_string() for _ in all_dstip]}")
+        # else: is covered inside of match.validate_all() already
+
+
+
+
+
 
     # ========================================================================================
     # Out of <wazuh_rule_config>
@@ -454,7 +495,21 @@ class TreeNodeInformations:
         self.validate_wrc_regex()
 
         self.validate_wrc_srcip()
-        
+
+        self.validate_wrc_dstip()
+
+
+    # ============================================
+    # General to_string
+    # ============================================   
+
+    def to_string(self):
+        '''
+        Method that returns a stringified version of the whole node.
+        This is what will compose the rule itself.
+        '''
+
+        to_string = ''
 
 
 def test():
@@ -463,3 +518,7 @@ def test():
     t.set_path("/")
     t.set_id(1)
     t.validate_all()
+
+
+if __name__ == '__main__':
+    test()
