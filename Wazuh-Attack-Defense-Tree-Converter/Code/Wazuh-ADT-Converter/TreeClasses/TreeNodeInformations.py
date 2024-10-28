@@ -54,6 +54,7 @@ class TreeNodeInformations:
                 weekday                 : str = None, #Set this to None by default because it is not mandatory and can be omitted
                 freq_same_srcip         : bool = False, #Set this to False by default because it is not mandatory and can be omitted
                 freq_different_srcip    : bool = False, #Set this to False by default because it is not mandatory and can be omitted
+                freq_same_srcport       : bool = False, #Set this to False by default because it is not mandatory and can be omitted
                 ):
         
         # <node conjuncted_children="" root="" type=""
@@ -86,6 +87,7 @@ class TreeNodeInformations:
             "weekday"               :   weekday,
             "same_srcip"            :   freq_same_srcip,
             "different_srcip"       :   freq_different_srcip,
+            "same_srcport"          :   freq_same_srcport,
         }
 
     # ============================================
@@ -617,6 +619,30 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
 
 
 
+    # ============================================
+    # <same_srcport> operations
+    # ============================================
+
+    def get_wrc_same_srcport(self) -> str:
+        return self.wazuh_rule_config["same_srcport"]
+
+    def validate_wrc_same_srcport(self) -> bool:
+        return isinstance(self.get_wrc_same_srcport(), bool)
+
+    @staticmethod
+    def get_wrc_same_srcport_allow_criteria() -> str:
+        return "Must just be <freq_same_srcport /> tag."
+
+    def set_wrc_same_srcport(self, same_srcport : str):
+        self.wazuh_rule_config["same_srcport"] = same_srcport
+        if self.validate_wrc_same_srcport():
+            if self.print_diagnostics:
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_same_srcport> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {same_srcport}")
+        else:
+            ExitUtils.exit_with_error(f"You cannot set <weekday> of node {self.get_name()} with id {self.get_id()} to {same_srcport} of type {type(same_srcport)}. {TreeNodeInformations.get_wrc_same_srcport_allow_criteria()}")
+
+
+
 
     # ========================================================================================
     # Out of <wazuh_rule_config>
@@ -684,6 +710,9 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
   
         if not self.validate_wrc_different_srcip():
             ExitUtils.exit_with_error(f"{error_prefix} <freq_different_srcip> in <wazuh_rule_config>. {TreeNodeInformations.get_wrc_different_srcip_allow_criteria()} {self.get_wrc_different_srcip()} of type {type(self.get_wrc_different_srcip())} {error_suffix}")
+
+        if not self.validate_wrc_same_srcport():
+            ExitUtils.exit_with_error(f"{error_prefix} <freq_same_srcport> in <wazuh_rule_config>. {TreeNodeInformations.get_wrc_same_srcport_allow_criteria()} {self.get_wrc_same_srcport()} of type {type(self.get_wrc_same_srcport())} {error_suffix}")
     
 
     # ============================================
