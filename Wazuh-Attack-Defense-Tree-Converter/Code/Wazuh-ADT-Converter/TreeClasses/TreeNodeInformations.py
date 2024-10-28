@@ -602,7 +602,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_same_srcip> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {same_srcip}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <weekday> of node {self.get_name()} with id {self.get_id()} to {same_srcip} of type {type(same_srcip)}. {TreeNodeInformations.get_wrc_same_srcip_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <freq_same_srcip> of node {self.get_name()} with id {self.get_id()} to {same_srcip} of type {type(same_srcip)}. {TreeNodeInformations.get_wrc_same_srcip_allow_criteria()}")
 
 
     # ============================================
@@ -625,7 +625,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_different_srcip> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {different_srcip}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <weekday> of node {self.get_name()} with id {self.get_id()} to {different_srcip} of type {type(different_srcip)}. {TreeNodeInformations.get_wrc_different_srcip_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <freq_different_srcip> of node {self.get_name()} with id {self.get_id()} to {different_srcip} of type {type(different_srcip)}. {TreeNodeInformations.get_wrc_different_srcip_allow_criteria()}")
 
 
 
@@ -649,7 +649,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_same_srcport> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {same_srcport}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <weekday> of node {self.get_name()} with id {self.get_id()} to {same_srcport} of type {type(same_srcport)}. {TreeNodeInformations.get_wrc_same_srcport_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <freq_same_srcport> of node {self.get_name()} with id {self.get_id()} to {same_srcport} of type {type(same_srcport)}. {TreeNodeInformations.get_wrc_same_srcport_allow_criteria()}")
 
 
 
@@ -674,7 +674,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_different_srcport> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {different_srcport}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <weekday> of node {self.get_name()} with id {self.get_id()} to {different_srcport} of type {type(different_srcport)}. {TreeNodeInformations.get_wrc_different_srcport_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <freq_different_srcport> of node {self.get_name()} with id {self.get_id()} to {different_srcport} of type {type(different_srcport)}. {TreeNodeInformations.get_wrc_different_srcport_allow_criteria()}")
 
 
 
@@ -698,7 +698,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_same_location> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {same_location}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <weekday> of node {self.get_name()} with id {self.get_id()} to {same_location} of type {type(same_location)}. {TreeNodeInformations.get_wrc_same_location_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <freq_same_location> of node {self.get_name()} with id {self.get_id()} to {same_location} of type {type(same_location)}. {TreeNodeInformations.get_wrc_same_location_allow_criteria()}")
 
 
     # ============================================
@@ -721,7 +721,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_same_srcuser> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {same_srcuser}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <weekday> of node {self.get_name()} with id {self.get_id()} to {same_srcuser} of type {type(same_srcuser)}. {TreeNodeInformations.get_wrc_same_srcuser_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <freq_same_srcuser> of node {self.get_name()} with id {self.get_id()} to {same_srcuser} of type {type(same_srcuser)}. {TreeNodeInformations.get_wrc_same_srcuser_allow_criteria()}")
 
 
     # ============================================
@@ -744,7 +744,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_different_srcuser> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {different_srcuser}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <weekday> of node {self.get_name()} with id {self.get_id()} to {different_srcuser} of type {type(different_srcuser)}. {TreeNodeInformations.get_wrc_different_srcuser_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <freq_different_srcuser> of node {self.get_name()} with id {self.get_id()} to {different_srcuser} of type {type(different_srcuser)}. {TreeNodeInformations.get_wrc_different_srcuser_allow_criteria()}")
 
 
 
@@ -756,19 +756,19 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
         return self.wazuh_rule_config["description"]
 
     def validate_wrc_description(self) -> bool:
-        return isinstance(self.get_wrc_description(), bool)
+        return isinstance(self.get_wrc_description(), str)
 
     @staticmethod
     def get_wrc_description_allow_criteria() -> str:
-        return "Must just be <freq_description /> tag."
+        return "You must provide a description! This is what will be seen in Wazuh Dashboard!"
 
     def set_wrc_description(self, description : str):
         self.wazuh_rule_config["description"] = description
         if self.validate_wrc_description():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_description> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {description}")
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <description> of node {self.get_name()} with id {self.get_id()} has been succesfully set to {description}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <weekday> of node {self.get_name()} with id {self.get_id()} to {description} of type {type(description)}. {TreeNodeInformations.get_wrc_description_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <description> of node {self.get_name()} with id {self.get_id()} to {description} of type {type(description)}. {TreeNodeInformations.get_wrc_description_allow_criteria()}")
 
 
 
@@ -855,7 +855,9 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
         if not self.validate_wrc_different_srcuser():
             ExitUtils.exit_with_error(f"{error_prefix} <freq_different_srcuser> in <wazuh_rule_config>. {TreeNodeInformations.get_wrc_different_srcuser_allow_criteria()} {self.get_wrc_different_srcuser()} of type {type(self.get_wrc_different_srcuser())} {error_suffix}")
    
-
+        if not self.validate_wrc_description():
+            ExitUtils.exit_with_error(f"{error_prefix} <description> in <wazuh_rule_config>. {TreeNodeInformations.get_wrc_description_allow_criteria()} {self.get_wrc_description()} of type {type(self.get_wrc_description())} {error_suffix}")
+   
 
 
     # ============================================
