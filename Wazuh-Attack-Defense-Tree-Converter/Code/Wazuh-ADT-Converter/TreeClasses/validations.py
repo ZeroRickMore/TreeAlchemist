@@ -53,3 +53,46 @@ def is_valid_ipv6(ip : str) -> bool:
         # If an exception is raised, the address is not valid
         return False
 
+
+import re
+def is_time_interval(string : str) -> bool:
+
+    # Define the list of regex patterns
+    patterns = [
+        r'\b([0-9]{1,2}:[0-5][0-9])\-([0-9]{1,2}:[0-5][0-9])\b',         # hh:mm-hh:mm
+        r'\b([0-9]{1,2}:[0-5][0-9]\s?(?:am|pm))\-([0-9]{1,2}:[0-5][0-9]\s?(?:am|pm))\b',  # hh:mm am-hh:mm pm
+        r'\b([0-9]{1,2})\-([0-9]{1,2})\b',                                 # hh-hh
+        r'\b([0-9]\s?(?:am|pm))\-([0-9]\s?(?:am|pm))\b',                   # h am-h pm
+        r'\b([0-9]:[0-5][0-9])\-([0-9]:[0-5][0-9])\b',                     # h:mm-h:mm
+        r'\b([0-9]:[0-5][0-9]\s?(?:am|pm))\-([0-9]:[0-5][0-9]\s?(?:am|pm))\b',  # h:mm am-h:mm pm
+        r'\b([0-9])\-([0-9])\b',                                           # h-h
+        r'\b([0-9]\s?(?:am|pm))\-([0-9]\s?(?:am|pm))\b'                    # h am-h pm
+    ]
+
+
+    # Check if the string matches any of the patterns
+    for pattern in patterns:
+        if re.match(pattern, string, re.IGNORECASE):
+            return True
+    return False
+
+
+
+
+def test_time_interval():
+    test_strings = [
+        "09:30-10:30",
+        "9:00 am-10:00 pm",
+        "8-9",
+        "7 pm-8 am",
+        "2:15-3:45",
+        "4:15 am-5:30 pm",
+        "5-6",
+        "3 am-4 pm",
+        "not a time format"
+    ]
+
+    # Test each string
+    for s in test_strings:
+        print(f"{s}: {is_time_interval(s)}")
+
