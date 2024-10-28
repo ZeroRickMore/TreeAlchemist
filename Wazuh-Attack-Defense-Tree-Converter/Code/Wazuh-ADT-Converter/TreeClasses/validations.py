@@ -96,3 +96,11 @@ def test_time_interval():
     for s in test_strings:
         print(f"{s}: {is_time_interval(s)}")
 
+
+
+
+def is_weekday_range(s):
+    # Define regex pattern to match 'weekday - weekday'
+    pattern = r"^(monday|tuesday|wednesday|thursday|friday|saturday|sunday) - (monday|tuesday|wednesday|thursday|friday|saturday|sunday)$"
+    # Check if the string matches the pattern
+    return bool(re.match(pattern, s))
