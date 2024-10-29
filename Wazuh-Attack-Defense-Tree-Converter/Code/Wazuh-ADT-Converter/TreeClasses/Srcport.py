@@ -36,17 +36,23 @@ class Srcport:
         # Allowed values check
         return validations.is_yes_or_no(self.get_wrc_srcport_negate())
 
+    def validate_wrc_srcport_negate_with_error_launch(self):
+        if not self.validate_wrc_srcport_negate():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f'{error_prefix} <srcport negate="{self.get_wrc_srcport_negate()}"> in <wazuh_rule_config>. {Srcport.get_wrc_srcport_negate_allow_criteria()} {self.get_wrc_srcport_negate()} of type {type(self.get_wrc_srcport_negate())} {error_suffix}')
+
     @staticmethod
     def get_wrc_srcport_negate_allow_criteria():
         return "It must be 'yes' or 'no'."
 
     def set_wrc_srcport_negate(self, negate : str):
         self.negate = negate
-        if self.validate_wrc_srcport_negate():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <srcport negate=""> of node {self.relative_node_name} has been succesfully set to {negate}')
-        else:
-            ExitUtils.exit_with_error(f'You cannot set <srcport negate=""> of node {self.relative_node_name} to {negate} of type {type(negate)}. {Srcport.get_wrc_srcport_negate_allow_criteria()}')
+
+        self.validate_wrc_srcport_negate_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <srcport negate=""> of node {self.relative_node_name} has been succesfully set to {negate}')
 
 
     # ============================================
@@ -63,17 +69,23 @@ class Srcport:
         # Allowed values check
         return validations.is_osmatch_osregex_pcre2(self.get_wrc_srcport_type())
 
+    def validate_wrc_srcport_type_with_error_launch(self):
+        if not self.validate_wrc_srcport_type():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f'{error_prefix} <srcport type="{self.get_wrc_srcport_type()}"> in <wazuh_rule_config>. {Srcport.get_wrc_srcport_type_allow_criteria()} {self.get_wrc_srcport_type()} of type {type(self.get_wrc_srcport_type())} {error_suffix}')
+        
     @staticmethod
     def get_wrc_srcport_type_allow_criteria():
         return "It must be 'osmatch' or 'osregex' or 'pcre2'."
 
     def set_wrc_srcport_type(self, type_ : str):
         self.type = type_
-        if self.validate_wrc_srcport_type():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <srcport type=""> of node {self.relative_node_name} has been succesfully set to {type_}')
-        else:
-            ExitUtils.exit_with_error(f'You cannot set <srcport type=""> of node {self.relative_node_name} to {type_} of type {type(type_)}. {Srcport.get_wrc_srcport_type_allow_criteria()}')
+
+        self.validate_wrc_srcport_type_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <srcport type=""> of node {self.relative_node_name} has been succesfully set to {type_}')
 
 
     # ============================================
@@ -89,32 +101,38 @@ class Srcport:
             return False
         return True
 
+    def validate_wrc_srcport_srcport_with_error_launch(self):
+        if not self.validate_wrc_srcport_srcport():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f'{error_prefix} <srcport>{self.get_wrc_srcport_srcport()}</srcport> in <wazuh_rule_config>. {Srcport.get_wrc_srcport_srcport_allow_criteria()} {self.get_wrc_srcport_srcport()} of type {type(self.get_wrc_srcport_srcport())} {error_suffix}')
+        
+
     @staticmethod
     def get_wrc_srcport_srcport_allow_criteria():
         return "It must be a string."
 
     def set_wrc_srcport_srcport(self, srcport : str):
         self.srcport = srcport
-        if self.validate_wrc_srcport_srcport():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <srcport> of node {self.relative_node_name} has been succesfully set to {srcport}")
-        else:
-            ExitUtils.exit_with_error(f"You cannot set <srcport> of node {self.relative_node_name} to {srcport} of type {type(srcport)}. {Srcport.get_wrc_srcport_srcport_allow_criteria()}")
+
+        self.validate_wrc_srcport_srcport_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <srcport> of node {self.relative_node_name} has been succesfully set to {srcport}")
+      
 
     # ============================================
     # Validate All
     # ============================================
 
     def validate_all(self):
-        error_prefix = f"The node {self.relative_node_name} failed validation on"
-        error_suffix = f"was given instead."
 
-        if not self.validate_wrc_srcport_negate():
-            ExitUtils.exit_with_error(f'{error_prefix} <srcport negate="{self.get_wrc_srcport_negate()}"> in <wazuh_rule_config>. {Srcport.get_wrc_srcport_negate_allow_criteria()} {self.get_wrc_srcport_negate()} of type {type(self.get_wrc_srcport_negate())} {error_suffix}')
-        if not self.validate_wrc_srcport_type():
-            ExitUtils.exit_with_error(f'{error_prefix} <srcport type="{self.get_wrc_srcport_type()}"> in <wazuh_rule_config>. {Srcport.get_wrc_srcport_type_allow_criteria()} {self.get_wrc_srcport_type()} of type {type(self.get_wrc_srcport_type())} {error_suffix}')
-        if not self.validate_wrc_srcport_srcport():
-            ExitUtils.exit_with_error(f'{error_prefix} <srcport>{self.get_wrc_srcport_srcport()}</srcport> in <wazuh_rule_config>. {Srcport.get_wrc_srcport_srcport_allow_criteria()} {self.get_wrc_srcport_srcport()} of type {type(self.get_wrc_srcport_srcport())} {error_suffix}')
+        self.validate_wrc_srcport_negate_with_error_launch()
+            
+        self.validate_wrc_srcport_type_with_error_launch()
+            
+        self.validate_wrc_srcport_srcport_with_error_launch()
+            
         #PrintUtils.print_in_green(f"- Validation of a <srcport> related to {self.relative_node_name} was succesful!")
 
     # ============================================
