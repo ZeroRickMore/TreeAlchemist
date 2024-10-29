@@ -17,9 +17,6 @@
             <match>evil Child1 Conj log</match>
             <description>An attacker has reached "Child1 Conj" node</description>
         </wazuh_rule_config>
-        <defense_config>
-            <def_name>Def1</def_name>
-        </defense_config>
     </node>
 
     <node>
@@ -30,9 +27,6 @@
             <match>evil Child2 Conj log</match>
             <description>An attacker has reached "Child2 Conj" node</description>
         </wazuh_rule_config>
-        <defense_config>
-            <def_name>Def2</def_name>
-        </defense_config>
     </node>
 
     <conjunction>Child1 Conj, Child2 Conj</conjunction>
@@ -45,9 +39,6 @@
             <match>evil Child3 log</match>
             <description>An attacker has reached "Child3" node</description>
         </wazuh_rule_config>
-        <defense_config>
-            <def_name>Def3</def_name>
-        </defense_config>
     </node>
 
     <node>
@@ -68,9 +59,6 @@
             <match>evil Child1_1 log</match>
             <description>An attacker has reached "Child1_1" node</description>
         </wazuh_rule_config>
-        <defense_config>
-            <def_name>Def1_1</def_name>
-        </defense_config>
     </node>
 
     <node>
@@ -81,9 +69,6 @@
             <match>evil Child1_2 log</match>
             <description>An attacker has reached "Child1_2" node</description>
         </wazuh_rule_config>
-        <defense_config>
-            <def_name>Def1_2</def_name>
-        </defense_config>
     </node>
 
     <node>
@@ -94,9 +79,6 @@
             <match>evil Child4_1 log</match>
             <description>An attacker has reached "Child4_1" node</description>
         </wazuh_rule_config>
-        <defense_config>
-            <def_name>Def4_1</def_name>
-        </defense_config>
     </node>
 
 
