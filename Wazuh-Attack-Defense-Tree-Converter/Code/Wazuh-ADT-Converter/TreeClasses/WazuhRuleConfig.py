@@ -32,7 +32,7 @@ class WazuhRuleConfig:
     This class represents all the informations that are relevant to Wazuh.
     Practically: the xml tags of it.
     '''
-    print_diagnostics = False
+    print_diagnostics = True
     # This has way too many arguments...
     def __init__(self,
                 relative_node_name      : str = "unspecified", #Useful for prints
@@ -42,10 +42,10 @@ class WazuhRuleConfig:
                 wrc_already_existing_id : int = None, #Set this to None by default because it is not mandatory and can be omitted
                 match_list              : List[Match] = None, #Set this to None by default because it is not mandatory and can be omitted
                 regex_list              : List[Regex] = None, #Set this to None by default because it is not mandatory and can be omitted
-                srcip                   : List[Srcip] = None, #Set this to None by default because it is not mandatory and can be omitted
-                dstip                   : List[Dstip] = None, #Set this to None by default because it is not mandatory and can be omitted
-                srcport                 : List[Srcport] = None, #Set this to None by default because it is not mandatory and can be omitted
-                dstport                 : List[Dstport] = None, #Set this to None by default because it is not mandatory and can be omitted
+                srcip_list              : List[Srcip] = None, #Set this to None by default because it is not mandatory and can be omitted
+                dstip_list              : List[Dstip] = None, #Set this to None by default because it is not mandatory and can be omitted
+                srcport_list            : List[Srcport] = None, #Set this to None by default because it is not mandatory and can be omitted
+                dstport_list            : List[Dstport] = None, #Set this to None by default because it is not mandatory and can be omitted
                 time                    : str  = None, #Set this to None by default because it is not mandatory and can be omitted
                 weekday                 : str  = None, #Set this to None by default because it is not mandatory and can be omitted
                 freq_same_srcip         : bool = False, #Set this to False by default because it is not mandatory and can be omitted
@@ -58,8 +58,8 @@ class WazuhRuleConfig:
                 freq_same_srcuser       : bool = False, #Set this to False by default because it is not mandatory and can be omitted            
                 freq_different_srcuser  : bool = False, #Set this to False by default because it is not mandatory and can be omitted 
                 description             : str  = None, #Set this to False by default because it is not mandatory and can be omitted 
-                info                    : List[Info] = None, #Set this to False by default because it is not mandatory and can be omitted 
-                options                 : List[str]  = None, #Set this to False by default because it is not mandatory and can be omitted 
+                info_list               : List[Info] = None, #Set this to False by default because it is not mandatory and can be omitted 
+                options_list            : List[str]  = None, #Set this to False by default because it is not mandatory and can be omitted 
                 ):
             
             self.relative_node_name =   relative_node_name
@@ -69,10 +69,10 @@ class WazuhRuleConfig:
             self.already_existing_id=   wrc_already_existing_id
             self.match              =   match_list
             self.regex              =   regex_list
-            self.srcip              =   srcip
-            self.dstip              =   dstip
-            self.srcport            =   srcport
-            self.dstport            =   dstport
+            self.srcip              =   srcip_list
+            self.dstip              =   dstip_list
+            self.srcport            =   srcport_list
+            self.dstport            =   dstport_list
             self.time               =   time
             self.weekday            =   weekday
             self.same_srcip         =   freq_same_srcip
@@ -85,8 +85,8 @@ class WazuhRuleConfig:
             self.same_srcuser       =   freq_same_srcuser
             self.different_srcuser  =   freq_different_srcuser
             self.description        =   description
-            self.info               =   info
-            self.options            =   options
+            self.info               =   info_list
+            self.options            =   options_list
 
             
     # ========================================================================================
@@ -256,11 +256,19 @@ class WazuhRuleConfig:
                 match.validate_all()     
         return True      
 
+    def validate_wrc_match_with_error_launch(self) -> bool:
+        if not self.validate_wrc_match():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            ExitUtils.exit_with_error(f"{error_prefix}: This does not need to be fancy, it is a back end issue. Do NOT initialize match as a list of non-Match objects.")
+
+
     def set_wrc_match(self, all_match : List[Match]):
         self.match = all_match
-        if self.validate_wrc_match():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <match> entries of node {self.relative_node_name} have been succesfully set to: {[_.to_string() for _ in all_match]}")
+
+        self.validate_wrc_match_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <match> entries of node {self.relative_node_name} have been succesfully set to: {([_.to_string() for _ in all_match]) if all_match is not None else None}")
         # else: is covered inside of match.validate_all() already
 
     def to_string_wrc_match(self) -> str:
@@ -283,11 +291,19 @@ class WazuhRuleConfig:
                 regex.validate_all()     
         return True      
 
+    def validate_wrc_regex_with_error_launch(self) -> bool:
+        if not self.validate_wrc_regex():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            ExitUtils.exit_with_error(f"{error_prefix}: This does not need to be fancy, it is a back end issue. Do NOT initialize regex as a list of non-Regex objects.")
+
+
     def set_wrc_regex(self, all_regex : List[Regex]):
         self.regex = all_regex
-        if self.validate_wrc_regex():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <regex> entries of node {self.relative_node_name} have been succesfully set to: {[_.to_string() for _ in all_regex]}")
+
+        self.validate_wrc_regex_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <regex> entries of node {self.relative_node_name} have been succesfully set to: {([_.to_string() for _ in all_regex]) if all_regex is not None else None}")
         # else: is covered inside of regex.validate_all() already
 
     def to_string_wrc_regex(self) -> str:
@@ -310,11 +326,19 @@ class WazuhRuleConfig:
                 srcip.validate_all()
         return True           
 
+    def validate_wrc_srcip_with_error_launch(self) -> bool:
+        if not self.validate_wrc_srcip():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            ExitUtils.exit_with_error(f"{error_prefix}: This does not need to be fancy, it is a back end issue. Do NOT initialize srcip as a list of non-Srcip objects.")
+
+
     def set_wrc_srcip(self, all_srcip : List[Srcip]):
         self.srcip = all_srcip
-        if self.validate_wrc_srcip():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <srcip> entries of node {self.relative_node_name} have been succesfully set to: {[_.to_string() for _ in all_srcip]}")
+
+        self.validate_wrc_srcip_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <srcip> entries of node {self.relative_node_name} have been succesfully set to: {([_.to_string() for _ in all_srcip]) if all_srcip is not None else None}")
         # else: is covered inside of freqsrcip.validate_all() already
 
     def to_string_wrc_srcip(self) -> str:
@@ -337,11 +361,19 @@ class WazuhRuleConfig:
                 dstip.validate_all()    
         return True       
 
+    def validate_wrc_dstip_with_error_launch(self) -> bool:
+        if not self.validate_wrc_dstip():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            ExitUtils.exit_with_error(f"{error_prefix}: This does not need to be fancy, it is a back end issue. Do NOT initialize dstip as a list of non-Dstip objects.")
+
+
     def set_wrc_dstip(self, all_dstip : List[Dstip]):
         self.dstip = all_dstip
-        if self.validate_wrc_dstip():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <dstip> entries of node {self.relative_node_name} have been succesfully set to: {[_.to_string() for _ in all_dstip]}")
+
+        self.validate_wrc_dstip_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <dstip> entries of node {self.relative_node_name} have been succesfully set to: {([_.to_string() for _ in all_dstip]) if all_dstip is not None else None}")
         # else: is covered inside of freqdstip.validate_all() already
 
     def to_string_wrc_dstip(self) -> str:
@@ -364,11 +396,19 @@ class WazuhRuleConfig:
                 srcport.validate_all()        
         return True   
 
+    def validate_wrc_srcport_with_error_launch(self) -> bool:
+        if not self.validate_wrc_srcport():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            ExitUtils.exit_with_error(f"{error_prefix}: This does not need to be fancy, it is a back end issue. Do NOT initialize srcport as a list of non-Srcport objects.")
+
+
     def set_wrc_srcport(self, all_srcport : List[Srcport]):
         self.srcport = all_srcport
-        if self.validate_wrc_srcport():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <srcport> entries of node {self.relative_node_name} have been succesfully set to: {[_.to_string() for _ in all_srcport]}")
+
+        self.validate_wrc_srcport_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <srcport> entries of node {self.relative_node_name} have been succesfully set to: {([_.to_string() for _ in all_srcport]) if all_srcport is not None else None}")
         # else: is covered inside of freqsrcport.validate_all() already
 
     def to_string_wrc_srcport(self) -> str:
@@ -389,13 +429,22 @@ class WazuhRuleConfig:
                 if not isinstance(dstport, Dstport):
                     return False
                 dstport.validate_all()
-        return True       
+        return True    
+
+    def validate_wrc_dstport_with_error_launch(self) -> bool:
+        if not self.validate_wrc_dstport():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            ExitUtils.exit_with_error(f"{error_prefix}: This does not need to be fancy, it is a back end issue. Do NOT initialize dstport as a list of non-Dstport objects.")
+
+
 
     def set_wrc_dstport(self, all_dstport : List[Dstport]):
         self.dstport = all_dstport
-        if self.validate_wrc_dstport():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <dstport> entries of node {self.relative_node_name} have been succesfully set to: {[_.to_string() for _ in all_dstport]}")
+
+        self.validate_wrc_dstport_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <dstport> entries of node {self.relative_node_name} have been succesfully set to: {([_.to_string() for _ in all_dstport]) if all_dstport is not None else None}")
         # else: is covered inside of freqdstport.validate_all() already
 
     def to_string_wrc_dstport(self) -> str:
@@ -804,16 +853,16 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
 
     @staticmethod
     def get_wrc_description_allow_criteria() -> str:
-        return "You must provide a description! This is what will be seen in Wazuh Dashboard!"
+        return "You must provide a description as a string! This is what will be seen in Wazuh Dashboard!"
 
     def set_wrc_description(self, description : str):
         self.description = description
-        if self.validate_wrc_description():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <description> of node {self.relative_node_name} has been succesfully set to {description}")
-        else:
-            ExitUtils.exit_with_error(f"You cannot set <description> of node {self.relative_node_name} to {description} of type {type(description)}. {WazuhRuleConfig.get_wrc_description_allow_criteria()}")
 
+        self.validate_wrc_description_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <description> of node {self.relative_node_name} has been succesfully set to {description}")
+       
     def to_string_wrc_description(self) -> str:
         return f"<description>{self.get_wrc_description()}{'.' if not self.get_wrc_description().endswith('.') else ''}</description>"
 
@@ -834,11 +883,19 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
                 info.validate_all()     
         return True      
 
+    def validate_wrc_info_with_error_launch(self) -> bool:
+        if not self.validate_wrc_info():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            ExitUtils.exit_with_error(f"{error_prefix}: This does not need to be fancy, it is a back end issue. Do NOT initialize info as a list of non-Info objects.")
+
+
     def set_wrc_info(self, all_info : List[Info]):
         self.info = all_info
-        if self.validate_wrc_info():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <info> entries of node {self.relative_node_name} have been succesfully set to: {[_.to_string() for _ in all_info]}")
+
+        self.validate_wrc_info_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <info> entries of node {self.relative_node_name} have been succesfully set to: {([_.to_string() for _ in all_info]) if all_info is not None else None}")
         # else: is covered inside of info.validate_all() already
 
     def to_string_wrc_info(self) -> str:
@@ -859,8 +916,16 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
                 if not isinstance(options, str):
                     return False
                 if not validations.is_allowed(allowed_values=["alert_by_email", "no_email_alert", "no_log", "no_full_log", "no_counter"], string=options):
-                    ExitUtils.exit_with_error(f"You cannot set <options> of node {self.relative_node_name} to {options} of type {type(options)}. {WazuhRuleConfig.get_wrc_options_allow_criteria()}")
+                    return False
+                    #ExitUtils.exit_with_error(f"You cannot set <options> of node {self.relative_node_name} to {options} of type {type(options)}. {WazuhRuleConfig.get_wrc_options_allow_criteria()}")
         return True    
+        
+    def validate_wrc_options_with_error_launch(self) -> bool:
+        if not self.validate_wrc_options():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            ExitUtils.exit_with_error(f"{error_prefix}: This does not need to be fancy, it is a back end issue. Do NOT initialize options as a list of non-String objects.")
+
+
 
     @staticmethod
     def get_wrc_options_allow_criteria() -> str:
@@ -887,8 +952,6 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
 
 
     def validate_all(self) -> bool:
-        error_prefix = f"The node {self.relative_node_name} failed validation on"
-        error_suffix = f"was given instead."
 
         self.validate_wrc_frequency_with_error_launch()
                   
@@ -958,7 +1021,8 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
             for tag in need_one_at_least_list:
                 if curr_class_attributes[tag] is not None:
                     return True
-                    
+            
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
             ExitUtils.exit_with_error(f"{error_prefix} 'at least one identifying tag must be given'.\n{allow_criteria_for_error_print}")           
 
         validate_at_least_one_identificator_present(self)
@@ -1054,184 +1118,3 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
 
         return string
 
-
-def test_description():
-    w = WazuhRuleConfig()
-    w.set_wrc_description(1)
-
-
-
-def test_already_existing_id_errors():
-    wrc = WazuhRuleConfig()
-    '''
-    self.description        =   description
-    self.already_existing_id=   wrc_already_existing_id
-    self.relative_node_name =   relative_node_name
-    self.frequency          =   wrc_frequency
-    self.timeframe          =   wrc_timeframe
-    self.ignore             =   wrc_ignore_after
-    self.match              =   match_list
-    self.regex              =   regex_list
-    self.srcip              =   srcip
-    self.dstip              =   dstip
-    self.srcport            =   srcport
-    self.dstport            =   dstport
-    self.time               =   time
-    self.weekday            =   weekday
-    self.same_srcip         =   freq_same_srcip
-    self.different_srcip    =   freq_different_srcip
-    self.same_srcport       =   freq_same_srcport
-    self.different_srcport  =   freq_different_srcport
-    self.same_dstport       =   freq_same_dstport
-    self.different_dstport  =   freq_different_dstport
-    self.same_location      =   freq_same_location
-    self.same_srcuser       =   freq_same_srcuser
-    self.different_srcuser  =   freq_different_srcuser
-    self.info               =   info
-    self.options            =   options
-    '''
-
-
-    # Assign description and already_existing_id
-    wrc.set_wrc_description("Error maximus") # This is prepended to the final desc
-    wrc.set_wrc_already_existing_id(5401)
-    assert(wrc.validate_wrc_already_existing_id())      # This needs to work here
-
-    # Assign relative_node_name
-    wrc.relative_node_name = 'Pippo'
-    assert(wrc.validate_wrc_already_existing_id())      # This needs to work here
-
-    # Assign frequency
-    wrc.set_wrc_frequency(2)
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_frequency(None) # Set back to normal
-
-    # Assign timeframe
-    wrc.set_wrc_timeframe(2)
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_timeframe(None) # Set back to normal
-
-    # Assign ignore
-    wrc.set_wrc_ignore(7)
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_ignore(None)    # Set back to normal
-
-    # Assign match
-    wrc.set_wrc_match([Match()])
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_match(None)     # Set back to normal
-
-    # Assign regex
-    wrc.set_wrc_regex([Regex()])
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_regex(None)     # Set back to normal
-
-    # Assign srcip
-    wrc.set_wrc_srcip([Srcip(srcip='0.0.0.0')])
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_srcip(None)     # Set back to normal
-
-    # Assign dstip
-    wrc.set_wrc_dstip([Dstip(dstip='0.0.0.0')])
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_dstip(None)     # Set back to normal
-
-    # Assign srcport
-    wrc.set_wrc_srcport([Srcport()])
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_srcport(None)   # Set back to normal
-
-    # Assign dstport
-    wrc.set_wrc_dstport([Dstport()])
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_dstport(None)   # Set back to normal
-
-    # Assign time
-    wrc.set_wrc_time('6-8')
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_time(None)      # Set back to normal
-
-    # Assign weekday
-    wrc.set_wrc_weekday('weekdays')
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_weekday(None)   # Set back to normal
-
-    # Assign same_srcip
-    wrc.set_wrc_same_srcip(True)
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_same_srcip(False)    # Set back to normal
-
-    # Assign different_srcip
-    wrc.set_wrc_different_srcip(True)
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_different_srcip(False) # Set back to normal
-
-    # Assign same_srcport
-    wrc.set_wrc_same_srcport(True)
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_same_srcport(False)     # Set back to normal
-
-    # Assign different_srcport
-    wrc.set_wrc_different_srcport(True)
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_different_srcport(False)    # Set back to normal
-
-    # Assign same_dstport
-    wrc.set_wrc_same_dstport(True)
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_same_dstport(False)         # Set back to normal
-
-    # Assign different_dstport
-    wrc.set_wrc_different_dstport(True)
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_different_dstport(False)    # Set back to normal
-
-    # Assign same_location
-    wrc.set_wrc_same_location(True)
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_same_location(False)        # Set back to normal  
-
-    # Assign same_srcuser
-    wrc.set_wrc_same_srcuser(True)
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_same_srcuser(False)         # Set back to normal
-
-    # Assign different_srcuser
-    wrc.set_wrc_different_srcuser(True)
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_different_srcuser(False)    # Set back to normal
-
-    # Assign info
-    wrc.set_wrc_info([Info()])
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_info(None)                  # Set back to normal
-
-    # Assign options
-    wrc.set_wrc_options(['no_log'])
-    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
-    wrc.set_wrc_options(None)               # Set back to normal
-
-
-def test_already_existing_id_working():
-    '''
-    This prints:
-
-    <description>Hello!. A rule to simply trigger consequent to the rule with id = 5401.</description>
-    <if_sid>5401</if_sid>
-
-    As expected.
-    '''
-    wrc = WazuhRuleConfig()
-    wrc.set_wrc_description("Hello!") # This is prepended to the final desc
-    wrc.set_wrc_already_existing_id(5401)
-    wrc.validate_wrc_already_existing_id() # This needs to work
-    #print(wrc.to_string())
-
-
-def test():
-    #test_already_existing_id_working()
-    #test_already_existing_id_errors()
-    test_description()
-
-if __name__ == '__main__':
-    test()
