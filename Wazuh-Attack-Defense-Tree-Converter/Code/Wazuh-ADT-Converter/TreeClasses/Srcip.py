@@ -96,6 +96,7 @@ class Srcip:
 
 def test():
     f = Srcip()
+    f.set_wrc_srcip_srcip("0.0.0.0")
     f.validate_all()
     f.to_string()
 
