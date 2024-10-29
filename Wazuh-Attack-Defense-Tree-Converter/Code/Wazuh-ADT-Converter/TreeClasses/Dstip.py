@@ -6,7 +6,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from terminal_UI_utils import PrintUtils, ExitUtils
 
-class FreqDstip:
+class Dstip:
     
     print_diagnostics = True
 
@@ -43,11 +43,11 @@ class FreqDstip:
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <dstip negate=""> of node {self.relative_node_name} has been succesfully set to {negate}')
         else:
-            ExitUtils.exit_with_error(f'You cannot set <dstip negate=""> of node {self.relative_node_name} to {negate} of type {type(negate)}. {FreqDstip.get_wrc_dstip_negate_allow_criteria()}')
+            ExitUtils.exit_with_error(f'You cannot set <dstip negate=""> of node {self.relative_node_name} to {negate} of type {type(negate)}. {Dstip.get_wrc_dstip_negate_allow_criteria()}')
 
 
     # ============================================
-    # <freq_dstip> operations
+    # <dstip> operations
     # ============================================
     
     def get_wrc_dstip_dstip(self) -> str:
@@ -68,9 +68,9 @@ class FreqDstip:
         self.dstip = dstip
         if self.validate_wrc_dstip_dstip():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <freq_dstip> of node {self.relative_node_name} has been succesfully set to {dstip}')
+                PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <dstip> of node {self.relative_node_name} has been succesfully set to {dstip}')
         else:
-            ExitUtils.exit_with_error(f'You cannot set <freq_dstip> of node {self.relative_node_name} to {dstip} of type {type(dstip)}. {FreqDstip.get_wrc_dstip_dstip_allow_criteria()}')
+            ExitUtils.exit_with_error(f'You cannot set <dstip> of node {self.relative_node_name} to {dstip} of type {type(dstip)}. {Dstip.get_wrc_dstip_dstip_allow_criteria()}')
 
     # ============================================
     # Validate All
@@ -81,9 +81,9 @@ class FreqDstip:
         error_suffix = f"was given instead."
 
         if not self.validate_wrc_dstip_negate():
-            ExitUtils.exit_with_error(f'{error_prefix} <dstip negate="{self.get_wrc_dstip_negate()}"> in <wazuh_rule_config>. {FreqDstip.get_wrc_dstip_negate_allow_criteria()} {self.get_wrc_dstip_negate()} of type {type(self.get_wrc_dstip_negate())} {error_suffix}')
+            ExitUtils.exit_with_error(f'{error_prefix} <dstip negate="{self.get_wrc_dstip_negate()}"> in <wazuh_rule_config>. {Dstip.get_wrc_dstip_negate_allow_criteria()} {self.get_wrc_dstip_negate()} of type {type(self.get_wrc_dstip_negate())} {error_suffix}')
         if not self.validate_wrc_dstip_dstip():
-            ExitUtils.exit_with_error(f'{error_prefix} <dstip> in <wazuh_rule_config>. {FreqDstip.get_wrc_dstip_dstip_allow_criteria()} {self.get_wrc_dstip_dstip()} of type {type(self.get_wrc_dstip_dstip())} {error_suffix}')
+            ExitUtils.exit_with_error(f'{error_prefix} <dstip> in <wazuh_rule_config>. {Dstip.get_wrc_dstip_dstip_allow_criteria()} {self.get_wrc_dstip_dstip()} of type {type(self.get_wrc_dstip_dstip())} {error_suffix}')
         #PrintUtils.print_in_green(f"- Validation of a <regex> related to {self.relative_node_name} was succesful!")
 
     # ============================================
@@ -96,10 +96,10 @@ class FreqDstip:
 
 
 def test():
-    f = FreqDstip()
-    f.validate_all()
+    f = Dstip()
     f.to_string()
-
+    f.validate_all()
+    
 
 
 if __name__ == '__main__':

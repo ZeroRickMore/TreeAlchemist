@@ -7,7 +7,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from terminal_UI_utils import PrintUtils, ExitUtils
 
 
-class FreqSrcport:
+class Srcport:
     
     print_diagnostics = True
 
@@ -44,9 +44,9 @@ class FreqSrcport:
         self.negate = negate
         if self.validate_wrc_srcport_negate():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <freq_srcport negate=""> of node {self.relative_node_name} has been succesfully set to {negate}')
+                PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <srcport negate=""> of node {self.relative_node_name} has been succesfully set to {negate}')
         else:
-            ExitUtils.exit_with_error(f'You cannot set <freq_srcport negate=""> of node {self.relative_node_name} to {negate} of type {type(negate)}. {FreqSrcport.get_wrc_srcport_negate_allow_criteria()}')
+            ExitUtils.exit_with_error(f'You cannot set <srcport negate=""> of node {self.relative_node_name} to {negate} of type {type(negate)}. {Srcport.get_wrc_srcport_negate_allow_criteria()}')
 
 
     # ============================================
@@ -71,9 +71,9 @@ class FreqSrcport:
         self.type = type_
         if self.validate_wrc_srcport_type():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <freq_srcport type=""> of node {self.relative_node_name} has been succesfully set to {type_}')
+                PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <srcport type=""> of node {self.relative_node_name} has been succesfully set to {type_}')
         else:
-            ExitUtils.exit_with_error(f'You cannot set <freq_srcport type=""> of node {self.relative_node_name} to {type_} of type {type(type_)}. {FreqSrcport.get_wrc_srcport_type_allow_criteria()}')
+            ExitUtils.exit_with_error(f'You cannot set <srcport type=""> of node {self.relative_node_name} to {type_} of type {type(type_)}. {Srcport.get_wrc_srcport_type_allow_criteria()}')
 
 
     # ============================================
@@ -97,9 +97,9 @@ class FreqSrcport:
         self.srcport = srcport
         if self.validate_wrc_srcport_srcport():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_srcport> of node {self.relative_node_name} has been succesfully set to {srcport}")
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <srcport> of node {self.relative_node_name} has been succesfully set to {srcport}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <freq_srcport> of node {self.relative_node_name} to {srcport} of type {type(srcport)}. {FreqSrcport.get_wrc_srcport_srcport_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <srcport> of node {self.relative_node_name} to {srcport} of type {type(srcport)}. {Srcport.get_wrc_srcport_srcport_allow_criteria()}")
 
     # ============================================
     # Validate All
@@ -110,12 +110,12 @@ class FreqSrcport:
         error_suffix = f"was given instead."
 
         if not self.validate_wrc_srcport_negate():
-            ExitUtils.exit_with_error(f'{error_prefix} <freq_srcport negate="{self.get_wrc_srcport_negate()}"> in <wazuh_rule_config>. {FreqSrcport.get_wrc_srcport_negate_allow_criteria()} {self.get_wrc_srcport_negate()} of type {type(self.get_wrc_srcport_negate())} {error_suffix}')
+            ExitUtils.exit_with_error(f'{error_prefix} <srcport negate="{self.get_wrc_srcport_negate()}"> in <wazuh_rule_config>. {Srcport.get_wrc_srcport_negate_allow_criteria()} {self.get_wrc_srcport_negate()} of type {type(self.get_wrc_srcport_negate())} {error_suffix}')
         if not self.validate_wrc_srcport_type():
-            ExitUtils.exit_with_error(f'{error_prefix} <freq_srcport type="{self.get_wrc_srcport_type()}"> in <wazuh_rule_config>. {FreqSrcport.get_wrc_srcport_type_allow_criteria()} {self.get_wrc_srcport_type()} of type {type(self.get_wrc_srcport_type())} {error_suffix}')
+            ExitUtils.exit_with_error(f'{error_prefix} <srcport type="{self.get_wrc_srcport_type()}"> in <wazuh_rule_config>. {Srcport.get_wrc_srcport_type_allow_criteria()} {self.get_wrc_srcport_type()} of type {type(self.get_wrc_srcport_type())} {error_suffix}')
         if not self.validate_wrc_srcport_srcport():
-            ExitUtils.exit_with_error(f'{error_prefix} <freq_srcport>{self.get_wrc_srcport_srcport()}</freq_srcport> in <wazuh_rule_config>. {FreqSrcport.get_wrc_srcport_srcport_allow_criteria()} {self.get_wrc_srcport_srcport()} of type {type(self.get_wrc_srcport_srcport())} {error_suffix}')
-        #PrintUtils.print_in_green(f"- Validation of a <freq_srcport> related to {self.relative_node_name} was succesful!")
+            ExitUtils.exit_with_error(f'{error_prefix} <srcport>{self.get_wrc_srcport_srcport()}</srcport> in <wazuh_rule_config>. {Srcport.get_wrc_srcport_srcport_allow_criteria()} {self.get_wrc_srcport_srcport()} of type {type(self.get_wrc_srcport_srcport())} {error_suffix}')
+        #PrintUtils.print_in_green(f"- Validation of a <srcport> related to {self.relative_node_name} was succesful!")
 
     # ============================================
     # Print
@@ -128,7 +128,7 @@ class FreqSrcport:
 
 
 def test():
-    f = FreqSrcport()
+    f = Srcport()
     f.validate_all()
     f.to_string()
 

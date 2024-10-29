@@ -7,7 +7,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from terminal_UI_utils import PrintUtils, ExitUtils
 
 
-class FreqDstport:
+class Dstport:
     
     print_diagnostics = True
 
@@ -44,9 +44,9 @@ class FreqDstport:
         self.negate = negate
         if self.validate_wrc_dstport_negate():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <freq_dstport negate=""> of node {self.relative_node_name} has been succesfully set to {negate}')
+                PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <dstport negate=""> of node {self.relative_node_name} has been succesfully set to {negate}')
         else:
-            ExitUtils.exit_with_error(f'You cannot set <freq_dstport negate=""> of node {self.relative_node_name} to {negate} of type {type(negate)}. {FreqDstport.get_wrc_dstport_negate_allow_criteria()}')
+            ExitUtils.exit_with_error(f'You cannot set <dstport negate=""> of node {self.relative_node_name} to {negate} of type {type(negate)}. {Dstport.get_wrc_dstport_negate_allow_criteria()}')
 
 
     # ============================================
@@ -71,9 +71,9 @@ class FreqDstport:
         self.type = type_
         if self.validate_wrc_dstport_type():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <freq_dstport type=""> of node {self.relative_node_name} has been succesfully set to {type_}')
+                PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <dstport type=""> of node {self.relative_node_name} has been succesfully set to {type_}')
         else:
-            ExitUtils.exit_with_error(f'You cannot set <freq_dstport type=""> of node {self.relative_node_name} to {type_} of type {type(type_)}. {FreqDstport.get_wrc_dstport_type_allow_criteria()}')
+            ExitUtils.exit_with_error(f'You cannot set <dstport type=""> of node {self.relative_node_name} to {type_} of type {type(type_)}. {Dstport.get_wrc_dstport_type_allow_criteria()}')
 
 
     # ============================================
@@ -97,9 +97,9 @@ class FreqDstport:
         self.dstport = dstport
         if self.validate_wrc_dstport_dstport():
             if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_dstport> of node {self.relative_node_name} has been succesfully set to {dstport}")
+                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <dstport> of node {self.relative_node_name} has been succesfully set to {dstport}")
         else:
-            ExitUtils.exit_with_error(f"You cannot set <freq_dstport> of node {self.relative_node_name} to {dstport} of type {type(dstport)}. {FreqDstport.get_wrc_dstport_dstport_allow_criteria()}")
+            ExitUtils.exit_with_error(f"You cannot set <dstport> of node {self.relative_node_name} to {dstport} of type {type(dstport)}. {Dstport.get_wrc_dstport_dstport_allow_criteria()}")
 
     # ============================================
     # Validate All
@@ -110,12 +110,12 @@ class FreqDstport:
         error_suffix = f"was given instead."
 
         if not self.validate_wrc_dstport_negate():
-            ExitUtils.exit_with_error(f'{error_prefix} <freq_dstport negate="{self.get_wrc_dstport_negate()}"> in <wazuh_rule_config>. {FreqDstport.get_wrc_dstport_negate_allow_criteria()} {self.get_wrc_dstport_negate()} of type {type(self.get_wrc_dstport_negate())} {error_suffix}')
+            ExitUtils.exit_with_error(f'{error_prefix} <dstport negate="{self.get_wrc_dstport_negate()}"> in <wazuh_rule_config>. {Dstport.get_wrc_dstport_negate_allow_criteria()} {self.get_wrc_dstport_negate()} of type {type(self.get_wrc_dstport_negate())} {error_suffix}')
         if not self.validate_wrc_dstport_type():
-            ExitUtils.exit_with_error(f'{error_prefix} <freq_dstport type="{self.get_wrc_dstport_type()}"> in <wazuh_rule_config>. {FreqDstport.get_wrc_dstport_type_allow_criteria()} {self.get_wrc_dstport_type()} of type {type(self.get_wrc_dstport_type())} {error_suffix}')
+            ExitUtils.exit_with_error(f'{error_prefix} <dstport type="{self.get_wrc_dstport_type()}"> in <wazuh_rule_config>. {Dstport.get_wrc_dstport_type_allow_criteria()} {self.get_wrc_dstport_type()} of type {type(self.get_wrc_dstport_type())} {error_suffix}')
         if not self.validate_wrc_dstport_dstport():
-            ExitUtils.exit_with_error(f'{error_prefix} <freq_dstport>{self.get_wrc_dstport_dstport()}</freq_dstport> in <wazuh_rule_config>. {FreqDstport.get_wrc_dstport_dstport_allow_criteria()} {self.get_wrc_dstport_dstport()} of type {type(self.get_wrc_dstport_dstport())} {error_suffix}')
-        #PrintUtils.print_in_green(f"- Validation of a <freq_dstport> related to {self.relative_node_name} was succesful!")
+            ExitUtils.exit_with_error(f'{error_prefix} <dstport>{self.get_wrc_dstport_dstport()}</dstport> in <wazuh_rule_config>. {Dstport.get_wrc_dstport_dstport_allow_criteria()} {self.get_wrc_dstport_dstport()} of type {type(self.get_wrc_dstport_dstport())} {error_suffix}')
+        #PrintUtils.print_in_green(f"- Validation of a <dstport> related to {self.relative_node_name} was succesful!")
 
     # ============================================
     # Print
@@ -128,7 +128,7 @@ class FreqDstport:
 
 
 def test():
-    f = FreqDstport()
+    f = Dstport()
     f.validate_all()
     f.to_string()
 
