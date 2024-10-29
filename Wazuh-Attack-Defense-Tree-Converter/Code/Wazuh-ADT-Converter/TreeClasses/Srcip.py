@@ -33,17 +33,24 @@ class Srcip:
         # Allowed values check
         return validations.is_yes_or_no(self.get_wrc_srcip_negate())
 
+    def validate_wrc_srcip_negate_with_error_launch(self):
+        if not self.validate_wrc_srcip_negate():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f'{error_prefix} <srcip negate="{self.get_wrc_srcip_negate()}"> in <wazuh_rule_config>. {Srcip.get_wrc_srcip_negate_allow_criteria()} {self.srcip} of type {type(self.srcip)} {error_suffix}')
+        
+
     @staticmethod
     def get_wrc_srcip_negate_allow_criteria():
         return "It must be 'yes' or 'no'."
 
     def set_wrc_srcip_negate(self, negate : str):
         self.negate = negate
-        if self.validate_wrc_srcip_negate():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <srcip negate=""> of node {self.relative_node_name} has been succesfully set to {negate}')
-        else:
-            ExitUtils.exit_with_error(f'You cannot set <srcip negate=""> of node {self.relative_node_name} to {negate} of type {type(negate)}. {Srcip.get_wrc_srcip_negate_allow_criteria()}')
+
+        self.validate_wrc_srcip_negate_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <srcip negate=""> of node {self.relative_node_name} has been succesfully set to {negate}')
 
 
     # ============================================
@@ -60,29 +67,36 @@ class Srcip:
         # Allowed values check
         return validations.is_ip_address(string=self.get_wrc_srcip_srcip())
 
+    def validate_wrc_srcip_srcip_with_error_launch(self):
+        if not self.validate_wrc_srcip_srcip():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f'{error_prefix} <srcip> in <wazuh_rule_config>. {Srcip.get_wrc_srcip_srcip_allow_criteria()} {self.get_wrc_srcip_srcip()} of type {type(self.get_wrc_srcip_srcip())} {error_suffix}')
+        
+
     @staticmethod
     def get_wrc_srcip_srcip_allow_criteria():
         return "It must be a valid IPv4 or IPv6 ip address, given as a string."
 
     def set_wrc_srcip_srcip(self, srcip : str):
         self.srcip = srcip
-        if self.validate_wrc_srcip_srcip():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <freq_srcip> of node {self.relative_node_name} has been succesfully set to {srcip}')
-        else:
-            ExitUtils.exit_with_error(f'You cannot set <freq_srcip> of node {self.relative_node_name} to {srcip} of type {type(srcip)}. {Srcip.get_wrc_srcip_srcip_allow_criteria()}')
+
+        self.validate_wrc_srcip_srcip_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <freq_srcip> of node {self.relative_node_name} has been succesfully set to {srcip}')
+
 
     # ============================================
     # Validate All
     # ============================================
 
     def validate_all(self):
-        error_prefix = f"The node {self.relative_node_name} failed validation on"
-        error_suffix = f"was given instead."
-        if not self.validate_wrc_srcip_negate():
-            ExitUtils.exit_with_error(f'{error_prefix} <srcip negate="{self.get_wrc_srcip_negate()}"> in <wazuh_rule_config>. {Srcip.get_wrc_srcip_negate_allow_criteria()} {self.srcip} of type {type(self.srcip)} {error_suffix}')
-        if not self.validate_wrc_srcip_srcip():
-            ExitUtils.exit_with_error(f'{error_prefix} <srcip> in <wazuh_rule_config>. {Srcip.get_wrc_srcip_srcip_allow_criteria()} {self.get_wrc_srcip_srcip()} of type {type(self.get_wrc_srcip_srcip())} {error_suffix}')
+
+        self.validate_wrc_srcip_negate_with_error_launch()
+            
+        self.validate_wrc_srcip_srcip_with_error_launch()
+            
         #PrintUtils.print_in_green(f"- Validation of a <regex> related to {self.relative_node_name} was succesful!")
 
     # ============================================
