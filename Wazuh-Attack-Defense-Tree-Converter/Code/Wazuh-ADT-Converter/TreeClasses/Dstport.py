@@ -36,17 +36,23 @@ class Dstport:
         # Allowed values check
         return validations.is_yes_or_no(self.get_wrc_dstport_negate())
 
+    def validate_wrc_dstport_negate_with_error_launch(self):
+        if not self.validate_wrc_dstport_negate():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f'{error_prefix} <dstport negate="{self.get_wrc_dstport_negate()}"> in <wazuh_rule_config>. {Dstport.get_wrc_dstport_negate_allow_criteria()} {self.get_wrc_dstport_negate()} of type {type(self.get_wrc_dstport_negate())} {error_suffix}')
+
     @staticmethod
     def get_wrc_dstport_negate_allow_criteria():
         return "It must be 'yes' or 'no'."
 
     def set_wrc_dstport_negate(self, negate : str):
         self.negate = negate
-        if self.validate_wrc_dstport_negate():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <dstport negate=""> of node {self.relative_node_name} has been succesfully set to {negate}')
-        else:
-            ExitUtils.exit_with_error(f'You cannot set <dstport negate=""> of node {self.relative_node_name} to {negate} of type {type(negate)}. {Dstport.get_wrc_dstport_negate_allow_criteria()}')
+
+        self.validate_wrc_dstport_negate_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <dstport negate=""> of node {self.relative_node_name} has been succesfully set to {negate}')
 
 
     # ============================================
@@ -63,17 +69,24 @@ class Dstport:
         # Allowed values check
         return validations.is_osmatch_osregex_pcre2(self.get_wrc_dstport_type())
 
+    def validate_wrc_dstport_type_with_error_launch(self):
+        if not self.validate_wrc_dstport_type():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f'{error_prefix} <dstport type="{self.get_wrc_dstport_type()}"> in <wazuh_rule_config>. {Dstport.get_wrc_dstport_type_allow_criteria()} {self.get_wrc_dstport_type()} of type {type(self.get_wrc_dstport_type())} {error_suffix}')
+        
+
     @staticmethod
     def get_wrc_dstport_type_allow_criteria():
         return "It must be 'osmatch' or 'osregex' or 'pcre2'."
 
     def set_wrc_dstport_type(self, type_ : str):
         self.type = type_
-        if self.validate_wrc_dstport_type():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <dstport type=""> of node {self.relative_node_name} has been succesfully set to {type_}')
-        else:
-            ExitUtils.exit_with_error(f'You cannot set <dstport type=""> of node {self.relative_node_name} to {type_} of type {type(type_)}. {Dstport.get_wrc_dstport_type_allow_criteria()}')
+
+        self.validate_wrc_dstport_type_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f'- Inside <wazuh_rule_config>, <dstport type=""> of node {self.relative_node_name} has been succesfully set to {type_}')
 
 
     # ============================================
@@ -89,32 +102,37 @@ class Dstport:
             return False
         return True
 
+    def validate_wrc_dstport_dstport_with_error_launch(self):
+        if not self.validate_wrc_dstport_dstport():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f'{error_prefix} <dstport>{self.get_wrc_dstport_dstport()}</dstport> in <wazuh_rule_config>. {Dstport.get_wrc_dstport_dstport_allow_criteria()} {self.get_wrc_dstport_dstport()} of type {type(self.get_wrc_dstport_dstport())} {error_suffix}')
+        
     @staticmethod
     def get_wrc_dstport_dstport_allow_criteria():
         return "It must be a string."
 
     def set_wrc_dstport_dstport(self, dstport : str):
         self.dstport = dstport
-        if self.validate_wrc_dstport_dstport():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <dstport> of node {self.relative_node_name} has been succesfully set to {dstport}")
-        else:
-            ExitUtils.exit_with_error(f"You cannot set <dstport> of node {self.relative_node_name} to {dstport} of type {type(dstport)}. {Dstport.get_wrc_dstport_dstport_allow_criteria()}")
+
+        self.validate_wrc_dstport_dstport_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <dstport> of node {self.relative_node_name} has been succesfully set to {dstport}")
+
 
     # ============================================
     # Validate All
     # ============================================
 
     def validate_all(self):
-        error_prefix = f"The node {self.relative_node_name} failed validation on"
-        error_suffix = f"was given instead."
 
-        if not self.validate_wrc_dstport_negate():
-            ExitUtils.exit_with_error(f'{error_prefix} <dstport negate="{self.get_wrc_dstport_negate()}"> in <wazuh_rule_config>. {Dstport.get_wrc_dstport_negate_allow_criteria()} {self.get_wrc_dstport_negate()} of type {type(self.get_wrc_dstport_negate())} {error_suffix}')
-        if not self.validate_wrc_dstport_type():
-            ExitUtils.exit_with_error(f'{error_prefix} <dstport type="{self.get_wrc_dstport_type()}"> in <wazuh_rule_config>. {Dstport.get_wrc_dstport_type_allow_criteria()} {self.get_wrc_dstport_type()} of type {type(self.get_wrc_dstport_type())} {error_suffix}')
-        if not self.validate_wrc_dstport_dstport():
-            ExitUtils.exit_with_error(f'{error_prefix} <dstport>{self.get_wrc_dstport_dstport()}</dstport> in <wazuh_rule_config>. {Dstport.get_wrc_dstport_dstport_allow_criteria()} {self.get_wrc_dstport_dstport()} of type {type(self.get_wrc_dstport_dstport())} {error_suffix}')
+        self.validate_wrc_dstport_negate_with_error_launch()
+            
+        self.validate_wrc_dstport_type_with_error_launch()
+            
+        self.validate_wrc_dstport_dstport_with_error_launch()
+            
         #PrintUtils.print_in_green(f"- Validation of a <dstport> related to {self.relative_node_name} was succesful!")
 
     # ============================================
