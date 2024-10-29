@@ -32,7 +32,7 @@ class WazuhRuleConfig:
     This class represents all the informations that are relevant to Wazuh.
     Practically: the xml tags of it.
     '''
-    print_diagnostics = True
+    print_diagnostics = False
     # This has way too many arguments...
     def __init__(self,
                 relative_node_name      : str = "unspecified", #Useful for prints
@@ -52,6 +52,8 @@ class WazuhRuleConfig:
                 freq_different_srcip    : bool = False, #Set this to False by default because it is not mandatory and can be omitted
                 freq_same_srcport       : bool = False, #Set this to False by default because it is not mandatory and can be omitted
                 freq_different_srcport  : bool = False, #Set this to False by default because it is not mandatory and can be omitted
+                freq_same_dstport       : bool = False, #Set this to False by default because it is not mandatory and can be omitted
+                freq_different_dstport  : bool = False, #Set this to False by default because it is not mandatory and can be omitted
                 freq_same_location      : bool = False, #Set this to False by default because it is not mandatory and can be omitted     
                 freq_same_srcuser       : bool = False, #Set this to False by default because it is not mandatory and can be omitted            
                 freq_different_srcuser  : bool = False, #Set this to False by default because it is not mandatory and can be omitted 
@@ -77,6 +79,8 @@ class WazuhRuleConfig:
             self.different_srcip    =   freq_different_srcip
             self.same_srcport       =   freq_same_srcport
             self.different_srcport  =   freq_different_srcport
+            self.same_dstport       =   freq_same_dstport
+            self.different_dstport  =   freq_different_dstport
             self.same_location      =   freq_same_location
             self.same_srcuser       =   freq_same_srcuser
             self.different_srcuser  =   freq_different_srcuser
@@ -100,20 +104,28 @@ class WazuhRuleConfig:
     def validate_wrc_frequency(self) -> bool:
         return self.get_wrc_frequency() is None or ( isinstance(self.get_wrc_frequency(), int) and ( self.get_wrc_frequency() in range(2, 10000) ) )
 
+    def validate_wrc_frequency_with_error_launch(self):
+        if not self.validate_wrc_frequency():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f"{error_prefix} <frequency> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_frequency_allow_criteria()} {self.get_wrc_frequency()} of type {type(self.get_wrc_frequency())} {error_suffix}")
+ 
+
     @staticmethod
     def get_wrc_frequency_allow_criteria() -> str:
         return "It must be an integer from 2 to 9999 ."
 
     def set_wrc_frequency(self, frequency : int):
         self.frequency = frequency
-        if self.validate_wrc_frequency():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <frequency> of node {self.relative_node_name} has been succesfully set to {frequency}")
-        else:
-            ExitUtils.exit_with_error(f"You cannot set <frequency> of node {self.relative_node_name} to {frequency} of type {type(frequency)}. {WazuhRuleConfig.get_wrc_frequency_allow_criteria()}")
 
+        self.validate_wrc_frequency_with_error_launch()
+        
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <frequency> of node {self.relative_node_name} has been succesfully set to {frequency}")
+    
     def to_string_wrc_frequency(self) -> str:
         return f"<frequency>{self.get_wrc_frequency()}</frequency>"
+
 
     # ============================================
     # <timeframe> operations
@@ -125,20 +137,28 @@ class WazuhRuleConfig:
     def validate_wrc_timeframe(self) -> bool:
         return self.get_wrc_timeframe() is None or ( isinstance(self.get_wrc_timeframe(), int) and ( self.get_wrc_timeframe() in range(1, 100000) ) )
 
+    def validate_wrc_timeframe_with_error_launch(self):
+        if not self.validate_wrc_timeframe():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f"{error_prefix} <timeframe> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_timeframe_allow_criteria()} {self.get_wrc_timeframe()} of type {type(self.get_wrc_timeframe())} {error_suffix}")
+
+
     @staticmethod
     def get_wrc_timeframe_allow_criteria() -> str:
         return "It must be an integer from 1 to 99999 ."
 
     def set_wrc_timeframe(self, timeframe : int):
         self.timeframe = timeframe
-        if self.validate_wrc_timeframe():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <timeframe> of node {self.relative_node_name} has been succesfully set to {timeframe}")
-        else:
-            ExitUtils.exit_with_error(f"You cannot set <timeframe> of node {self.relative_node_name} to {timeframe} of type {type(timeframe)}. {WazuhRuleConfig.get_wrc_timeframe_allow_criteria()}")
+
+        self.validate_wrc_timeframe_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <timeframe> of node {self.relative_node_name} has been succesfully set to {timeframe}")
 
     def to_string_wrc_timeframe(self) -> str:
         return f"<timeframe>{self.get_wrc_timeframe()}</timeframe>"
+
 
     # ============================================
     # <ignore> operations | NOTE: In the xml syntax it is <ignore_after>
@@ -150,18 +170,24 @@ class WazuhRuleConfig:
     def validate_wrc_ignore(self) -> bool:
         return self.get_wrc_ignore() is None or ( isinstance(self.get_wrc_ignore(), int) and ( self.get_wrc_ignore() in range(1, 1000000) ) )
 
+    def validate_wrc_ignore_with_error_launch(self):
+        if not self.validate_wrc_ignore():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f"{error_prefix} <ignore_after> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_ignore_allow_criteria()} {self.get_wrc_ignore()} of type {type(self.get_wrc_ignore())} {error_suffix}")
+
     @staticmethod
     def get_wrc_ignore_allow_criteria() -> str:
         return "It must be an integer from 1 to 999999 ."
 
     def set_wrc_ignore(self, ignore : int):
         self.ignore = ignore
-        if self.validate_wrc_ignore():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <ignore> of node {self.relative_node_name} has been succesfully set to {ignore}")
-        else:
-            ExitUtils.exit_with_error(f"You cannot set <ignore> of node {self.relative_node_name} to {ignore} of type {type(ignore)}. {WazuhRuleConfig.get_wrc_ignore_allow_criteria()}")
 
+        self.validate_wrc_ignore_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <ignore> of node {self.relative_node_name} has been succesfully set to {ignore}")
+       
     def to_string_wrc_ignore(self) -> str:
         return f"<ignore>{self.get_wrc_ignore()}</ignore>"
 
@@ -180,25 +206,36 @@ class WazuhRuleConfig:
             return False
         # This needs to be used on pre-existing rules, so no other tag needs to be present
         for wrc_tag in self.__dict__.keys():
-            if self.__dict__[wrc_tag] == "already_existing_id":
+            # These are allowed to be given with already_existing_id
+            if wrc_tag == "already_existing_id" or wrc_tag == "relative_node_name" or wrc_tag == 'description':
                 continue
-            if self.__dict__[wrc_tag] is not None and (isinstance(self.__dict__[wrc_tag], bool) and self.__dict__[wrc_tag] == True):
-                PrintUtils.print_in_red(f"- ERROR: <already_existing_id> is present, but another tag is given: <{wrc_tag}>vwith value {self.__dict__[wrc_tag]}.")
+            if self.__dict__[wrc_tag] is None or (isinstance(self.__dict__[wrc_tag], bool) and self.__dict__[wrc_tag] == False):
+                continue
+            else:
+                if self.print_diagnostics:
+                    PrintUtils.print_in_red(f"- ERROR: <already_existing_id> is present, but another tag is given: <{wrc_tag}> with value {self.__dict__[wrc_tag]}.")
                 return False
-        return True          
+        return True
 
+    def validate_wrc_already_existing_id_with_error_launch(self):
+        if not self.validate_wrc_already_existing_id():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f"{error_prefix} <already_existing_id> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_already_existing_id_allow_criteria()} {self.get_wrc_already_existing_id()} of type {type(self.get_wrc_already_existing_id())} {error_suffix}")
+        
     @staticmethod
     def get_wrc_already_existing_id_allow_criteria() -> str:
         return "It must be an integer, and every other tag inside of <wazuh_rules_config> MUST NOT be present."
 
     def set_wrc_already_existing_id(self, already_existing_id : int):
         self.already_existing_id = already_existing_id
-        if self.validate_wrc_already_existing_id():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <already_existing_id> of node {self.relative_node_name} has been succesfully set to {already_existing_id}")
-        else:
-            ExitUtils.exit_with_error(f"You cannot set <already_existing_id> of node {self.relative_node_name} to {already_existing_id} of type {type(already_existing_id)}. {WazuhRuleConfig.get_wrc_already_existing_id_allow_criteria()}")
 
+        self.validate_wrc_already_existing_id_with_error_launch()
+
+        self.set_wrc_description(f"{self.get_wrc_description()+('.' if not self.get_wrc_description().endswith('.') else '') if self.get_wrc_description() is not None else ''} A rule to simply trigger consequent to the rule with id = {self.get_wrc_already_existing_id()}")
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <already_existing_id> of node {self.relative_node_name} has been succesfully set to {already_existing_id}")
+       
     def to_string_wrc_already_existing_id(self) -> str:
         return f"<if_sid>{self.get_wrc_already_existing_id()}</if_sid>"
 
@@ -226,6 +263,8 @@ class WazuhRuleConfig:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <match> entries of node {self.relative_node_name} have been succesfully set to: {[_.to_string() for _ in all_match]}")
         # else: is covered inside of match.validate_all() already
 
+    def to_string_wrc_match(self) -> str:
+        return f"{"\n".join([f"<{match}>" for match in self.get_wrc_match()])}"
 
 
     # ============================================
@@ -251,9 +290,12 @@ class WazuhRuleConfig:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <regex> entries of node {self.relative_node_name} have been succesfully set to: {[_.to_string() for _ in all_regex]}")
         # else: is covered inside of regex.validate_all() already
 
+    def to_string_wrc_regex(self) -> str:
+        return f"{"\n".join([f"<{regex}>" for regex in self.get_wrc_regex()])}"
+
 
     # ============================================
-    # <srcip> operations | NOTE: sull'xml è <srcip>
+    # <srcip> operations
     # ============================================
     
     def get_wrc_srcip(self) -> List[Srcip]:
@@ -275,9 +317,12 @@ class WazuhRuleConfig:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <srcip> entries of node {self.relative_node_name} have been succesfully set to: {[_.to_string() for _ in all_srcip]}")
         # else: is covered inside of freqsrcip.validate_all() already
 
+    def to_string_wrc_srcip(self) -> str:
+        return f"{"\n".join([f"<{srcip}>" for srcip in self.get_wrc_srcip()])}"
+
 
     # ============================================
-    # <dstip> operations | NOTE: sull'xml è <dstip>
+    # <dstip> operations
     # ============================================
     
     def get_wrc_dstip(self) -> List[Dstip]:
@@ -299,9 +344,12 @@ class WazuhRuleConfig:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <dstip> entries of node {self.relative_node_name} have been succesfully set to: {[_.to_string() for _ in all_dstip]}")
         # else: is covered inside of freqdstip.validate_all() already
 
+    def to_string_wrc_dstip(self) -> str:
+        return f"{"\n".join([f"<{dstip}>" for dstip in self.get_wrc_dstip()])}"
+
 
     # ============================================
-    # <srcport> operations | NOTE: sull'xml è <srcport>
+    # <srcport> operations
     # ============================================
     
     def get_wrc_srcport(self) -> List[Srcport]:
@@ -323,10 +371,12 @@ class WazuhRuleConfig:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <srcport> entries of node {self.relative_node_name} have been succesfully set to: {[_.to_string() for _ in all_srcport]}")
         # else: is covered inside of freqsrcport.validate_all() already
 
+    def to_string_wrc_srcport(self) -> str:
+        return f"{"\n".join([f"<{srcport}>" for srcport in self.get_wrc_srcport()])}"
 
 
     # ============================================
-    # <dstport> operations | NOTE: sull'xml è <dstport>
+    # <dstport> operations
     # ============================================
 
     def get_wrc_dstport(self) -> List[Dstport]:
@@ -348,6 +398,8 @@ class WazuhRuleConfig:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <dstport> entries of node {self.relative_node_name} have been succesfully set to: {[_.to_string() for _ in all_dstport]}")
         # else: is covered inside of freqdstport.validate_all() already
 
+    def to_string_wrc_dstport(self) -> str:
+        return f"{"\n".join([f"<{dstport}>" for dstport in self.get_wrc_dstport()])}"
 
 
     # ============================================
@@ -363,6 +415,13 @@ class WazuhRuleConfig:
             or 
             ( isinstance(self.get_wrc_time(), str) and ( validations.is_time_interval(self.get_wrc_time()) ) )
         )
+
+    def validate_wrc_time_with_error_launch(self):
+        if not self.validate_wrc_time():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f"{error_prefix} <time> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_time_allow_criteria()} {self.get_wrc_time()} of type {type(self.get_wrc_time())} {error_suffix}")
+
 
     @staticmethod
     def get_wrc_time_allow_criteria() -> str:
@@ -381,13 +440,15 @@ h am-h pm.\n
 
     def set_wrc_time(self, time : str):
         self.time = time
-        if self.validate_wrc_time():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <time> of node {self.relative_node_name} has been succesfully set to {time}")
-        else:
-            ExitUtils.exit_with_error(f"You cannot set <time> of node {self.relative_node_name} to {time} of type {type(time)}. {WazuhRuleConfig.get_wrc_time_allow_criteria()}")
+
+        self.validate_wrc_time_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <time> of node {self.relative_node_name} has been succesfully set to {time}")
 
 
+    def to_string_wrc_time(self) -> str:
+        return f"<time>{self.get_wrc_time()}</time>"
 
 
     # ============================================
@@ -405,6 +466,13 @@ h am-h pm.\n
             ( isinstance(self.get_wrc_weekday(), str) and ( validations.is_allowed(allowed_values=allowed_values, string=self.get_wrc_weekday()) or validations.is_weekday_range(s = self.get_wrc_weekday()) ) )
         )
 
+    def validate_wrc_weekday_with_error_launch(self):
+        if not self.validate_wrc_weekday():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f"{error_prefix} <weekday> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_weekday_allow_criteria()} {self.get_wrc_weekday()} of type {type(self.get_wrc_weekday())} {error_suffix}")
+
+
     @staticmethod
     def get_wrc_weekday_allow_criteria() -> str:
 
@@ -415,11 +483,14 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
 
     def set_wrc_weekday(self, weekday : str):
         self.weekday = weekday
-        if self.validate_wrc_weekday():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <weekday> of node {self.relative_node_name} has been succesfully set to {weekday}")
-        else:
-            ExitUtils.exit_with_error(f"You cannot set <weekday> of node {self.relative_node_name} to {weekday} of type {type(weekday)}. {WazuhRuleConfig.get_wrc_weekday_allow_criteria()}")
+
+        self.validate_wrc_weekday_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <weekday> of node {self.relative_node_name} has been succesfully set to {weekday}")
+
+    def to_string_wrc_weekday(self) -> str:
+        return f"<weekday>{self.get_wrc_weekday()}</weekday>"
 
 
     # ============================================
@@ -432,17 +503,27 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     def validate_wrc_same_srcip(self) -> bool:
         return isinstance(self.get_wrc_same_srcip(), bool)
 
+    def validate_wrc_same_srcip_with_error_launch(self):
+        if not self.validate_wrc_same_srcip():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f"{error_prefix} <freq_same_srcip> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_same_srcip_allow_criteria()} {self.get_wrc_same_srcip()} of type {type(self.get_wrc_same_srcip())} {error_suffix}")
+  
+
     @staticmethod
     def get_wrc_same_srcip_allow_criteria() -> str:
         return "Must just be <freq_same_srcip /> tag."
 
     def set_wrc_same_srcip(self, same_srcip : bool):
         self.same_srcip = same_srcip
-        if self.validate_wrc_same_srcip():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_same_srcip> of node {self.relative_node_name} has been succesfully set to {same_srcip}")
-        else:
-            ExitUtils.exit_with_error(f"You cannot set <freq_same_srcip> of node {self.relative_node_name} to {same_srcip} of type {type(same_srcip)}. {WazuhRuleConfig.get_wrc_same_srcip_allow_criteria()}")
+
+        self.validate_wrc_same_srcip_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_same_srcip> of node {self.relative_node_name} has been succesfully set to {same_srcip}")
+
+    def to_string_wrc_same_srcip(self) -> str:
+        return "<same_srcip />"
 
 
     # ============================================
@@ -455,18 +536,26 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     def validate_wrc_different_srcip(self) -> bool:
         return isinstance(self.get_wrc_different_srcip(), bool)
 
+    def validate_wrc_different_srcip_with_error_launch(self):
+        if not self.validate_wrc_different_srcip():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f"{error_prefix} <freq_different_srcip> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_different_srcip_allow_criteria()} {self.get_wrc_different_srcip()} of type {type(self.get_wrc_different_srcip())} {error_suffix}")
+
     @staticmethod
     def get_wrc_different_srcip_allow_criteria() -> str:
         return "Must just be <freq_different_srcip /> tag."
 
     def set_wrc_different_srcip(self, different_srcip : bool):
         self.different_srcip = different_srcip
-        if self.validate_wrc_different_srcip():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_different_srcip> of node {self.relative_node_name} has been succesfully set to {different_srcip}")
-        else:
-            ExitUtils.exit_with_error(f"You cannot set <freq_different_srcip> of node {self.relative_node_name} to {different_srcip} of type {type(different_srcip)}. {WazuhRuleConfig.get_wrc_different_srcip_allow_criteria()}")
 
+        self.validate_wrc_different_srcip_with_error_launch()
+        
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_different_srcip> of node {self.relative_node_name} has been succesfully set to {different_srcip}")
+
+    def to_string_wrc_different_srcip(self) -> str:
+        return "<different_srcip />"
 
 
     # ============================================
@@ -479,19 +568,26 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     def validate_wrc_same_srcport(self) -> bool:
         return isinstance(self.get_wrc_same_srcport(), bool)
 
+    def validate_wrc_same_srcport_with_error_launch(self):
+        if not self.validate_wrc_same_srcport():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f"{error_prefix} <freq_same_srcport> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_same_srcport_allow_criteria()} {self.get_wrc_same_srcport()} of type {type(self.get_wrc_same_srcport())} {error_suffix}")
+
     @staticmethod
     def get_wrc_same_srcport_allow_criteria() -> str:
         return "Must just be <freq_same_srcport /> tag."
 
     def set_wrc_same_srcport(self, same_srcport : bool):
         self.same_srcport = same_srcport
-        if self.validate_wrc_same_srcport():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_same_srcport> of node {self.relative_node_name} has been succesfully set to {same_srcport}")
-        else:
-            ExitUtils.exit_with_error(f"You cannot set <freq_same_srcport> of node {self.relative_node_name} to {same_srcport} of type {type(same_srcport)}. {WazuhRuleConfig.get_wrc_same_srcport_allow_criteria()}")
 
+        self.validate_wrc_same_srcport_with_error_launch()
 
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_same_srcport> of node {self.relative_node_name} has been succesfully set to {same_srcport}")
+
+    def to_string_wrc_same_srcport(self) -> str:
+        return "<same_srcport />"
 
 
     # ============================================
@@ -504,18 +600,93 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     def validate_wrc_different_srcport(self) -> bool:
         return isinstance(self.get_wrc_different_srcport(), bool)
 
+    def validate_wrc_different_srcport_with_error_launch(self):
+        if not self.validate_wrc_different_srcport():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f"{error_prefix} <freq_different_srcport> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_different_srcport_allow_criteria()} {self.get_wrc_different_srcport()} of type {type(self.get_wrc_different_srcport())} {error_suffix}")
+   
+
     @staticmethod
     def get_wrc_different_srcport_allow_criteria() -> str:
         return "Must just be <freq_different_srcport /> tag."
 
     def set_wrc_different_srcport(self, different_srcport : bool):
         self.different_srcport = different_srcport
-        if self.validate_wrc_different_srcport():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_different_srcport> of node {self.relative_node_name} has been succesfully set to {different_srcport}")
-        else:
-            ExitUtils.exit_with_error(f"You cannot set <freq_different_srcport> of node {self.relative_node_name} to {different_srcport} of type {type(different_srcport)}. {WazuhRuleConfig.get_wrc_different_srcport_allow_criteria()}")
 
+        self.validate_wrc_different_srcport_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_different_srcport> of node {self.relative_node_name} has been succesfully set to {different_srcport}")
+
+    def to_string_wrc_different_srcport(self) -> str:
+        return "<different_srcport />"
+
+
+    # ============================================
+    # <same_dstport> operations
+    # ============================================
+
+    def get_wrc_same_dstport(self) -> bool:
+        return self.same_dstport
+
+    def validate_wrc_same_dstport(self) -> bool:
+        return isinstance(self.get_wrc_same_dstport(), bool)
+
+    def validate_wrc_same_dstport_with_error_launch(self):
+        if not self.validate_wrc_same_dstport():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f"{error_prefix} <freq_same_dstport> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_same_dstport_allow_criteria()} {self.get_wrc_same_dstport()} of type {type(self.get_wrc_same_dstport())} {error_suffix}")
+
+
+    @staticmethod
+    def get_wrc_same_dstport_allow_criteria() -> str:
+        return "Must just be <freq_same_dstport /> tag."
+
+    def set_wrc_same_dstport(self, same_dstport : bool):
+        self.same_dstport = same_dstport
+
+        self.validate_wrc_same_dstport_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_same_dstport> of node {self.relative_node_name} has been succesfully set to {same_dstport}")
+        
+    def to_string_wrc_same_dstport(self) -> str:
+        return "<same_dstport />"
+    
+
+    # ============================================
+    # <different_dstport> operations
+    # ============================================
+
+    def get_wrc_different_dstport(self) -> bool:
+        return self.different_dstport
+
+    def validate_wrc_different_dstport(self) -> bool:
+        return isinstance(self.get_wrc_different_dstport(), bool)
+
+    def validate_wrc_different_dstport_with_error_launch(self):
+        if not self.validate_wrc_different_dstport():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f"{error_prefix} <freq_different_dstport> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_different_dstport_allow_criteria()} {self.get_wrc_different_dstport()} of type {type(self.get_wrc_different_dstport())} {error_suffix}")
+
+
+    @staticmethod
+    def get_wrc_different_dstport_allow_criteria() -> str:
+        return "Must just be <freq_different_dstport /> tag."
+
+    def set_wrc_different_dstport(self, different_dstport : bool):
+        self.different_dstport = different_dstport
+
+        self.validate_wrc_different_dstport_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_different_dstport> of node {self.relative_node_name} has been succesfully set to {different_dstport}")
+        
+    def to_string_wrc_different_dstport(self) -> str:
+        return "<different_dstport />"
 
 
     # ============================================
@@ -528,18 +699,27 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     def validate_wrc_same_location(self) -> bool:
         return isinstance(self.get_wrc_same_location(), bool)
 
+    def validate_wrc_same_location_with_error_launch(self):
+        if not self.validate_wrc_same_location():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f"{error_prefix} <freq_same_location> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_same_location_allow_criteria()} {self.get_wrc_same_location()} of type {type(self.get_wrc_same_location())} {error_suffix}")
+
+
     @staticmethod
     def get_wrc_same_location_allow_criteria() -> str:
         return "Must just be <freq_same_location /> tag."
 
     def set_wrc_same_location(self, same_location : bool):
         self.same_location = same_location
-        if self.validate_wrc_same_location():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_same_location> of node {self.relative_node_name} has been succesfully set to {same_location}")
-        else:
-            ExitUtils.exit_with_error(f"You cannot set <freq_same_location> of node {self.relative_node_name} to {same_location} of type {type(same_location)}. {WazuhRuleConfig.get_wrc_same_location_allow_criteria()}")
 
+        self.validate_wrc_same_location_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_same_location> of node {self.relative_node_name} has been succesfully set to {same_location}")
+
+    def to_string_wrc_same_location(self) -> str:
+        return "<same_location />"
 
     # ============================================
     # <same_srcuser> operations
@@ -551,18 +731,28 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     def validate_wrc_same_srcuser(self) -> bool:
         return isinstance(self.get_wrc_same_srcuser(), bool)
 
+    def validate_wrc_same_srcuser_with_error_launch(self):
+        if not self.validate_wrc_same_srcuser():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f"{error_prefix} <freq_same_srcuser> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_same_srcuser_allow_criteria()} {self.get_wrc_same_srcuser()} of type {type(self.get_wrc_same_srcuser())} {error_suffix}")
+
+
     @staticmethod
     def get_wrc_same_srcuser_allow_criteria() -> str:
         return "Must just be <freq_same_srcuser /> tag."
 
     def set_wrc_same_srcuser(self, same_srcuser : bool):
         self.same_srcuser = same_srcuser
-        if self.validate_wrc_same_srcuser():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_same_srcuser> of node {self.relative_node_name} has been succesfully set to {same_srcuser}")
-        else:
-            ExitUtils.exit_with_error(f"You cannot set <freq_same_srcuser> of node {self.relative_node_name} to {same_srcuser} of type {type(same_srcuser)}. {WazuhRuleConfig.get_wrc_same_srcuser_allow_criteria()}")
 
+        self.validate_wrc_same_srcuser_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_same_srcuser> of node {self.relative_node_name} has been succesfully set to {same_srcuser}")
+        
+    def to_string_wrc_same_srcuser(self) -> str:
+        return "<same_srcuser />"
+    
 
     # ============================================
     # <different_srcuser> operations
@@ -574,19 +764,26 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     def validate_wrc_different_srcuser(self) -> bool:
         return isinstance(self.get_wrc_different_srcuser(), bool)
 
+    def validate_wrc_different_srcuser_with_error_launch(self):
+        if not self.validate_wrc_different_srcuser():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f"{error_prefix} <freq_different_srcuser> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_different_srcuser_allow_criteria()} {self.get_wrc_different_srcuser()} of type {type(self.get_wrc_different_srcuser())} {error_suffix}")
+
     @staticmethod
     def get_wrc_different_srcuser_allow_criteria() -> str:
         return "Must just be <freq_different_srcuser /> tag."
 
     def set_wrc_different_srcuser(self, different_srcuser : bool):
         self.different_srcuser = different_srcuser
-        if self.validate_wrc_different_srcuser():
-            if self.print_diagnostics:
-                PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_different_srcuser> of node {self.relative_node_name} has been succesfully set to {different_srcuser}")
-        else:
-            ExitUtils.exit_with_error(f"You cannot set <freq_different_srcuser> of node {self.relative_node_name} to {different_srcuser} of type {type(different_srcuser)}. {WazuhRuleConfig.get_wrc_different_srcuser_allow_criteria()}")
 
+        self.validate_wrc_different_srcuser_with_error_launch()
+        
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <freq_different_srcuser> of node {self.relative_node_name} has been succesfully set to {different_srcuser}")
 
+    def to_string_wrc_different_srcuser(self) -> str:
+        return "<different_srcuser />"
 
     # ============================================
     # <description> operations
@@ -597,6 +794,13 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
 
     def validate_wrc_description(self) -> bool:
         return isinstance(self.get_wrc_description(), str)
+
+    def validate_wrc_description_with_error_launch(self):
+        if not self.validate_wrc_description():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f"{error_prefix} <description> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_description_allow_criteria()} {self.get_wrc_description()} of type {type(self.get_wrc_description())} {error_suffix}")
+   
 
     @staticmethod
     def get_wrc_description_allow_criteria() -> str:
@@ -609,6 +813,9 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <description> of node {self.relative_node_name} has been succesfully set to {description}")
         else:
             ExitUtils.exit_with_error(f"You cannot set <description> of node {self.relative_node_name} to {description} of type {type(description)}. {WazuhRuleConfig.get_wrc_description_allow_criteria()}")
+
+    def to_string_wrc_description(self) -> str:
+        return f"<description>{self.get_wrc_description()}{'.' if not self.get_wrc_description().endswith('.') else ''}</description>"
 
 
     # ============================================
@@ -634,6 +841,9 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <info> entries of node {self.relative_node_name} have been succesfully set to: {[_.to_string() for _ in all_info]}")
         # else: is covered inside of info.validate_all() already
 
+    def to_string_wrc_info(self) -> str:
+        return f"{"\n".join([f"<{info}>" for info in self.get_wrc_info()])}"
+
 
     # ============================================
     # <options> operations
@@ -656,13 +866,15 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     def get_wrc_options_allow_criteria() -> str:
         return 'Every <options> tag must contain one of the following strings: "alert_by_email", "no_email_alert", "no_log", "no_full_log", "no_counter".'
 
-    def set_wrc_options(self, options : str):
+    def set_wrc_options(self, options : List[str]):
         self.options = options
         if self.validate_wrc_options():
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <options> of node {self.relative_node_name} has been succesfully set to {options}")
         # else: is covered inside of self.validate_wrc_options() already
 
+    def to_string_wrc_options(self) -> str:
+        return f"{"\n".join([f"<{options}>" for options in self.get_wrc_options()])}"
 
     # ========================================================================================
     # Out of <wazuh_rule_config>
@@ -678,19 +890,14 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
         error_prefix = f"The node {self.relative_node_name} failed validation on"
         error_suffix = f"was given instead."
 
-        if not self.validate_wrc_frequency():
-            ExitUtils.exit_with_error(f"{error_prefix} <frequency> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_frequency_allow_criteria()} {self.get_wrc_frequency()} of type {type(self.get_wrc_frequency())} {error_suffix}")
+        self.validate_wrc_frequency_with_error_launch()
+                  
+        self.validate_wrc_timeframe_with_error_launch()
+           
+        self.validate_wrc_ignore_with_error_launch()
         
-        if not self.validate_wrc_timeframe():
-            ExitUtils.exit_with_error(f"{error_prefix} <timeframe> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_timeframe_allow_criteria()} {self.get_wrc_timeframe()} of type {type(self.get_wrc_timeframe())} {error_suffix}")
-        
-        if not self.validate_wrc_ignore():
-        
-            ExitUtils.exit_with_error(f"{error_prefix} <ignore_after> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_ignore_allow_criteria()} {self.get_wrc_ignore()} of type {type(self.get_wrc_ignore())} {error_suffix}")
-        
-        if not self.validate_wrc_already_existing_id():
-            ExitUtils.exit_with_error(f"{error_prefix} <already_existing_id> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_already_existing_id_allow_criteria()} {self.get_wrc_already_existing_id()} of type {type(self.get_wrc_already_existing_id())} {error_suffix}")
-        
+        self.validate_wrc_already_existing_id_with_error_launch()
+            
         self.validate_wrc_match()
 
         self.validate_wrc_regex()
@@ -703,36 +910,30 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
 
         self.validate_wrc_dstport()
 
-        if not self.validate_wrc_time():
-            ExitUtils.exit_with_error(f"{error_prefix} <time> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_time_allow_criteria()} {self.get_wrc_time()} of type {type(self.get_wrc_time())} {error_suffix}")
+        self.validate_wrc_time_with_error_launch()
+            
+        self.validate_wrc_weekday_with_error_launch()
+            
+        self.validate_wrc_same_srcip_with_error_launch()
+            
+        self.validate_wrc_different_srcip_with_error_launch()
+            
+        self.validate_wrc_same_srcport_with_error_launch()
+            
+        self.validate_wrc_different_srcport_with_error_launch()
 
-        if not self.validate_wrc_weekday():
-            ExitUtils.exit_with_error(f"{error_prefix} <weekday> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_weekday_allow_criteria()} {self.get_wrc_weekday()} of type {type(self.get_wrc_weekday())} {error_suffix}")
+        self.validate_wrc_same_dstport_with_error_launch()
 
-        if not self.validate_wrc_same_srcip():
-            ExitUtils.exit_with_error(f"{error_prefix} <freq_same_srcip> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_same_srcip_allow_criteria()} {self.get_wrc_same_srcip()} of type {type(self.get_wrc_same_srcip())} {error_suffix}")
-  
-        if not self.validate_wrc_different_srcip():
-            ExitUtils.exit_with_error(f"{error_prefix} <freq_different_srcip> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_different_srcip_allow_criteria()} {self.get_wrc_different_srcip()} of type {type(self.get_wrc_different_srcip())} {error_suffix}")
-
-        if not self.validate_wrc_same_srcport():
-            ExitUtils.exit_with_error(f"{error_prefix} <freq_same_srcport> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_same_srcport_allow_criteria()} {self.get_wrc_same_srcport()} of type {type(self.get_wrc_same_srcport())} {error_suffix}")
-    
-        if not self.validate_wrc_different_srcport():
-            ExitUtils.exit_with_error(f"{error_prefix} <freq_different_srcport> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_different_srcport_allow_criteria()} {self.get_wrc_different_srcport()} of type {type(self.get_wrc_different_srcport())} {error_suffix}")
-   
-        if not self.validate_wrc_same_location():
-            ExitUtils.exit_with_error(f"{error_prefix} <freq_same_location> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_same_location_allow_criteria()} {self.get_wrc_same_location()} of type {type(self.get_wrc_same_location())} {error_suffix}")
-   
-        if not self.validate_wrc_same_srcuser():
-            ExitUtils.exit_with_error(f"{error_prefix} <freq_same_srcuser> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_same_srcuser_allow_criteria()} {self.get_wrc_same_srcuser()} of type {type(self.get_wrc_same_srcuser())} {error_suffix}")
-   
-        if not self.validate_wrc_different_srcuser():
-            ExitUtils.exit_with_error(f"{error_prefix} <freq_different_srcuser> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_different_srcuser_allow_criteria()} {self.get_wrc_different_srcuser()} of type {type(self.get_wrc_different_srcuser())} {error_suffix}")
-   
-        if not self.validate_wrc_description():
-            ExitUtils.exit_with_error(f"{error_prefix} <description> in <wazuh_rule_config>. {WazuhRuleConfig.get_wrc_description_allow_criteria()} {self.get_wrc_description()} of type {type(self.get_wrc_description())} {error_suffix}")
-   
+        self.validate_wrc_different_dstport_with_error_launch()
+            
+        self.validate_wrc_same_location_with_error_launch()
+            
+        self.validate_wrc_same_srcuser_with_error_launch()
+            
+        self.validate_wrc_different_srcuser_with_error_launch()
+            
+        self.validate_wrc_description_with_error_launch()
+            
         self.validate_wrc_info()
 
         self.validate_wrc_options()
@@ -769,20 +970,268 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     # General to_string
     # ============================================   
 
-    def to_string(self):
+    def to_string(self, tab_times : int = 0):
         '''
         Method that returns a stringified version of the whole node.
         This is what will compose the rule itself.
         '''
+        string   =   ''
 
-        to_string = ''
+        # Insert <description>
+        string      +=   ('\t'*tab_times)+self.to_string_wrc_description()+'\n'  # Mandatory
+
+        # Insert <if_sid> - Guard to save some processing time
+        if self.get_wrc_already_existing_id() is not None:
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_already_existing_id()+'\n' # Optional
+            return string # Already done! No more to check, as this is a standalone tag.  
+
+        # Insert <info>
+        if self.get_wrc_info() is not None:
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_info() # Optional
+        # Insert <info>
+        if self.get_wrc_frequency() is not None:
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_frequency()+'\n' # Optional
+        # Insert <timeframe>
+        if self.get_wrc_timeframe() is not None:
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_timeframe()+'\n' # Optional
+        # Insert <ignore>
+        if self.get_wrc_ignore() is not None:
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_ignore()+'\n' # Optional    
+        # Insert <match>
+        if self.get_wrc_match() is not None:
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_match() # Optional    
+        # Insert <regex>
+        if self.get_wrc_regex() is not None:
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_regex() # Optional    
+        # Insert <srcip>
+        if self.get_wrc_srcip() is not None:
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_srcip() # Optional   
+        # Insert <dstip>
+        if self.get_wrc_dstip() is not None:
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_dstip() # Optional   
+        # Insert <srcport>
+        if self.get_wrc_srcport() is not None:
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_srcport() # Optional   
+        # Insert <dstport>
+        if self.get_wrc_dstport() is not None:
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_dstport() # Optional   
+        # Insert <time>
+        if self.get_wrc_time() is not None:
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_time()+'\n' # Optional   
+        # Insert <weekday>
+        if self.get_wrc_weekday() is not None:
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_weekday()+'\n' # Optional   
+        # Insert <same_srcip>
+        if self.get_wrc_same_srcip():
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_same_srcip()+'\n' # Optional 
+        # Insert <different_srcip>
+        if self.get_wrc_different_srcip():
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_different_srcip()+'\n' # Optional 
+        # Insert <same_srcport>
+        if self.get_wrc_same_srcport():
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_same_srcport()+'\n' # Optional   
+        # Insert <different_srcport>
+        if self.get_wrc_different_srcport():
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_different_srcport()+'\n' # Optional         
+        # Insert <same_dstport>
+        if self.get_wrc_same_dstport():
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_same_dstport()+'\n' # Optional    
+        # Insert <different_dstport>
+        if self.get_wrc_different_dstport():
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_different_dstport()+'\n' # Optional 
+        # Insert <same_location>
+        if self.get_wrc_same_location():
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_same_location()+'\n' # Optional
+        # Insert <same_srcuser>
+        if self.get_wrc_same_srcuser():
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_same_srcuser()+'\n' # Optional 
+        # Insert <different_srcuser>
+        if self.get_wrc_different_srcuser():
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_different_srcuser()+'\n' # Optional 
+        # Insert <options>
+        if self.get_wrc_options() is not None:
+            string  +=   ('\t'*tab_times)+self.to_string_wrc_options()+'\n' # Optional   
+
+        return string
+
+
+def test_description():
+    w = WazuhRuleConfig()
+    w.set_wrc_description(1)
+
+
+
+def test_already_existing_id_errors():
+    wrc = WazuhRuleConfig()
+    '''
+    self.description        =   description
+    self.already_existing_id=   wrc_already_existing_id
+    self.relative_node_name =   relative_node_name
+    self.frequency          =   wrc_frequency
+    self.timeframe          =   wrc_timeframe
+    self.ignore             =   wrc_ignore_after
+    self.match              =   match_list
+    self.regex              =   regex_list
+    self.srcip              =   srcip
+    self.dstip              =   dstip
+    self.srcport            =   srcport
+    self.dstport            =   dstport
+    self.time               =   time
+    self.weekday            =   weekday
+    self.same_srcip         =   freq_same_srcip
+    self.different_srcip    =   freq_different_srcip
+    self.same_srcport       =   freq_same_srcport
+    self.different_srcport  =   freq_different_srcport
+    self.same_dstport       =   freq_same_dstport
+    self.different_dstport  =   freq_different_dstport
+    self.same_location      =   freq_same_location
+    self.same_srcuser       =   freq_same_srcuser
+    self.different_srcuser  =   freq_different_srcuser
+    self.info               =   info
+    self.options            =   options
+    '''
+
+
+    # Assign description and already_existing_id
+    wrc.set_wrc_description("Error maximus") # This is prepended to the final desc
+    wrc.set_wrc_already_existing_id(5401)
+    assert(wrc.validate_wrc_already_existing_id())      # This needs to work here
+
+    # Assign relative_node_name
+    wrc.relative_node_name = 'Pippo'
+    assert(wrc.validate_wrc_already_existing_id())      # This needs to work here
+
+    # Assign frequency
+    wrc.set_wrc_frequency(2)
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_frequency(None) # Set back to normal
+
+    # Assign timeframe
+    wrc.set_wrc_timeframe(2)
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_timeframe(None) # Set back to normal
+
+    # Assign ignore
+    wrc.set_wrc_ignore(7)
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_ignore(None)    # Set back to normal
+
+    # Assign match
+    wrc.set_wrc_match([Match()])
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_match(None)     # Set back to normal
+
+    # Assign regex
+    wrc.set_wrc_regex([Regex()])
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_regex(None)     # Set back to normal
+
+    # Assign srcip
+    wrc.set_wrc_srcip([Srcip(srcip='0.0.0.0')])
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_srcip(None)     # Set back to normal
+
+    # Assign dstip
+    wrc.set_wrc_dstip([Dstip(dstip='0.0.0.0')])
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_dstip(None)     # Set back to normal
+
+    # Assign srcport
+    wrc.set_wrc_srcport([Srcport()])
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_srcport(None)   # Set back to normal
+
+    # Assign dstport
+    wrc.set_wrc_dstport([Dstport()])
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_dstport(None)   # Set back to normal
+
+    # Assign time
+    wrc.set_wrc_time('6-8')
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_time(None)      # Set back to normal
+
+    # Assign weekday
+    wrc.set_wrc_weekday('weekdays')
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_weekday(None)   # Set back to normal
+
+    # Assign same_srcip
+    wrc.set_wrc_same_srcip(True)
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_same_srcip(False)    # Set back to normal
+
+    # Assign different_srcip
+    wrc.set_wrc_different_srcip(True)
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_different_srcip(False) # Set back to normal
+
+    # Assign same_srcport
+    wrc.set_wrc_same_srcport(True)
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_same_srcport(False)     # Set back to normal
+
+    # Assign different_srcport
+    wrc.set_wrc_different_srcport(True)
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_different_srcport(False)    # Set back to normal
+
+    # Assign same_dstport
+    wrc.set_wrc_same_dstport(True)
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_same_dstport(False)         # Set back to normal
+
+    # Assign different_dstport
+    wrc.set_wrc_different_dstport(True)
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_different_dstport(False)    # Set back to normal
+
+    # Assign same_location
+    wrc.set_wrc_same_location(True)
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_same_location(False)        # Set back to normal  
+
+    # Assign same_srcuser
+    wrc.set_wrc_same_srcuser(True)
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_same_srcuser(False)         # Set back to normal
+
+    # Assign different_srcuser
+    wrc.set_wrc_different_srcuser(True)
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_different_srcuser(False)    # Set back to normal
+
+    # Assign info
+    wrc.set_wrc_info([Info()])
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_info(None)                  # Set back to normal
+
+    # Assign options
+    wrc.set_wrc_options(['no_log'])
+    assert(not wrc.validate_wrc_already_existing_id())  # This should not work
+    wrc.set_wrc_options(None)               # Set back to normal
+
+
+def test_already_existing_id_working():
+    '''
+    This prints:
+
+    <description>Hello!. A rule to simply trigger consequent to the rule with id = 5401.</description>
+    <if_sid>5401</if_sid>
+
+    As expected.
+    '''
+    wrc = WazuhRuleConfig()
+    wrc.set_wrc_description("Hello!") # This is prepended to the final desc
+    wrc.set_wrc_already_existing_id(5401)
+    wrc.validate_wrc_already_existing_id() # This needs to work
+    #print(wrc.to_string())
 
 
 def test():
-    wrc = WazuhRuleConfig()
-    wrc.set_wrc_description("Hello!")
-    wrc.validate_all()
-
+    #test_already_existing_id_working()
+    #test_already_existing_id_errors()
+    test_description()
 
 if __name__ == '__main__':
     test()
