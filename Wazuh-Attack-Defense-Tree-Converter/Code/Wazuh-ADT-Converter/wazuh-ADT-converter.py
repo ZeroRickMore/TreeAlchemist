@@ -31,6 +31,12 @@ def main():
 
     input_path = args.path
 
+    ADESSO NON PRENDO PIù UN SINGOLO FILE MA L INTERA CARTELLA CHE CONTIENE:
+        - tree_name.xml (stesso nome della cartella)
+        - defense_definition.xml
+        - defense_to_nodes.json
+
+
     PrintUtils.print_phase_start("Validating user input")
 
     if not (os.path.isfile(input_path) and input_path.endswith(".xml")):
