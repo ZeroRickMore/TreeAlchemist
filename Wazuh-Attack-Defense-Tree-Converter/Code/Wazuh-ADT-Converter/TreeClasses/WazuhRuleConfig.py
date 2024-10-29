@@ -112,6 +112,8 @@ class WazuhRuleConfig:
         else:
             ExitUtils.exit_with_error(f"You cannot set <frequency> of node {self.relative_node_name} to {frequency} of type {type(frequency)}. {WazuhRuleConfig.get_wrc_frequency_allow_criteria()}")
 
+    def to_string_wrc_frequency(self) -> str:
+        return f"<frequency>{self.get_wrc_frequency()}</frequency>"
 
     # ============================================
     # <timeframe> operations
@@ -135,6 +137,8 @@ class WazuhRuleConfig:
         else:
             ExitUtils.exit_with_error(f"You cannot set <timeframe> of node {self.relative_node_name} to {timeframe} of type {type(timeframe)}. {WazuhRuleConfig.get_wrc_timeframe_allow_criteria()}")
 
+    def to_string_wrc_timeframe(self) -> str:
+        return f"<timeframe>{self.get_wrc_timeframe()}</timeframe>"
 
     # ============================================
     # <ignore> operations | NOTE: In the xml syntax it is <ignore_after>
@@ -158,9 +162,13 @@ class WazuhRuleConfig:
         else:
             ExitUtils.exit_with_error(f"You cannot set <ignore> of node {self.relative_node_name} to {ignore} of type {type(ignore)}. {WazuhRuleConfig.get_wrc_ignore_allow_criteria()}")
 
+    def to_string_wrc_ignore(self) -> str:
+        return f"<ignore>{self.get_wrc_ignore()}</ignore>"
+
 
     # ============================================
     # <already_existing_id> operations
+    # It blantly translates to an <if_sid> considering it needs to be triggered over a pre-existing rule as soon as it is launched.
     # ============================================
     
     def get_wrc_already_existing_id(self) -> int:
@@ -191,6 +199,9 @@ class WazuhRuleConfig:
         else:
             ExitUtils.exit_with_error(f"You cannot set <already_existing_id> of node {self.relative_node_name} to {already_existing_id} of type {type(already_existing_id)}. {WazuhRuleConfig.get_wrc_already_existing_id_allow_criteria()}")
 
+    def to_string_wrc_already_existing_id(self) -> str:
+        return f"<if_sid>{self.get_wrc_already_existing_id()}</if_sid>"
+
 
     # ============================================
     # <match> operations
@@ -214,6 +225,7 @@ class WazuhRuleConfig:
             if self.print_diagnostics:
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <match> entries of node {self.relative_node_name} have been succesfully set to: {[_.to_string() for _ in all_match]}")
         # else: is covered inside of match.validate_all() already
+
 
 
     # ============================================
