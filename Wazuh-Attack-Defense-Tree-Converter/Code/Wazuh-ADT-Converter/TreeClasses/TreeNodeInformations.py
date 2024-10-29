@@ -34,7 +34,7 @@ class TreeNodeInformations:
                 node_type               : str = "atk", # Default value
                 path                    : str = "", # MUST be changed to a valid path, so it must end with a /. It's up to you to build it correctly, obviously!
                 id                      : int = -1, # MUST be changed
-                name                    : str = "N/A", # SHOULD be changed
+                name                    : str = "undefined", # SHOULD be changed
                 wazuh_rule_config       : WazuhRuleConfig = None, # MUST be changed
                 ):
         
