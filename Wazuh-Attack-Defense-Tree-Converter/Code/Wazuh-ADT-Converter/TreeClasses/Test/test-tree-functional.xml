@@ -1,0 +1,55 @@
+<!-- PLEASE NOTE THAT THIS CONFIG MAKES ABSOLUTELY NO SENSE OVERALL, IT IS MERELY FOR TESTING! -->
+<!-- Many tags do not work together, it's up to you, person behind the config, to write functional rules. -->
+<!-- The system is able to check an OBJECTIVELY wrong syntax, but cannot realize if you are using rules that will never work -->
+
+<tree>
+    <!-- ATK Node section -->
+    <node conjuncted_children="yes" root="no">
+        <!-- The path to the node, node itself NOT included. MUST end with a / -->
+        <path>/root/</path>         <!-- Using <name> -->
+        <id>0</id>                  <!-- Recommended to follow ID BEST PRACTICE -->
+        <name>Very cool name for a very cool node!</name>   <!-- Any name that describes the node -->
+        <wazuh_rule_config>        <!-- The rule itself. Not everything is necessary -->
+            <frequency>2</frequency><!-- Amount of times a node must be reached before resulting into a problem -->
+            <timeframe>5</timeframe><!-- How much time in seconds to reach the frequency described before. Launches a warning if used without <frequency> -->
+            <ignore_after>10</ignore_after> <!-- Time in seconds after which the alert is ignored as if it never happened -->
+            <match negate="yes">very evil log</match> <!-- STACKABLE String literal log search -->
+            <match>very evil log2</match> <!-- STACKABLE String literal log search -->
+            <regex>^very evil log$</regex> <!-- STACKABLE Regex log search -->
+            <regex negate="yes">^very evil log2$</regex> <!-- STACKABLE Regex log search -->
+            <freq_srcip negate="yes">0.0.0.0</freq_srcip> <!-- STACKABLE src IP to look out for -->
+            <freq_srcip>10.0.0.0</freq_srcip> <!-- STACKABLE src IP to look out for -->
+            <freq_dstip negate="yes">1.1.1.1</freq_dstip> <!-- STACKABLE dst IP to look out for -->
+            <freq_dstip>10.1.1.1</freq_dstip> <!-- STACKABLE dst IP to look out for -->
+            <freq_srcport negate="yes" type="osregex">^8080$</freq_srcport> <!-- STACKABLE src PORT to look out for -->
+            <freq_srcport>^8080$</freq_srcport> <!-- STACKABLE dst PORT to look out for -->
+            <freq_dstport negate="yes" type="osregex">^9090$</freq_dstport> <!-- STACKABLE src PORT to look out for -->
+            <freq_dstport>^9090$</freq_dstport> <!-- STACKABLE dst PORT to look out for -->
+            <time>8-10</time> <!-- Time interval when the rule is active -->
+            <weekday>monday - sunday</weekday> <!-- Week interval when the rule is active -->
+            <freq_same_srcip /> <!-- Tells system to increse frequency counter for alerts having same srcip -->
+            <freq_different_srcip /> <!-- Tells system to increse frequency counter for alerts having different srcip -->
+            <freq_same_srcport /> <!-- Tells system to increse frequency counter for alerts having same src port -->
+            <freq_different_srcport /> <!-- Tells system to increse frequency counter for alerts having different src IP -->
+            <freq_different_dstport /> <!-- Tells system to increse frequency counter for alerts having different dst IP -->
+            <freq_same_location /> <!-- Tells system to increse frequency counter for alerts raised from the same location -->
+            <freq_same_srcuser /> <!-- Tells system to increse frequency counter for alerts raised from the same user -->
+            <freq_different_srcuser /> <!-- Tells system to increse frequency counter for alerts raised from the different location -->
+            <description>#a good rule description#</description> <!-- Node == Rule description that will appear on Wazuh dashboard -->
+            <info>#any information#</info> <!-- STACKABLE Extra information -->
+            <info type="link">https://www.very_cool_website.org</info> <!-- STACKABLE Extra information -->
+            <options>alert_by_email</options> <!-- STACKABLE One tag for each you need -->
+            <options>no_email_alert</options> <!-- STACKABLE One tag for each you need -->
+            <options>no_log</options> <!-- STACKABLE One tag for each you need -->
+            <options>no_full_log</options> <!-- STACKABLE One tag for each you need -->
+            <options>no_counter</options> <!-- STACKABLE One tag for each you need -->
+        </wazuh_rule_config>
+        <!-- Configuration of the defense. If the node has none, omit it completely -->
+
+    </node>
+    <!-- Other nodes one after another -->
+    <!-- Conjunctions section -->
+    <conjunction>#4,5#</conjunction>
+    <!-- Other conjunctions one after another -->
+    <conjunction>#Files access,, very bad , Other node#</conjunction>
+</tree>
