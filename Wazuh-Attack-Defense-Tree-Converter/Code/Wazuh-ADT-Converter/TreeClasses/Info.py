@@ -104,7 +104,7 @@ class Info:
     # ============================================
 
     def to_string(self):
-        print(f'<info type="{self.get_wrc_info_type()}">{self.get_wrc_info_info()}</info>')
+        return f'<info type="{self.get_wrc_info_type()}">{self.get_wrc_info_info()}</info>'
 
 
 
