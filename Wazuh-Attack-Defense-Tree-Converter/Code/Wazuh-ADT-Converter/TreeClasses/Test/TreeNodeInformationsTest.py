@@ -10,7 +10,7 @@ def test():
     t = TreeNodeInformations()
     t.set_path("/")
     t.set_id(0)
-    t.set_wrc_description("A good description!")
+    t.get_wazuh_rule_config().set_wrc_description("A good description!")
     t.validate_all()
 
 
