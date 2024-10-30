@@ -9,7 +9,7 @@ class TreeNode:
     '''
     print_diagnostics = True
 
-    def __init__(self, informations : TreeNodeInformations = TreeNodeInformations()):
+    def __init__(self, informations : TreeNodeInformations = None):
         self.informations = informations
         self.children : List[TreeNode] = []
 
@@ -50,3 +50,14 @@ class TreeNode:
     
     def set_children(self, children):
         ExitUtils.exit_with_error("DO NOT use set_children(). Rather, use add_child().")
+
+
+    def to_string(self, tab_times : int = 0) -> str:
+        '''
+        Method that returns a stringified version of the whole node.
+        This is what will compose the rule itself.
+
+        Let's be clear: it is just composed of the entries of his node informatons.
+        '''
+
+        return self.get_informations().to_string(tab_times=tab_times)

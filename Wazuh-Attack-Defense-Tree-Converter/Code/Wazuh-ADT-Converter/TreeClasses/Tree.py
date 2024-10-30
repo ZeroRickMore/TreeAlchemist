@@ -37,3 +37,25 @@ class Tree:
         root_node.get_informations().validate_all()
 
 
+    def get_rule_group(self) -> str:
+        '''
+        The role groups are 'ADT' and the name of the root node.
+        '''
+        return self.get_root().get_informations().get_name() + ', ADTCVT, '
+ 
+
+
+    def to_string(self) -> str:
+        
+        tab_times = 0
+
+        string = ''
+        # Insert group name tag
+        string += f'<group name="{self.get_rule_group()}">\n'
+
+        tab_times += 1
+
+        # TODO
+
+
+

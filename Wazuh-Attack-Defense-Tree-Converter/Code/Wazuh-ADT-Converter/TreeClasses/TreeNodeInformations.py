@@ -297,13 +297,15 @@ class TreeNodeInformations:
     # General to_string
     # ============================================   
 
-    def to_string(self):
+    def to_string(self, tab_times : int = 0) -> str:
         '''
-        Method that returns a stringified version of the whole node.
+        Method that returns a stringified version of the informations of the node.
         This is what will compose the rule itself.
+
+        Let's be clear: it is just composed of the entries of wazuh_rule_config.
         '''
 
-        to_string = ''
+        return self.get_wazuh_rule_config().to_string(tab_times=tab_times)
 
 
 
