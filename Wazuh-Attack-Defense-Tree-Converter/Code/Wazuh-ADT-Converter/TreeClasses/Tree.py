@@ -64,5 +64,22 @@ class Tree:
 
         # TODO
 
+    
+    def print_tree_for_debug(self):
+        # Helper function to recursively print the tree
+        def print_subtree(node : TreeNode, depth=0):
+            if node is None:
+                return
+            
+            # Indentation and structure for current node
+            prefix = "\t" * depth + ("└── " if depth > 0 else "")
+            print(f"{prefix}{node.get_informations().get_name()}")
+
+            # Recursively print each child
+            for child in node.children:
+                print_subtree(child, depth + 1)
+
+        print_subtree(self.root)
+
 
 
