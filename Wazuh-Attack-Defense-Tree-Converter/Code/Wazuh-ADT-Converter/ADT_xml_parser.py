@@ -503,15 +503,39 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
 
     try:
         ADT.set_root(node_path_to_nodes['/'][0])
+        
     except:
         ExitUtils.exit_with_error('You MUST provide a <node> as root="yes".\nElse, the tree would have no root...')
 
     #print(ADT.get_root().get_informations().get_name())
 
     for path in node_path_to_nodes:
-        parent_name_or_id = 
-        curr_nodes_children_of_last_path_entry = node_path_to_nodes[path]
+        parent_node : TreeNode
+        parent_name_or_id = None
+        is_id = None
 
+        path = str(path)
+        # Check if I am on root (handling is a little different)
+        if path == '/':
+            continue # This entry is not a map to the children.
+
+        else:
+            parent_name_or_id = path.split("/")[-2] # The second to last entry of the path is the parent name or id. Why? /Root/ -> ['', 'Root', '']
+            #print(f"PATH IS -> [{path}] - NAME OR ID IS -> [{parent_name_or_id}]")
+            is_id = bool(parent_name_or_id.isdigit())
+            
+            if is_id:
+                parent_node = node_id_to_node[parent_name_or_id]
+            else:
+                parent_node = node_id_to_node[node_name_to_id[parent_name_or_id]] # Why not map name to node directly? It seems memory-intensive on big trees...
+
+        # Append children
+        for child in node_path_to_nodes[path]:
+            #print(f"PATH -> {path}, CHILD -> {child.get_informations().get_name()}")
+            parent_node.add_child(child)
+
+        # This is not a human syntax but I somehow like it...
+        print(f"[{parent_name_or_id if parent_name_or_id is not None else ''}] is a [{("digit" if is_id else "name") if is_id is not None else ''}] mapped to [{parent_node.get_informations().get_name()}]. His children are: {[_.get_informations().get_name() for _ in parent_node.get_children() ]}")
     
     return curr_node
 
@@ -520,7 +544,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-functional.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-wrong-alr-exist-id.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-wrong-alr-exist-id.xml")
-#generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\test-tree\tree.xml")
+generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\test-tree\tree.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-mismatched-root-path.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-too-many-roots.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-duplicate-name.xml")
