@@ -104,7 +104,7 @@ class Srcip:
     # ============================================
 
     def to_string(self):
-        print(f'<srcip negate="{self.get_wrc_srcip_negate()}">{self.get_wrc_srcip_srcip()}</srcip>')
+        return f'<srcip negate="{self.get_wrc_srcip_negate()}">{self.get_wrc_srcip_srcip()}</srcip>'
 
 
 

@@ -103,7 +103,7 @@ class Dstip:
     # ============================================
 
     def to_string(self):
-        print(f'<dstip negate="{self.get_wrc_dstip_negate()}">{self.get_wrc_dstip_dstip()}</dstip>')
+        return f'<dstip negate="{self.get_wrc_dstip_negate()}">{self.get_wrc_dstip_dstip()}</dstip>'
 
 
 

@@ -140,7 +140,7 @@ class Srcport:
     # ============================================
 
     def to_string(self):
-        print(f'<srcport negate="{self.get_wrc_srcport_negate()}" type="{self.get_wrc_srcport_type()}">{self.get_wrc_srcport_srcport()}</srcport>')
+        return f'<srcport negate="{self.get_wrc_srcport_negate()}" type="{self.get_wrc_srcport_type()}">{self.get_wrc_srcport_srcport()}</srcport>'
 
 
 

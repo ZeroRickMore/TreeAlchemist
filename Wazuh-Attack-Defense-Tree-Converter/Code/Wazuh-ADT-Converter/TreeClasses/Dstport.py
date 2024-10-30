@@ -140,7 +140,7 @@ class Dstport:
     # ============================================
 
     def to_string(self):
-        print(f'<dstport negate="{self.get_wrc_dstport_negate()}" type="{self.get_wrc_dstport_type()}">{self.get_wrc_dstport_dstport()}</dstport>')
+        return f'<dstport negate="{self.get_wrc_dstport_negate()}" type="{self.get_wrc_dstport_type()}">{self.get_wrc_dstport_dstport()}</dstport>'
 
 
 
