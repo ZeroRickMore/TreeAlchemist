@@ -31,6 +31,7 @@
             <freq_different_srcip /> <!-- Tells system to increse frequency counter for alerts having different srcip -->
             <freq_same_srcport /> <!-- Tells system to increse frequency counter for alerts having same src port -->
             <freq_different_srcport /> <!-- Tells system to increse frequency counter for alerts having different src IP -->
+            <freq_same_dstport /> <!-- Tells system to increse frequency counter for alerts having same src port -->  
             <freq_different_dstport /> <!-- Tells system to increse frequency counter for alerts having different dst IP -->
             <freq_same_location /> <!-- Tells system to increse frequency counter for alerts raised from the same location -->
             <freq_same_srcuser /> <!-- Tells system to increse frequency counter for alerts raised from the same user -->
