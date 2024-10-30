@@ -170,6 +170,16 @@ def generate_ADT_from_xml_file(xml_tree_path : str):
                 curr_info.append(info_object)
             curr_wrc.set_wrc_info(curr_info)
 
+        # <options>
+        options = wrc_tag.findall('options')
+        # if given, process it
+        if len(options) >= 1:
+            curr_options : List[str] = []
+            for m in options:
+                option = m.text
+                curr_options.append(option)
+            curr_wrc.set_wrc_options(curr_options)
+
 
         # <frequency>
         frequency = wrc_tag.findall('frequency')
