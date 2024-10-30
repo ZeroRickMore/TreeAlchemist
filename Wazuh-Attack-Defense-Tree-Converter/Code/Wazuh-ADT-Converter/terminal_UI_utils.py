@@ -38,9 +38,9 @@ class PrintUtils:
         print('')
     
     @staticmethod
-    def print_in_sky_blue(text):
+    def print_in_sky_blue(text, end="\n"):
         sky_blue = "\033[38;2;135;206;235m"
-        print(sky_blue+str(text)+PrintUtils.get_white())
+        print(sky_blue+str(text)+PrintUtils.get_white(), end=end)
 
     @staticmethod
     def print_warning(text):
@@ -49,6 +49,38 @@ class PrintUtils:
     @staticmethod
     def print_equals_detatcher():
         PrintUtils.print_in_purple("============================================", end='')
+
+    @staticmethod
+    def print_in_yellow(text, end="\n"):
+        yellow = "\033[33m"
+        print(yellow+str(text)+PrintUtils.get_white(), end=end)
+
+    @staticmethod
+    def print_in_pink(text, end="\n"):
+        pink = "\033[95m"
+        print(pink+str(text)+PrintUtils.get_white(), end=end)
+
+    @staticmethod
+    def print_on_a_number_chosen_color(text : str, end : str = "\n", num : int = 0):
+        num = num%5
+        if num<=0 :
+            PrintUtils.print_in_green(text, end)
+            return
+        if num==1:
+            PrintUtils.print_in_pink(text, end)
+            return
+        if num==2:
+            PrintUtils.print_in_sky_blue(text, end)
+            return
+        if num==3:
+            PrintUtils.print_in_yellow(text, end)
+            return
+        if num==4:
+            PrintUtils.print_in_purple(text, end)
+            return
+
+        
+
 
 
 
