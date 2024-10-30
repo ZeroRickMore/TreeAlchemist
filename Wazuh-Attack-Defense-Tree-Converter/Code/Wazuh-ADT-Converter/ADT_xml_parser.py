@@ -154,6 +154,23 @@ def generate_ADT_from_xml_file(xml_tree_path : str):
             curr_wrc.set_wrc_description(description[0].text)
 
 
+        # <info>
+        info = wrc_tag.findall('info')
+        # if given, process it
+        if len(info) >= 1:
+            curr_info : List[Info] = []
+            for m in info:
+                info_object = Info(relative_node_name=curr_infos.get_name())
+                # type=""
+                info_type = m.get('type')
+                if info_type is not None:
+                    info_object.set_wrc_info_type(info_type)
+                # content
+                info_object.set_wrc_info_info(m.text)
+                curr_info.append(info_object)
+            curr_wrc.set_wrc_info(curr_info)
+
+
         # <frequency>
         frequency = wrc_tag.findall('frequency')
         # if it is present, must be only once
