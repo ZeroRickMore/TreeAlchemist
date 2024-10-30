@@ -343,8 +343,8 @@ class WazuhRuleConfig:
             PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <srcip> entries of node {self.relative_node_name} have been succesfully set to: {([_.to_string() for _ in all_srcip]) if all_srcip is not None else None}")
         # else: is covered inside of freqsrcip.validate_all() already
 
-    def to_string_wrc_srcip(self) -> str:
-        return f"{"\n".join([f"<{srcip}>" for srcip in self.get_wrc_srcip()])}"
+    def to_string_wrc_srcip(self, tab_times : int = 0) -> str:
+        return f"{"\n".join([f"{'\t'*tab_times}{srcip.to_string()}" for srcip in self.get_wrc_srcip()])}"
 
 
     # ============================================
@@ -378,8 +378,8 @@ class WazuhRuleConfig:
             PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <dstip> entries of node {self.relative_node_name} have been succesfully set to: {([_.to_string() for _ in all_dstip]) if all_dstip is not None else None}")
         # else: is covered inside of freqdstip.validate_all() already
 
-    def to_string_wrc_dstip(self) -> str:
-        return f"{"\n".join([f"<{dstip}>" for dstip in self.get_wrc_dstip()])}"
+    def to_string_wrc_dstip(self, tab_times : int = 0) -> str:
+        return f"{"\n".join([f"{'\t'*tab_times}{dstip.to_string()}" for dstip in self.get_wrc_dstip()])}"
 
 
     # ============================================
@@ -413,8 +413,8 @@ class WazuhRuleConfig:
             PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <srcport> entries of node {self.relative_node_name} have been succesfully set to: {([_.to_string() for _ in all_srcport]) if all_srcport is not None else None}")
         # else: is covered inside of freqsrcport.validate_all() already
 
-    def to_string_wrc_srcport(self) -> str:
-        return f"{"\n".join([f"<{srcport}>" for srcport in self.get_wrc_srcport()])}"
+    def to_string_wrc_srcport(self, tab_times : int = 0) -> str:
+        return f"{"\n".join([f"{'\t'*tab_times}{srcport.to_string()}" for srcport in self.get_wrc_srcport()])}"
 
 
     # ============================================
@@ -449,8 +449,8 @@ class WazuhRuleConfig:
             PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <dstport> entries of node {self.relative_node_name} have been succesfully set to: {([_.to_string() for _ in all_dstport]) if all_dstport is not None else None}")
         # else: is covered inside of freqdstport.validate_all() already
 
-    def to_string_wrc_dstport(self) -> str:
-        return f"{"\n".join([f"<{dstport}>" for dstport in self.get_wrc_dstport()])}"
+    def to_string_wrc_dstport(self, tab_times : int = 0) -> str:
+        return f"{"\n".join([f"{'\t'*tab_times}{dstport.to_string()}" for dstport in self.get_wrc_dstport()])}"
 
 
     # ============================================
@@ -1081,16 +1081,16 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
             string  +=    self.to_string_wrc_regex(tab_times=tab_times+1)+'\n' # Optional    
         # Insert <srcip>
         if self.get_wrc_srcip() is not None:
-            string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_srcip()+'\n' # Optional   
+            string  +=    self.to_string_wrc_srcip(tab_times=tab_times+1)+'\n' # Optional   
         # Insert <dstip>
         if self.get_wrc_dstip() is not None:
-            string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_dstip()+'\n' # Optional   
+            string  +=    self.to_string_wrc_dstip(tab_times=tab_times+1)+'\n' # Optional   
         # Insert <srcport>
         if self.get_wrc_srcport() is not None:
-            string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_srcport()+'\n' # Optional   
+            string  +=    self.to_string_wrc_srcport(tab_times=tab_times+1)+'\n' # Optional   
         # Insert <dstport>
         if self.get_wrc_dstport() is not None:
-            string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_dstport()+'\n' # Optional   
+            string  +=    self.to_string_wrc_dstport(tab_times=tab_times+1)+'\n' # Optional   
         # Insert <time>
         if self.get_wrc_time() is not None:
             string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_time()+'\n' # Optional   
