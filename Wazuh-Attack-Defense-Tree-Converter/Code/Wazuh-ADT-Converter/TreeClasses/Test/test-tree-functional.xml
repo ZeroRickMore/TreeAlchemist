@@ -18,8 +18,6 @@
             <options>no_log</options> <!-- STACKABLE One tag for each you need -->
             <options>no_full_log</options> <!-- STACKABLE One tag for each you need -->
             <options>no_counter</options> <!-- STACKABLE One tag for each you need -->
-
-
             <frequency>2</frequency><!-- Amount of times a node must be reached before resulting into a problem -->
             <timeframe>5</timeframe><!-- How much time in seconds to reach the frequency described before. Launches a warning if used without <frequency> -->
             <ignore_after>10</ignore_after> <!-- Time in seconds after which the alert is ignored as if it never happened -->
