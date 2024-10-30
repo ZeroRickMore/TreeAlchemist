@@ -2,7 +2,7 @@ import validations
 from typing import List
 
 # Support classes import
-from WazuhRuleConfig import WazuhRuleConfig
+from TreeClasses.WazuhRuleConfig import WazuhRuleConfig
 
 # Import scripts from above folder
 import sys
@@ -31,7 +31,7 @@ class TreeNodeInformations:
     def __init__(self,
                 node_conjuncted_children: str = "no",  # Default value
                 node_root               : str = "no",  # Default value
-                node_type               : str = "atk", # Default value
+                #node_type               : str = "atk", # Default value
                 path                    : str = "", # MUST be changed to a valid path, so it must end with a /. It's up to you to build it correctly, obviously!
                 id                      : int = -1, # MUST be changed
                 name                    : str = "undefined", # SHOULD be changed
@@ -42,7 +42,7 @@ class TreeNodeInformations:
         self.node_tag_attributes = {
             "conjuncted_children" : node_conjuncted_children ,
             "root" : node_root ,
-            "type" : node_type
+            #"type" : node_type
         }
 
         # <path>
@@ -120,7 +120,7 @@ class TreeNodeInformations:
         if self.print_diagnostics:
             PrintUtils.print_in_green(f"- root of node {self.get_name()} with id {self.get_id()} has been succesfully set to {root}")
 
-
+    '''
     # ============================================
     # <node type=""> operations
     # ============================================
@@ -153,7 +153,7 @@ class TreeNodeInformations:
 
         if self.print_diagnostics:
             PrintUtils.print_in_green(f"- type of node {self.get_name()} with id {self.get_id()} has been succesfully set to {type_}")
-
+    '''
     # ============================================
     # <path> operations
     # ============================================
@@ -282,7 +282,7 @@ class TreeNodeInformations:
                     
         self.validate_node_root_with_error_launch()
                     
-        self.validate_node_type_with_error_launch()
+        #self.validate_node_type_with_error_launch()
             
         self.validate_path_with_error_launch()
             
@@ -307,7 +307,11 @@ class TreeNodeInformations:
 
         return self.get_wazuh_rule_config().to_string(tab_times=tab_times)
 
-
+    def to_string_raw(self) -> str:
+        attributes = "\n".join(f"{key}: {value}" for key, value in vars(self).items() if key != 'wazuh_rule_config')
+        attributes += '\nwazuh_rule_config:\n'
+        attributes += self.get_wazuh_rule_config().to_string(tab_times=1)
+        return f"(\n{attributes}\n)"
 
 
 
