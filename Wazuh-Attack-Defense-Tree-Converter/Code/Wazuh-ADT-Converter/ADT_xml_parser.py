@@ -84,17 +84,19 @@ def generate_ADT_from_xml_file(xml_tree_path : str):
     t = ET.parse(xml_tree_path)
     root = t.getroot()
 
-
     ADT = Tree()
 
     for node in root.findall("node"):
         curr_node = TreeNode()
         curr_infos = TreeNodeInformations()
+        # Set <rule> attributes
         curr_infos.set_conjuncted_children(node.get('conjuncted_children'))
         curr_infos.set_root(node.get('root'))
         curr_infos.set_type(node.get('type'))
+
+        print(curr_infos.get_conjuncted_children() , curr_infos.get_root(), curr_infos.get_type())
         
         
 
-    
+generate_ADT_from_xml_file("Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\test-tree\tree.xml")
 
