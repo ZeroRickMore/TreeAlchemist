@@ -940,8 +940,8 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
                 PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <options> of node {self.relative_node_name} has been succesfully set to {options}")
         # else: is covered inside of self.validate_wrc_options() already
 
-    def to_string_wrc_options(self) -> str:
-        return f"{"\n".join([f"<{options}>" for options in self.get_wrc_options()])}"
+    def to_string_wrc_options(self, tab_times : int = 0) -> str:
+        return f"{"\n".join([f"{'\t'*tab_times}<options>{option}</options>" for option in self.get_wrc_options()])}"
 
     # ========================================================================================
     # Out of <wazuh_rule_config>
@@ -1126,7 +1126,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
             string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_different_srcuser()+'\n' # Optional 
         # Insert <options>
         if self.get_wrc_options() is not None:
-            string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_options()+'\n' # Optional   
+            string  +=    self.to_string_wrc_options(tab_times=tab_times+1)+'\n' # Optional   
 
         string +=  '\t'*tab_times + '</rule>'
         return string
