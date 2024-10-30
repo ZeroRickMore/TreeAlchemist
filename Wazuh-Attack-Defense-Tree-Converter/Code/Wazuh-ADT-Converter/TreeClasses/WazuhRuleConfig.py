@@ -2,13 +2,13 @@ import validations
 from typing import List
 
 # Support classes import
-from Match import Match
-from Regex import Regex
-from Srcip import Srcip
-from Dstip import Dstip
-from Srcport import Srcport
-from Dstport import Dstport
-from Info import Info
+from TreeClasses.Match import Match
+from TreeClasses.Regex import Regex
+from TreeClasses.Srcip import Srcip
+from TreeClasses.Dstip import Dstip
+from TreeClasses.Srcport import Srcport
+from TreeClasses.Dstport import Dstport
+from TreeClasses.Info import Info
 
 # Import scripts from above folder
 import sys
@@ -273,8 +273,8 @@ class WazuhRuleConfig:
             PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <match> entries of node {self.relative_node_name} have been succesfully set to: {([_.to_string() for _ in all_match]) if all_match is not None else None}")
         # else: is covered inside of match.validate_all() already
 
-    def to_string_wrc_match(self) -> str:
-        return f"{"\n".join([f"<{match}>" for match in self.get_wrc_match()])}"
+    def to_string_wrc_match(self, tab_times : int = 0) -> str:
+        return f"{"\n".join([f"{'\t'*tab_times}{match.to_string()}" for match in self.get_wrc_match()])}"
 
 
     # ============================================
@@ -308,8 +308,8 @@ class WazuhRuleConfig:
             PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <regex> entries of node {self.relative_node_name} have been succesfully set to: {([_.to_string() for _ in all_regex]) if all_regex is not None else None}")
         # else: is covered inside of regex.validate_all() already
 
-    def to_string_wrc_regex(self) -> str:
-        return f"{"\n".join([f"<{regex}>" for regex in self.get_wrc_regex()])}"
+    def to_string_wrc_regex(self, tab_times : int = 0) -> str:
+        return f"{"\n".join([f"{'\t'*tab_times}{regex.to_string()}" for regex in self.get_wrc_regex()])}"
 
 
     # ============================================
@@ -1055,16 +1055,17 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
             string  +=   f' timeframe="{self.get_wrc_timeframe()}"' # Optional
         # Insert ignore=""
         if self.get_wrc_ignore() is not None:
-            string  +=    f' frequency="{self.get_wrc_ignore()}"' # Optional
+            string  +=    f' ignore="{self.get_wrc_ignore()}"' # Optional
 
         string += '>\n' # Close the <rule> tag
         # Insert <description>
-        string      +=   '\t'*tab_times +  '\t'+self.to_string_wrc_description()+'\n'  # Mandatory
+        if self.get_wrc_description() is not None:
+            string      +=   '\t'*tab_times +  '\t'+self.to_string_wrc_description()+'\n'  # Mandatory
 
 
         # Insert <info>
         if self.get_wrc_info() is not None:
-            string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_info() # Optional
+            string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_info()+'\n' # Optional
 
         # Insert <if_sid> - Guard to save some processing time
         if self.get_wrc_already_existing_id() is not None:
@@ -1074,22 +1075,22 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
 
         # Insert <match>
         if self.get_wrc_match() is not None:
-            string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_match() # Optional    
+            string  +=    self.to_string_wrc_match(tab_times=tab_times+1)+'\n' # Optional    
         # Insert <regex>
         if self.get_wrc_regex() is not None:
-            string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_regex() # Optional    
+            string  +=    self.to_string_wrc_regex(tab_times=tab_times+1)+'\n' # Optional    
         # Insert <srcip>
         if self.get_wrc_srcip() is not None:
-            string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_srcip() # Optional   
+            string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_srcip()+'\n' # Optional   
         # Insert <dstip>
         if self.get_wrc_dstip() is not None:
-            string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_dstip() # Optional   
+            string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_dstip()+'\n' # Optional   
         # Insert <srcport>
         if self.get_wrc_srcport() is not None:
-            string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_srcport() # Optional   
+            string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_srcport()+'\n' # Optional   
         # Insert <dstport>
         if self.get_wrc_dstport() is not None:
-            string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_dstport() # Optional   
+            string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_dstport()+'\n' # Optional   
         # Insert <time>
         if self.get_wrc_time() is not None:
             string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_time()+'\n' # Optional   
@@ -1131,11 +1132,14 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
         return string
 
 
+def test():
+    w = WazuhRuleConfig()
+    w.set_wrc_description("Very useful desc!")
+    w.set_wrc_frequency(5)
+    w.set_wrc_timeframe(10)
+    w.set_wrc_time("9-19")
+    w.validate_all()
+    print(w.to_string())
 
-w = WazuhRuleConfig()
-w.set_wrc_description("Very useful desc!")
-w.set_wrc_frequency(5)
-w.set_wrc_timeframe(10)
-w.set_wrc_time("9-19")
-w.validate_all()
-print(w.to_string())
+if __name__ == '__main__':
+    test()
