@@ -225,8 +225,8 @@ class TreeNodeInformations:
         return self.name
 
     def validate_name(self) -> bool:
-        # Type check
-        return isinstance(self.get_name(), str)
+        # Type check and must not be a number
+        return isinstance(self.get_name(), str) and not self.get_name().isdigit()
 
     def validate_name_with_error_launch(self):
         if not self.validate_name():
@@ -236,7 +236,7 @@ class TreeNodeInformations:
 
     @staticmethod
     def get_name_allow_criteria() -> str:
-        return "It must be a string."
+        return "It must be a alphanumeric string. Do not use only numbers."
 
     def set_name(self, name : str):
         self.name = name
