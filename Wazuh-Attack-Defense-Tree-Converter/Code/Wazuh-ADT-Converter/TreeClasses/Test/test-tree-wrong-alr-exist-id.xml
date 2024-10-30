@@ -1,0 +1,43 @@
+<tree>
+    <node conjuncted_children="yes" root="no">
+        <path>/root/</path>         
+        <id>0</id>                  
+        <name>Very cool name for a very cool node!</name>   
+        <wazuh_rule_config>        
+            <already_existing_id>5401</already_existing_id> <!-- This MUST be a standalone tag. -->
+            <frequency>2</frequency>
+            <timeframe>5</timeframe>
+            <ignore_after>10</ignore_after> 
+            <match negate="yes">very evil log</match> 
+            <match>very evil log2</match> 
+            <regex>^very evil log$</regex> 
+            <regex negate="yes">^very evil log2$</regex> 
+            <freq_srcip negate="yes">0.0.0.0</freq_srcip> 
+            <freq_srcip>10.0.0.0</freq_srcip> 
+            <freq_dstip negate="yes">1.1.1.1</freq_dstip> 
+            <freq_dstip>10.1.1.1</freq_dstip> 
+            <freq_srcport negate="yes" type="osregex">^8080$</freq_srcport> 
+            <freq_srcport>^8080$</freq_srcport> 
+            <freq_dstport negate="yes" type="osregex">^9090$</freq_dstport> 
+            <freq_dstport>^9090$</freq_dstport> 
+            <time>8-10</time> 
+            <weekday>monday - sunday</weekday> 
+            <freq_same_srcip /> 
+            <freq_different_srcip /> 
+            <freq_same_srcport /> 
+            <freq_different_srcport /> 
+            <freq_different_dstport /> 
+            <freq_same_location /> 
+            <freq_same_srcuser /> 
+            <freq_different_srcuser /> 
+            <description>#a good rule description#</description> 
+            <info>#any information#</info> 
+            <info type="link">https://www.very_cool_website.org</info> 
+            <options>alert_by_email</options> 
+            <options>no_email_alert</options> 
+            <options>no_log</options> 
+            <options>no_full_log</options> 
+            <options>no_counter</options> 
+        </wazuh_rule_config>
+    </node>
+</tree>
