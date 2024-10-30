@@ -1,17 +1,34 @@
 from terminal_UI_utils import PrintUtils, ExitUtils
-import TreeNodeInformations
+from TreeNodeInformations import TreeNodeInformations
+from typing import List
 
+from TreeNode import TreeNode
 class TreeNode:
     '''
     This class represents a node in the ADT.
     '''
+    print_diagnostics = True
 
     def __init__(self, informations : TreeNodeInformations = TreeNodeInformations()):
         self.informations = informations
-        self.children = []
+        self.children : List[TreeNode] = []
 
-    def add_child(self, child_node):
+    def add_child(self, child_node : TreeNode):
+        '''
+        Add a TreeNode child to a TreeNode.
+        
+        Exits if the child was already present.
+        Of course, you do NOT want duplicates.
+        '''
+        if self.is_child_present(child_node=child_node):
+            ExitUtils.exit_with_error(f"Cannot add child node with name {child_node.get_informations().get_name()} and id {child_node.get_informations().get_id()}\nas it is already present in parent node with name {self.get_informations().get_name()} and id {self.get_informations().get_id()}")
         self.children.append(child_node)
+
+    def is_child_present(self, child_node : TreeNode):
+        '''
+        Checks if the given child node is already into self.
+        '''
+        return child_node in self.get_children()
 
     def __repr__(self, level=0):
         # A string representation of the tree for easy visualization
@@ -19,3 +36,17 @@ class TreeNode:
         for child in self.children:
             ret += child.__repr__(level + 1)
         return ret
+
+    def get_informations(self) -> TreeNodeInformations:
+        return self.informations
+    
+    def set_informations(self, info : TreeNodeInformations ):
+        self.informations = info
+
+        self.get_informations().validate_all()
+
+    def get_children(self) -> List[TreeNode]:
+        return self.children
+    
+    def set_children(self, children):
+        ExitUtils.exit_with_error("DO NOT use set_children(). Rather, use add_child().")
