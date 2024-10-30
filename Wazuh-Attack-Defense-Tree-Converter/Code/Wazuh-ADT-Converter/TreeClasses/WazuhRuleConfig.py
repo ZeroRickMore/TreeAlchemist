@@ -202,7 +202,9 @@ class WazuhRuleConfig:
 
     def validate_wrc_already_existing_id(self) -> bool:
         # Type check
-        if not (self.get_wrc_already_existing_id() is None or isinstance(self.get_wrc_already_existing_id(), int) ):
+        if self.get_wrc_already_existing_id() is None:
+            return True
+        if not isinstance(self.get_wrc_already_existing_id(), int):
             return False
         # This needs to be used on pre-existing rules, so no other tag needs to be present
         for wrc_tag in self.__dict__.keys():
