@@ -506,8 +506,11 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
     except:
         ExitUtils.exit_with_error('You MUST provide a <node> as root="yes".\nElse, the tree would have no root...')
 
+    #print(ADT.get_root().get_informations().get_name())
+
     for path in node_path_to_nodes:
-        node_path_to_nodes[path]
+        parent_name_or_id = 
+        curr_nodes_children_of_last_path_entry = node_path_to_nodes[path]
 
     
     return curr_node
