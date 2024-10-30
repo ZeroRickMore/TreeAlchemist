@@ -21,6 +21,19 @@ Andando per livelli, propongo di creare l'albero e salvarmi la struttura coi liv
 import xml.etree.ElementTree as ET
 import os
 from terminal_UI_utils import PrintUtils, ExitUtils
+from typing import List
+# TreeClasses imports
+from TreeClasses.Tree import Tree
+from TreeClasses.TreeNode import TreeNode
+from TreeClasses.TreeNodeInformations import TreeNodeInformations
+from TreeClasses.WazuhRuleConfig import WazuhRuleConfig
+from TreeClasses.Dstip import Dstip
+from TreeClasses.Dstport import Dstport
+from TreeClasses.Info import Info
+from TreeClasses.Match import Match
+from TreeClasses.Regex import Regex
+from TreeClasses.Srcip import Srcip
+from TreeClasses.Srcport import Srcport
 
 
 
@@ -47,7 +60,11 @@ def convert_xml_ADT_to_usable_structure(tree_dir_path : str):
 def get_ADT_with_attack_nodes_only(xml_tree_path : str):
     validate_xml_tree_file_and_launch_error(xml_tree_path=xml_tree_path)
 
-    
+    ADT = generate_ADT_from_xml_file(xml_tree_path)
+
+def validate_xml_tree_file_and_launch_error(xml_tree_path : str):
+    if not validate_xml_tree_file(xml_tree_path=xml_tree_path):
+        ExitUtils.exit_with_error(f"{xml_tree_path} is not a valid .xml file.")
 
 def validate_xml_tree_file(xml_tree_path : str):
     if not os.path.isfile(xml_tree_path) or not xml_tree_path.endswith('.xml'):
@@ -57,6 +74,27 @@ def validate_xml_tree_file(xml_tree_path : str):
     return root.tag == 'tree'
 
 
-def validate_xml_tree_file_and_launch_error(xml_tree_path : str):
-    if not validate_xml_tree_file(xml_tree_path=xml_tree_path):
-        ExitUtils.exit_with_error(f"{xml_tree_path} is not a valid .xml file.")
+def generate_ADT_from_xml_file(xml_tree_path : str):
+    '''
+    Read the xml and generate the real data structure.
+    '''
+    node_conjunctions : List[tuple] = []
+    node_path_to_node : dict        = {}   # str -> TreeNode
+
+    t = ET.parse(xml_tree_path)
+    root = t.getroot()
+
+
+    ADT = Tree()
+
+    for node in root.findall("node"):
+        curr_node = TreeNode()
+        curr_infos = TreeNodeInformations()
+        curr_infos.set_conjuncted_children(node.get('conjuncted_children'))
+        curr_infos.set_root(node.get('root'))
+        curr_infos.set_type(node.get('type'))
+        
+        
+
+    
+
