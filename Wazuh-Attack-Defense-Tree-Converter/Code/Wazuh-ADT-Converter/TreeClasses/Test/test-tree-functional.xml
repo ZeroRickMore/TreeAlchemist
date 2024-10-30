@@ -3,10 +3,21 @@
 <!-- The system is able to check an OBJECTIVELY wrong syntax, but cannot realize if you are using rules that will never work -->
 
 <tree>
+
+    <node root="yes">
+        <path>/</path>
+        <id>0</id>
+        <name>Root</name>
+        <wazuh_rule_config>
+            <match>evil root log</match>
+            <description>An attacker has reached "Root" node</description>
+        </wazuh_rule_config>
+    </node>
+
     <!-- ATK Node section -->
     <node conjuncted_children="yes" root="no">
         <!-- The path to the node, node itself NOT included. MUST end with a / -->
-        <path>/root/</path>         <!-- Using <name> -->
+        <path>/Root/</path>         <!-- Using <name> -->
         <id>0</id>                  <!-- Recommended to follow ID BEST PRACTICE -->
         <name>Very cool name for a very cool node!</name>   <!-- Any name that describes the node -->
         <wazuh_rule_config>        <!-- The rule itself. Not everything is necessary -->
