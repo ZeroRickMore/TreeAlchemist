@@ -1,0 +1,21 @@
+<tree>
+    <node root="yes">
+        <path>/</path>
+        <id>0</id>
+        <name>A</name>
+        <wazuh_rule_config>
+            <match>evil root log</match>
+            <description>An attacker has reached "Root" node</description>
+        </wazuh_rule_config>
+    </node>
+
+        <node>
+        <path>/</path>
+        <id>0</id>
+        <name>B</name>
+        <wazuh_rule_config>
+            <match>evil root log</match>
+            <description>An attacker has reached "Root" node</description>
+        </wazuh_rule_config>
+    </node>
+</tree>
