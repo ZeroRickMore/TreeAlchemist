@@ -36,4 +36,5 @@ def convert_xml_ADT_to_usable_structure(path_to_xml_ADT : str):
 
     print(root.tag)
 
-convert_xml_ADT_to_usable_structure("extremely-simple-ADT-toy.xml")
+if __name__ == '__main__':
+    convert_xml_ADT_to_usable_structure("extremely-simple-ADT-toy.xml")
