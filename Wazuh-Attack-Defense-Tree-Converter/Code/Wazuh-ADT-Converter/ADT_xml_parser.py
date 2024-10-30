@@ -312,7 +312,6 @@ def generate_ADT_from_xml_file(xml_tree_path : str):
 
         # <time>
         time = wrc_tag.findall('time')
-        print(time)
         # if it is present, must be only once
         if len(time) != 1 and len(time) != 0:
             ExitUtils.exit_with_error("<time> must be given exactly once, if given!")
@@ -320,7 +319,100 @@ def generate_ADT_from_xml_file(xml_tree_path : str):
         if len(time) == 1:
             curr_wrc.set_wrc_time(time[0].text)
         
+        # <weekday>
+        weekday = wrc_tag.findall('weekday')
+        # if it is present, must be only once
+        if len(weekday) != 1 and len(weekday) != 0:
+            ExitUtils.exit_with_error("<weekday> must be given exactly once, if given!")
+        # if given, process it
+        if len(weekday) == 1:
+            curr_wrc.set_wrc_weekday(weekday[0].text) 
+
+
+        # BOOLEAN TAGS =====================================================================
+
+        # <freq_same_srcip />
+        freq_same_srcip = wrc_tag.findall('freq_same_srcip')
+        # if it is present, must be only once
+        if len(freq_same_srcip) != 1 and len(freq_same_srcip) != 0:
+            ExitUtils.exit_with_error("<freq_same_srcip> must be given exactly once, if given!")
+        # if given, process it
+        if len(freq_same_srcip) == 1:
+            curr_wrc.set_wrc_same_srcip(True) 
+
+
+        # <freq_different_srcip />
+        freq_different_srcip = wrc_tag.findall('freq_different_srcip')
+        # if it is present, must be only once
+        if len(freq_different_srcip) != 1 and len(freq_different_srcip) != 0:
+            ExitUtils.exit_with_error("<freq_different_srcip> must be given exactly once, if given!")
+        # if given, process it
+        if len(freq_different_srcip) == 1:
+            curr_wrc.set_wrc_different_srcip(True) 
+
+
+        # <freq_same_srcport />
+        freq_same_srcport = wrc_tag.findall('freq_same_srcport')
+        # if it is present, must be only once
+        if len(freq_same_srcport) != 1 and len(freq_same_srcport) != 0:
+            ExitUtils.exit_with_error("<freq_same_srcport> must be given exactly once, if given!")
+        # if given, process it
+        if len(freq_same_srcport) == 1:
+            curr_wrc.set_wrc_same_srcport(True) 
+
+        # <freq_different_srcport />
+        freq_different_srcport = wrc_tag.findall('freq_different_srcport')
+        # if it is present, must be only once
+        if len(freq_different_srcport) != 1 and len(freq_different_srcport) != 0:
+            ExitUtils.exit_with_error("<freq_different_srcport> must be given exactly once, if given!")
+        # if given, process it
+        if len(freq_different_srcport) == 1:
+            curr_wrc.set_wrc_different_srcport(True) 
         
+        # <freq_same_dstport />
+        freq_same_dstport = wrc_tag.findall('freq_same_dstport')
+        # if it is present, must be only once
+        if len(freq_same_dstport) != 1 and len(freq_same_dstport) != 0:
+            ExitUtils.exit_with_error("<freq_same_dstport> must be given exactly once, if given!")
+        # if given, process it
+        if len(freq_same_dstport) == 1:
+            curr_wrc.set_wrc_same_dstport(True) 
+
+        # <freq_different_dstport />
+        freq_different_dstport = wrc_tag.findall('freq_different_dstport')
+        # if it is present, must be only once
+        if len(freq_different_dstport) != 1 and len(freq_different_dstport) != 0:
+            ExitUtils.exit_with_error("<freq_different_dstport> must be given exactly once, if given!")
+        # if given, process it
+        if len(freq_different_dstport) == 1:
+            curr_wrc.set_wrc_different_dstport(True) 
+
+        # <freq_same_location />
+        freq_same_location = wrc_tag.findall('freq_same_location')
+        # if it is present, must be only once
+        if len(freq_same_location) != 1 and len(freq_same_location) != 0:
+            ExitUtils.exit_with_error("<freq_same_location> must be given exactly once, if given!")
+        # if given, process it
+        if len(freq_same_location) == 1:
+            curr_wrc.set_wrc_same_location(True) 
+
+        # <freq_same_srcuser />
+        freq_same_srcuser = wrc_tag.findall('freq_same_srcuser')
+        # if it is present, must be only once
+        if len(freq_same_srcuser) != 1 and len(freq_same_srcuser) != 0:
+            ExitUtils.exit_with_error("<freq_same_srcuser> must be given exactly once, if given!")
+        # if given, process it
+        if len(freq_same_srcuser) == 1:
+            curr_wrc.set_wrc_same_srcuser(True) 
+
+        # <freq_different_srcuser />
+        freq_different_srcuser = wrc_tag.findall('freq_different_srcuser')
+        # if it is present, must be only once
+        if len(freq_different_srcuser) != 1 and len(freq_different_srcuser) != 0:
+            ExitUtils.exit_with_error("<freq_different_srcuser> must be given exactly once, if given!")
+        # if given, process it
+        if len(freq_different_srcuser) == 1:
+            curr_wrc.set_wrc_different_srcuser(True) 
 
         curr_infos.wazuh_rule_config = curr_wrc # Do NOT use this to access the variables. Use setters, to obtain a validation every time! This is for printing purposes!
 
