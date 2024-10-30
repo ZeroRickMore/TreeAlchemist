@@ -1,9 +1,14 @@
-from terminal_UI_utils import PrintUtils, ExitUtils
-from TreeNodeInformations import TreeNodeInformations
+from TreeClasses.TreeNodeInformations import TreeNodeInformations
 from typing import List
 
-from TreeNode import TreeNode
+# Import scripts from above folder
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from terminal_UI_utils import PrintUtils, ExitUtils
+
 class TreeNode:
+
     '''
     This class represents a node in the ADT.
     '''
@@ -11,9 +16,9 @@ class TreeNode:
 
     def __init__(self, informations : TreeNodeInformations = None):
         self.informations = informations
-        self.children : List[TreeNode] = []
+        self.children : List['TreeNode'] = []
 
-    def add_child(self, child_node : TreeNode):
+    def add_child(self, child_node : 'TreeNode'):
         '''
         Add a TreeNode child to a TreeNode.
         
@@ -24,7 +29,7 @@ class TreeNode:
             ExitUtils.exit_with_error(f"Cannot add child node with name {child_node.get_informations().get_name()} and id {child_node.get_informations().get_id()}\nas it is already present in parent node with name {self.get_informations().get_name()} and id {self.get_informations().get_id()}")
         self.children.append(child_node)
 
-    def is_child_present(self, child_node : TreeNode):
+    def is_child_present(self, child_node : 'TreeNode'):
         '''
         Checks if the given child node is already into self.
         '''
@@ -45,7 +50,7 @@ class TreeNode:
 
         self.get_informations().validate_all()
 
-    def get_children(self) -> List[TreeNode]:
+    def get_children(self) -> List['TreeNode']:
         return self.children
     
     def set_children(self, children):
