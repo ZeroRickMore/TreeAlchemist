@@ -11,6 +11,7 @@ def test():
     t.set_path("/")
     t.set_id(0)
     t.get_wazuh_rule_config().set_wrc_description("A good description!")
+    t.get_wazuh_rule_config().set_wrc_time("8-9")
     t.validate_all()
 
 
