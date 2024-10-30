@@ -10,6 +10,16 @@
         <id>0</id>                  <!-- Recommended to follow ID BEST PRACTICE -->
         <name>Very cool name for a very cool node!</name>   <!-- Any name that describes the node -->
         <wazuh_rule_config>        <!-- The rule itself. Not everything is necessary -->
+            <description>Very cool description for a very cool node!</description> <!-- Node == Rule description that will appear on Wazuh dashboard -->
+            <info>INFO: This node is EXTREMELY cool!</info> <!-- STACKABLE Extra information -->
+            <info type="link">https://www.very_cool_node.org</info> <!-- STACKABLE Extra information -->
+            <options>alert_by_email</options> <!-- STACKABLE One tag for each you need -->
+            <options>no_email_alert</options> <!-- STACKABLE One tag for each you need -->
+            <options>no_log</options> <!-- STACKABLE One tag for each you need -->
+            <options>no_full_log</options> <!-- STACKABLE One tag for each you need -->
+            <options>no_counter</options> <!-- STACKABLE One tag for each you need -->
+
+
             <frequency>2</frequency><!-- Amount of times a node must be reached before resulting into a problem -->
             <timeframe>5</timeframe><!-- How much time in seconds to reach the frequency described before. Launches a warning if used without <frequency> -->
             <ignore_after>10</ignore_after> <!-- Time in seconds after which the alert is ignored as if it never happened -->
@@ -36,14 +46,6 @@
             <freq_same_location /> <!-- Tells system to increse frequency counter for alerts raised from the same location -->
             <freq_same_srcuser /> <!-- Tells system to increse frequency counter for alerts raised from the same user -->
             <freq_different_srcuser /> <!-- Tells system to increse frequency counter for alerts raised from the different location -->
-            <description>#a good rule description#</description> <!-- Node == Rule description that will appear on Wazuh dashboard -->
-            <info>#any information#</info> <!-- STACKABLE Extra information -->
-            <info type="link">https://www.very_cool_website.org</info> <!-- STACKABLE Extra information -->
-            <options>alert_by_email</options> <!-- STACKABLE One tag for each you need -->
-            <options>no_email_alert</options> <!-- STACKABLE One tag for each you need -->
-            <options>no_log</options> <!-- STACKABLE One tag for each you need -->
-            <options>no_full_log</options> <!-- STACKABLE One tag for each you need -->
-            <options>no_counter</options> <!-- STACKABLE One tag for each you need -->
         </wazuh_rule_config>
         <!-- Configuration of the defense. If the node has none, omit it completely -->
 
