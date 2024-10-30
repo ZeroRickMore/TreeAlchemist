@@ -485,6 +485,27 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
     #print("\nnode_id_to_node    ==================================\n\n"+"\n".join(f'{id} : {node.get_informations().get_name()} --- {node.get_informations().get_id()}' for id, node in node_id_to_node.items()))
     #print("\nnode_name_to_id    ==================================\n\n"+"\n".join(f'{name} : {id}' for name, id in node_name_to_id.items()))
 
+
+    # After the processing stage, check if all of the elements in every single path lead to a real node
+    for path in node_path_to_nodes:
+        path = str(path)
+        if path == '/': # This path is only theoretical and identifies the root node
+            continue
+        
+        node_names_or_ids = path.split("/")
+        node_names_or_ids = [n for n in node_names_or_ids if n != ''] # No empty string, thanks.
+
+        for node_name_or_id in node_names_or_ids:
+            try:
+                if node_name_or_id.isdigit(): # it is an id
+                    node_id_to_node[node_name_or_id]
+                else: # It is a name
+                    node_id_to_node[node_name_to_id[node_name_or_id]]
+            except: # This is a value error if not found in the dict, hence it does not exist and is not identified as a valid existing node
+                ExitUtils.exit_with_error(f"The path:\n\n\t[{path}]\n\ncontains an invalid node name or id : \n\n[{node_name_or_id}].\n\nFix it before trying again.")
+
+
+
     # NOW THE ACTUAL TREE NODES CONNECTIONS
     '''
     Sample tree structure:
@@ -495,17 +516,21 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
     /Root/Child4/: ['Child4_1 --- 7']
     
     '''
+
+
+
     ADT = Tree()
+
+    # Try to assign the root and see if it's present
+    try:
+        ADT.set_root(node_path_to_nodes['/'][0])
+    except:
+        ExitUtils.exit_with_error('You MUST provide a <node> as root="yes".\nElse, the tree would have no root...')
 
     # Check if one and only one "root" is given
     if len(node_path_to_nodes['/']) > 1:
         ExitUtils.exit_with_error('You MUST provide a SINGLE <node> as root="yes".\nElse, the tree would have more than one root...')
 
-    try:
-        ADT.set_root(node_path_to_nodes['/'][0])
-        
-    except:
-        ExitUtils.exit_with_error('You MUST provide a <node> as root="yes".\nElse, the tree would have no root...')
 
     #print(ADT.get_root().get_informations().get_name())
 
@@ -523,11 +548,11 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
             parent_name_or_id = path.split("/")[-2] # The second to last entry of the path is the parent name or id. Why? /Root/ -> ['', 'Root', '']
             #print(f"PATH IS -> [{path}] - NAME OR ID IS -> [{parent_name_or_id}]")
             is_id = bool(parent_name_or_id.isdigit())
-            
             if is_id:
                 parent_node = node_id_to_node[parent_name_or_id]
             else:
                 parent_node = node_id_to_node[node_name_to_id[parent_name_or_id]] # Why not map name to node directly? It seems memory-intensive on big trees...
+                
 
         # Append children
         for child in node_path_to_nodes[path]:
@@ -541,7 +566,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
 
 
 # Oh no! My extremely secret path has been leaked on Github...
-#generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-functional.xml")
+ADT : Tree = generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-functional.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-wrong-alr-exist-id.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-wrong-alr-exist-id.xml")
 ADT : Tree = generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\test-tree\tree.xml")
