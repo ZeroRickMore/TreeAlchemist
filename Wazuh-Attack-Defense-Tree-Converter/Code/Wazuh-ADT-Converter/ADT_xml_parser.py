@@ -74,7 +74,7 @@ def validate_xml_tree_file(xml_tree_path : str):
     return root.tag == 'tree'
 
 
-def generate_ADT_from_xml_file(xml_tree_path : str):
+def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
     '''
     Read the xml and generate the real data structure.
     '''
@@ -452,13 +452,31 @@ def generate_ADT_from_xml_file(xml_tree_path : str):
         if len(freq_different_srcuser) == 1:
             curr_wrc.set_wrc_different_srcuser(True) 
 
-        curr_infos.wazuh_rule_config = curr_wrc # Do NOT use this to access the variables. Use setters, to obtain a validation every time! This is for printing purposes!
+        curr_infos.set_wazuh_rule_config(curr_wrc)
 
-        print(curr_infos.to_string_raw())
-        curr_node = TreeNode()
+        #print(curr_infos.to_string_raw())
+        curr_node = TreeNode(curr_infos)
+
+        curr_node.get_informations().validate_all() # A very last total validate
+
+        # Insert into the dict 
+        curr_path = curr_node.get_informations().get_path() # Extra sureness by getting the path directly from the newly created node
+        if curr_path in node_path_to_node:
+            node_path_to_node[curr_path].append(curr_node)
+        else:
+            node_path_to_node[curr_path] = [curr_node]
+
+    # Very human syntax to print the dict
+    print("\n".join(f'{path}: { [f"{node.get_informations().get_name()} --- {node.get_informations().get_id()}" for node in nodelist] }' for path, nodelist in node_path_to_node.items()))
+
+
+    
+    return curr_node
 
 
 # Oh no! My extremely secret path has been leaked on Github...
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-functional.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-wrong-alr-exist-id.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-wrong-alr-exist-id.xml")
+#generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\test-tree\tree.xml")
+#generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-mismatched-root-path.xml")
