@@ -123,8 +123,8 @@ class WazuhRuleConfig:
         if self.print_diagnostics:
             PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <frequency> of node {self.relative_node_name} has been succesfully set to {frequency}")
     
-    def to_string_wrc_frequency(self) -> str:
-        return f"<frequency>{self.get_wrc_frequency()}</frequency>"
+    #def to_string_wrc_frequency(self) -> str:
+    #    return f"<frequency>{self.get_wrc_frequency()}</frequency>"
 
 
     # ============================================
@@ -156,8 +156,8 @@ class WazuhRuleConfig:
         if self.print_diagnostics:
             PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <timeframe> of node {self.relative_node_name} has been succesfully set to {timeframe}")
 
-    def to_string_wrc_timeframe(self) -> str:
-        return f"<timeframe>{self.get_wrc_timeframe()}</timeframe>"
+    #def to_string_wrc_timeframe(self) -> str:
+    #    return f"<timeframe>{self.get_wrc_timeframe()}</timeframe>"
 
 
     # ============================================
@@ -188,8 +188,8 @@ class WazuhRuleConfig:
         if self.print_diagnostics:
             PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, <ignore> of node {self.relative_node_name} has been succesfully set to {ignore}")
        
-    def to_string_wrc_ignore(self) -> str:
-        return f"<ignore>{self.get_wrc_ignore()}</ignore>"
+    #def to_string_wrc_ignore(self) -> str:
+    #    return f"<ignore>{self.get_wrc_ignore()}</ignore>"
 
 
     # ============================================
@@ -1036,87 +1036,106 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     # General to_string
     # ============================================   
 
-    def to_string(self, tab_times : int = 0):
+    def to_string(self):
         '''
-        Method that returns a stringified version of the whole node.
+        Method that returns a stringified version of the wazuh_rule_config part of the node.
         This is what will compose the rule itself.
+
+        To populate id and level, replace
+        PLACEHOLDER_ID with the id
+        PLACEHOLDER_LEVEL with the level
         '''
-        string   =   ''
+        string   =   '<rule id="PLACEHOLDER_ID" level="PLACEHOLDER_LEVEL"'
 
+        # Insert frequency=""
+        if self.get_wrc_frequency() is not None:
+            string  +=   f' frequency="{self.get_wrc_frequency()}"' # Optional
+        # Insert timeframe=""
+        if self.get_wrc_timeframe() is not None:
+            string  +=   f' timeframe="{self.get_wrc_timeframe()}"' # Optional
+        # Insert ignore=""
+        if self.get_wrc_ignore() is not None:
+            string  +=   f' frequency="{self.get_wrc_ignore()}"' # Optional
+
+        string += '>\n' # Close the <rule> tag
         # Insert <description>
-        string      +=   ('\t'*tab_times)+self.to_string_wrc_description()+'\n'  # Mandatory
+        string      +=   '\t'+self.to_string_wrc_description()+'\n'  # Mandatory
 
-        # Insert <if_sid> - Guard to save some processing time
-        if self.get_wrc_already_existing_id() is not None:
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_already_existing_id()+'\n' # Optional
-            return string # Already done! No more to check, as this is a standalone tag.  
 
         # Insert <info>
         if self.get_wrc_info() is not None:
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_info() # Optional
-        # Insert <info>
-        if self.get_wrc_frequency() is not None:
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_frequency()+'\n' # Optional
-        # Insert <timeframe>
-        if self.get_wrc_timeframe() is not None:
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_timeframe()+'\n' # Optional
-        # Insert <ignore>
-        if self.get_wrc_ignore() is not None:
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_ignore()+'\n' # Optional    
+            string  +=   '\t'+self.to_string_wrc_info() # Optional
+
+        # Insert <if_sid> - Guard to save some processing time
+        if self.get_wrc_already_existing_id() is not None:
+            string  +=   '\t'+self.to_string_wrc_already_existing_id()+'\n' # Optional
+            return string # Already done! No more to check, as this is a standalone tag.  
+
+
         # Insert <match>
         if self.get_wrc_match() is not None:
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_match() # Optional    
+            string  +=   '\t'+self.to_string_wrc_match() # Optional    
         # Insert <regex>
         if self.get_wrc_regex() is not None:
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_regex() # Optional    
+            string  +=   '\t'+self.to_string_wrc_regex() # Optional    
         # Insert <srcip>
         if self.get_wrc_srcip() is not None:
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_srcip() # Optional   
+            string  +=   '\t'+self.to_string_wrc_srcip() # Optional   
         # Insert <dstip>
         if self.get_wrc_dstip() is not None:
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_dstip() # Optional   
+            string  +=   '\t'+self.to_string_wrc_dstip() # Optional   
         # Insert <srcport>
         if self.get_wrc_srcport() is not None:
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_srcport() # Optional   
+            string  +=   '\t'+self.to_string_wrc_srcport() # Optional   
         # Insert <dstport>
         if self.get_wrc_dstport() is not None:
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_dstport() # Optional   
+            string  +=   '\t'+self.to_string_wrc_dstport() # Optional   
         # Insert <time>
         if self.get_wrc_time() is not None:
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_time()+'\n' # Optional   
+            string  +=   '\t'+self.to_string_wrc_time()+'\n' # Optional   
         # Insert <weekday>
         if self.get_wrc_weekday() is not None:
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_weekday()+'\n' # Optional   
+            string  +=   '\t'+self.to_string_wrc_weekday()+'\n' # Optional   
         # Insert <same_srcip>
         if self.get_wrc_same_srcip():
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_same_srcip()+'\n' # Optional 
+            string  +=   '\t'+self.to_string_wrc_same_srcip()+'\n' # Optional 
         # Insert <different_srcip>
         if self.get_wrc_different_srcip():
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_different_srcip()+'\n' # Optional 
+            string  +=   '\t'+self.to_string_wrc_different_srcip()+'\n' # Optional 
         # Insert <same_srcport>
         if self.get_wrc_same_srcport():
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_same_srcport()+'\n' # Optional   
+            string  +=   '\t'+self.to_string_wrc_same_srcport()+'\n' # Optional   
         # Insert <different_srcport>
         if self.get_wrc_different_srcport():
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_different_srcport()+'\n' # Optional         
+            string  +=   '\t'+self.to_string_wrc_different_srcport()+'\n' # Optional         
         # Insert <same_dstport>
         if self.get_wrc_same_dstport():
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_same_dstport()+'\n' # Optional    
+            string  +=   '\t'+self.to_string_wrc_same_dstport()+'\n' # Optional    
         # Insert <different_dstport>
         if self.get_wrc_different_dstport():
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_different_dstport()+'\n' # Optional 
+            string  +=   '\t'+self.to_string_wrc_different_dstport()+'\n' # Optional 
         # Insert <same_location>
         if self.get_wrc_same_location():
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_same_location()+'\n' # Optional
+            string  +=   '\t'+self.to_string_wrc_same_location()+'\n' # Optional
         # Insert <same_srcuser>
         if self.get_wrc_same_srcuser():
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_same_srcuser()+'\n' # Optional 
+            string  +=   '\t'+self.to_string_wrc_same_srcuser()+'\n' # Optional 
         # Insert <different_srcuser>
         if self.get_wrc_different_srcuser():
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_different_srcuser()+'\n' # Optional 
+            string  +=   '\t'+self.to_string_wrc_different_srcuser()+'\n' # Optional 
         # Insert <options>
         if self.get_wrc_options() is not None:
-            string  +=   ('\t'*tab_times)+self.to_string_wrc_options()+'\n' # Optional   
+            string  +=   '\t'+self.to_string_wrc_options()+'\n' # Optional   
 
+        string += '</rule>'
         return string
 
+
+
+w = WazuhRuleConfig()
+w.set_wrc_description("Very useful desc!")
+w.set_wrc_frequency(5)
+w.set_wrc_timeframe(10)
+w.set_wrc_time("9-19")
+w.validate_all()
+print(w.to_string())
