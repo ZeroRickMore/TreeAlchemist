@@ -235,7 +235,81 @@ def generate_ADT_from_xml_file(xml_tree_path : str):
                 regex_object.set_wrc_regex_regex(m.text)
                 curr_regex.append(regex_object)
             curr_wrc.set_wrc_regex(curr_regex)
-            
+
+        # <srcip>
+        srcip = wrc_tag.findall('srcip')
+        # if given, process it
+        if len(srcip) >= 1:
+            curr_srcip : List[Srcip] = []
+            for m in srcip:
+                srcip_object = Srcip(relative_node_name=curr_infos.get_name())
+                # negate=""
+                srcip_negate = m.get('negate')
+                if srcip_negate is not None:
+                    srcip_object.set_wrc_srcip_negate(srcip_negate)
+                # content
+                srcip_object.set_wrc_srcip_srcip(m.text)
+                curr_srcip.append(srcip_object)
+            curr_wrc.set_wrc_srcip(curr_srcip)
+
+
+        # <dstip>
+        dstip = wrc_tag.findall('dstip')
+        # if given, process it
+        if len(dstip) >= 1:
+            curr_dstip : List[Dstip] = []
+            for m in dstip:
+                dstip_object = Dstip(relative_node_name=curr_infos.get_name())
+                # negate=""
+                dstip_negate = m.get('negate')
+                if dstip_negate is not None:
+                    dstip_object.set_wrc_dstip_negate(dstip_negate)
+                # content
+                dstip_object.set_wrc_dstip_dstip(m.text)
+                curr_dstip.append(dstip_object)
+            curr_wrc.set_wrc_dstip(curr_dstip)
+
+        # <srcport>
+        srcport = wrc_tag.findall('srcport')
+        # if given, process it
+        if len(srcport) >= 1:
+            curr_srcport : List[Srcport] = []
+            for m in srcport:
+                srcport_object = Srcport(relative_node_name=curr_infos.get_name())
+                # negate=""
+                srcport_negate = m.get('negate')
+                if srcport_negate is not None:
+                    srcport_object.set_wrc_srcport_negate(srcport_negate)
+                # type=""
+                srcport_type = m.get('type')
+                if srcport_type is not None:
+                    srcport_object.set_wrc_srcport_type(srcport_type)
+                # content
+                srcport_object.set_wrc_srcport_srcport(m.text)
+                curr_srcport.append(srcport_object)
+            curr_wrc.set_wrc_srcport(curr_srcport)
+
+
+        # <dstport>
+        dstport = wrc_tag.findall('dstport')
+        # if given, process it
+        if len(dstport) >= 1:
+            curr_dstport : List[Dstport] = []
+            for m in dstport:
+                dstport_object = Dstport(relative_node_name=curr_infos.get_name())
+                # negate=""
+                dstport_negate = m.get('negate')
+                if dstport_negate is not None:
+                    dstport_object.set_wrc_dstport_negate(dstport_negate)
+                # type=""
+                dstport_type = m.get('type')
+                if dstport_type is not None:
+                    dstport_object.set_wrc_dstport_type(dstport_type)
+                # content
+                dstport_object.set_wrc_dstport_dstport(m.text)
+                curr_dstport.append(dstport_object)
+            curr_wrc.set_wrc_dstport(curr_dstport)
+
 
         curr_infos.wazuh_rule_config = curr_wrc # Do NOT use this to access the variables. Use setters, to obtain a validation every time! This is for printing purposes!
 
