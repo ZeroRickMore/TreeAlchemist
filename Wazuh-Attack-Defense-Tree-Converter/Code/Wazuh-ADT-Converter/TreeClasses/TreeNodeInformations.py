@@ -313,11 +313,11 @@ class TreeNodeInformations:
 
         return self.get_wazuh_rule_config().to_string(tab_times=tab_times)
 
-    def to_string_raw(self) -> str:
-        attributes = "\n".join(f"{key}: {value}" for key, value in vars(self).items() if key != 'wazuh_rule_config')
-        attributes += '\nwazuh_rule_config:\n'
-        attributes += self.get_wazuh_rule_config().to_string(tab_times=1)
-        return f"(\n{attributes}\n)"
+    def to_string_raw(self, tab_times : int = 0) -> str:
+        attributes = f"\n".join(f"{'\t'*tab_times}{key}: {value}" for key, value in vars(self).items() if key != 'wazuh_rule_config')
+        attributes += f'\n{'\t'*tab_times}wazuh_rule_config:\n'
+        attributes += self.get_wazuh_rule_config().to_string(tab_times=tab_times+1)
+        return f"\n{attributes}\n"
 
 
 

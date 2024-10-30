@@ -6,6 +6,7 @@ current_directory = os.path.dirname(os.path.abspath(__file__))
 # Append the current directory to sys.path
 sys.path.append(current_directory)
 from TreeClasses.TreeNode import TreeNode
+from terminal_UI_utils import PrintUtils
 
 class Tree:
     '''
@@ -73,7 +74,7 @@ class Tree:
             
             # Indentation and structure for current node
             prefix = "\t" * depth + ("└── " if depth > 0 else "")
-            print(f"{prefix}{node.get_informations().get_name()}")
+            PrintUtils.print_in_sky_blue(f"{prefix}{node.get_informations().get_name()}", end="")
 
             # Recursively print each child
             for child in node.children:
@@ -82,4 +83,28 @@ class Tree:
         print_subtree(self.root)
 
 
+    def print_tree_for_debug_with_explicit_nodes(self):
+        # Helper function to recursively print the tree
+        def print_subtree(node : TreeNode, depth=0):
+            if node is None:
+                return
+            
+            # Indentation and structure for current node
+            
+            prefix = "\t\t" * depth + ("└─────  " if depth > 0 else "")
+            rules_tab_depth = depth + 2
+            give_tabs_to_rules =  "\t" * rules_tab_depth
+            prefix = f"{prefix}{node.to_string_minimal()}\n\n{give_tabs_to_rules}==================\n"
+            to_print = f"{node.get_informations().to_string_raw(tab_times=rules_tab_depth)}\n"
+            suffix = f"{give_tabs_to_rules}==================\n"
+
+            print(prefix)
+            PrintUtils.print_on_a_number_chosen_color(text=to_print, end="", num=depth)
+            print(suffix)
+
+            # Recursively print each child
+            for child in node.children:
+                print_subtree(child, depth + 1)
+
+        print_subtree(self.root)
 

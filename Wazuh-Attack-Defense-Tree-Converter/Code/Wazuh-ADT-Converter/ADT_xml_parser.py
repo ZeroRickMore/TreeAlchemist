@@ -551,7 +551,8 @@ ADT : Tree = generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-D
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-duplicate-id.xml")
 
 
-ADT.print_tree_for_debug()
+ADT.print_tree_for_debug_with_explicit_nodes()
 
-print(ADT.get_root().to_string_minimal())
-print(ADT.get_root().to_string_minimal_children())
+#print(ADT.get_root().to_string_minimal())
+#print(ADT.get_root().to_string_minimal_children())
+

@@ -69,7 +69,7 @@ class TreeNode:
     
 
     def to_string_minimal(self):
-        return f"{self.get_informations().get_name()}_ID={self.get_informations().get_id()}"
+        return f"{self.get_informations().get_name()}___ID={self.get_informations().get_id()}"
     
     def to_string_minimal_children(self):
         return f"{ "\n".join(_.to_string_minimal() for _ in self.get_children())}"
