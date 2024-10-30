@@ -481,9 +481,9 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
 
 
     # Very human syntax to print the dict
-    print("\nnode_path_to_nodes ==================================\n\n"+"\n".join(f'{path} : { [f"{node.get_informations().get_name()} --- {node.get_informations().get_id()}" for node in nodelist] }' for path, nodelist in node_path_to_nodes.items()))
-    print("\nnode_id_to_node    ==================================\n\n"+"\n".join(f'{id} : {node.get_informations().get_name()} --- {node.get_informations().get_id()}' for id, node in node_id_to_node.items()))
-    print("\nnode_name_to_id    ==================================\n\n"+"\n".join(f'{name} : {id}' for name, id in node_name_to_id.items()))
+    #print("\nnode_path_to_nodes ==================================\n\n"+"\n".join(f'{path} : { [f"{node.get_informations().get_name()} --- {node.get_informations().get_id()}" for node in nodelist] }' for path, nodelist in node_path_to_nodes.items()))
+    #print("\nnode_id_to_node    ==================================\n\n"+"\n".join(f'{id} : {node.get_informations().get_name()} --- {node.get_informations().get_id()}' for id, node in node_id_to_node.items()))
+    #print("\nnode_name_to_id    ==================================\n\n"+"\n".join(f'{name} : {id}' for name, id in node_name_to_id.items()))
 
     # NOW THE ACTUAL TREE NODES CONNECTIONS
     '''
@@ -535,17 +535,23 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
             parent_node.add_child(child)
 
         # This is not a human syntax but I somehow like it...
-        print(f"[{parent_name_or_id if parent_name_or_id is not None else ''}] is a [{("digit" if is_id else "name") if is_id is not None else ''}] mapped to [{parent_node.get_informations().get_name()}]. His children are: {[_.get_informations().get_name() for _ in parent_node.get_children() ]}")
+        #print(f"[{parent_name_or_id if parent_name_or_id is not None else ''}] is a [{("digit" if is_id else "name") if is_id is not None else ''}] mapped to [{parent_node.get_informations().get_name()}]. His children are: {[_.get_informations().get_name() for _ in parent_node.get_children() ]}")
     
-    return curr_node
+    return ADT
 
 
 # Oh no! My extremely secret path has been leaked on Github...
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-functional.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-wrong-alr-exist-id.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-wrong-alr-exist-id.xml")
-generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\test-tree\tree.xml")
+ADT : Tree = generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\test-tree\tree.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-mismatched-root-path.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-too-many-roots.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-duplicate-name.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-duplicate-id.xml")
+
+
+ADT.print_tree_for_debug()
+
+print(ADT.get_root().to_string_minimal())
+print(ADT.get_root().to_string_minimal_children())
