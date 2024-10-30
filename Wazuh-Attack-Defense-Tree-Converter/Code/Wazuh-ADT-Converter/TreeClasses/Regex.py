@@ -141,7 +141,7 @@ class Regex:
     # ============================================
 
     def to_string(self):
-        print(f'<regex negate="{self.get_wrc_regex_negate()}" type="{self.get_wrc_regex_type()}">{self.get_wrc_regex_regex()}</regex>')
+        return f'<regex negate="{self.get_wrc_regex_negate()}" type="{self.get_wrc_regex_type()}">{self.get_wrc_regex_regex()}</regex>'
 
 
 
