@@ -143,6 +143,17 @@ def generate_ADT_from_xml_file(xml_tree_path : str):
             ExitUtils.exit_with_error("<wazuh_rule_config> must be given exactly once!")
         wrc_tag = wrc_tag[0]
 
+
+        # <description>
+        description = wrc_tag.findall('description')
+        # if it is present, must be only once
+        if len(description) != 1 and len(description) != 0:
+            ExitUtils.exit_with_error("<description> must be given exactly once, if given! If you gave more than one, just collapse them into a sigle string.\nIt will not go in a new line on Wazuh Dashboard, anyway.")
+        # if given, process it
+        if len(description) == 1:
+            curr_wrc.set_wrc_description(description[0].text)
+
+
         # <frequency>
         frequency = wrc_tag.findall('frequency')
         # if it is present, must be only once
