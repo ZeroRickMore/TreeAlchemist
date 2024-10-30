@@ -900,8 +900,8 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
             PrintUtils.print_in_green(f"- Inside <wazuh_rule_config>, all <info> entries of node {self.relative_node_name} have been succesfully set to: {([_.to_string() for _ in all_info]) if all_info is not None else None}")
         # else: is covered inside of info.validate_all() already
 
-    def to_string_wrc_info(self) -> str:
-        return f"{"\n".join([f"<{info}>" for info in self.get_wrc_info()])}"
+    def to_string_wrc_info(self, tab_times : int = 0) -> str:
+        return f"{"\n".join([f"{'\t'*tab_times}{info.to_string()}" for info in self.get_wrc_info()])}"
 
 
     # ============================================
@@ -1065,7 +1065,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
 
         # Insert <info>
         if self.get_wrc_info() is not None:
-            string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_info()+'\n' # Optional
+            string  +=    self.to_string_wrc_info(tab_times=tab_times+1)+'\n' # Optional
 
         # Insert <if_sid> - Guard to save some processing time
         if self.get_wrc_already_existing_id() is not None:
