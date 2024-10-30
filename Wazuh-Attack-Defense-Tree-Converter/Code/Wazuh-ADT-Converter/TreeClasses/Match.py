@@ -136,7 +136,7 @@ class Match:
     # ============================================
 
     def to_string(self):
-        print(f'<match negate="{self.get_wrc_match_negate()}" type="{self.get_wrc_match_type()}">{self.get_wrc_match_match()}</match>')
+        return f'<match negate="{self.get_wrc_match_negate()}" type="{self.get_wrc_match_type()}">{self.get_wrc_match_match()}</match>'
 
 
 
