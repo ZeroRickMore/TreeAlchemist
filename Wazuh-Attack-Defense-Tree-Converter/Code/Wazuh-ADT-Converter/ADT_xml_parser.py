@@ -78,8 +78,13 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
     '''
     Read the xml and generate the real data structure.
     '''
-    node_conjunctions : List[tuple] = []
-    node_path_to_node : dict        = {}   # str -> TreeNode
+    node_conjunctions : List[tuple]     = []
+
+    # These dictionaries allow a quick lookup for the nodes rather than a tree visit later on.
+    node_path_to_nodes : dict           = {}   # str -> List[TreeNode]
+    node_id_to_node    : dict           = {}   
+    node_name_to_id    : dict           = {}
+
     try:
       t = ET.parse(xml_tree_path)
     except ET.ParseError as e:
@@ -89,8 +94,6 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
             ExitUtils.exit_with_error(f"XML Parse Error: {e}")
         
     root = t.getroot()
-
-    ADT = Tree()
 
     for node in root.findall("node"):
         
@@ -459,16 +462,52 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
 
         curr_node.get_informations().validate_all() # A very last total validate
 
-        # Insert into the dict 
+        # Insert into the dicts
         curr_path = curr_node.get_informations().get_path() # Extra sureness by getting the path directly from the newly created node
-        if curr_path in node_path_to_node:
-            node_path_to_node[curr_path].append(curr_node)
+        if curr_path in node_path_to_nodes:
+            node_path_to_nodes[curr_path].append(curr_node)
         else:
-            node_path_to_node[curr_path] = [curr_node]
+            node_path_to_nodes[curr_path] = [curr_node]
+
+        curr_id = curr_node.get_informations().get_id()
+        if curr_id in node_id_to_node:
+            ExitUtils.exit_with_error(f"The <id> [ {curr_id} ] is duplicated! You MUST use different <id> for each node.")
+        node_id_to_node[curr_id] = curr_node    
+    
+        curr_name = curr_node.get_informations().get_name()
+        if curr_name in node_name_to_id:
+            ExitUtils.exit_with_error(f"The <name> [ {curr_name} ] is duplicated! You MUST use different <name> for each node.")
+        node_name_to_id[curr_name] = curr_id 
+
 
     # Very human syntax to print the dict
-    print("\n".join(f'{path}: { [f"{node.get_informations().get_name()} --- {node.get_informations().get_id()}" for node in nodelist] }' for path, nodelist in node_path_to_node.items()))
+    print("\nnode_path_to_nodes ==================================\n\n"+"\n".join(f'{path} : { [f"{node.get_informations().get_name()} --- {node.get_informations().get_id()}" for node in nodelist] }' for path, nodelist in node_path_to_nodes.items()))
+    print("\nnode_id_to_node    ==================================\n\n"+"\n".join(f'{id} : {node.get_informations().get_name()} --- {node.get_informations().get_id()}' for id, node in node_id_to_node.items()))
+    print("\nnode_name_to_id    ==================================\n\n"+"\n".join(f'{name} : {id}' for name, id in node_name_to_id.items()))
 
+    # NOW THE ACTUAL TREE NODES CONNECTIONS
+    '''
+    Sample tree structure:
+
+    /: ['Root --- 0']
+    /Root/: ['Child1 Conj --- 1', 'Child2 Conj --- 2', 'Child3 --- 3', 'Child4 --- 4']
+    /Root/Child1 Conj/: ['Child1_1 --- 5', 'Child1_2 --- 6']
+    /Root/Child4/: ['Child4_1 --- 7']
+    
+    '''
+    ADT = Tree()
+
+    # Check if one and only one "root" is given
+    if len(node_path_to_nodes['/']) > 1:
+        ExitUtils.exit_with_error('You MUST provide a SINGLE <node> as root="yes".\nElse, the tree would have more than one root...')
+
+    try:
+        ADT.set_root(node_path_to_nodes['/'][0])
+    except:
+        ExitUtils.exit_with_error('You MUST provide a <node> as root="yes".\nElse, the tree would have no root...')
+
+    for path in node_path_to_nodes:
+        node_path_to_nodes[path]
 
     
     return curr_node
@@ -480,3 +519,6 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-wrong-alr-exist-id.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\test-tree\tree.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-mismatched-root-path.xml")
+#generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-too-many-roots.xml")
+#generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-duplicate-name.xml")
+#generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-duplicate-id.xml")
