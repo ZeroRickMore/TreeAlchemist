@@ -310,6 +310,17 @@ def generate_ADT_from_xml_file(xml_tree_path : str):
                 curr_dstport.append(dstport_object)
             curr_wrc.set_wrc_dstport(curr_dstport)
 
+        # <time>
+        time = wrc_tag.findall('time')
+        print(time)
+        # if it is present, must be only once
+        if len(time) != 1 and len(time) != 0:
+            ExitUtils.exit_with_error("<time> must be given exactly once, if given!")
+        # if given, process it
+        if len(time) == 1:
+            curr_wrc.set_wrc_time(time[0].text)
+        
+        
 
         curr_infos.wazuh_rule_config = curr_wrc # Do NOT use this to access the variables. Use setters, to obtain a validation every time! This is for printing purposes!
 
