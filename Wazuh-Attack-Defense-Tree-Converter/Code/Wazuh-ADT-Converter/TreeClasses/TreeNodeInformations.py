@@ -291,6 +291,12 @@ class TreeNodeInformations:
         self.validate_name_with_error_launch()
             
         self.validate_wazuh_rule_config()
+
+        # if node is root, it must have path = '/'
+
+        if self.get_root() == "yes" and self.get_path() != '/':
+            error_prefix = f"The node {self.get_name()} with id {self.get_id()} failed validation on"
+            ExitUtils.exit_with_error(f'{error_prefix} <node root="yes"> and <path> together.\nIf root is set to "yes", the path MUST be / by definition.')
             
 
     # ============================================

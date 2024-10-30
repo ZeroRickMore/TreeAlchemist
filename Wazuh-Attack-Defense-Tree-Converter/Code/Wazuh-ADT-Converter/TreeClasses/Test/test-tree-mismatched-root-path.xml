@@ -1,0 +1,11 @@
+<tree>
+    <node root="yes">           <!-- Setting this to "yes" means the path MUST be / -->
+        <path>/wrong/</path>    <!-- This MUST be / -->
+        <id>0</id>
+        <name>Root</name>
+        <wazuh_rule_config>
+            <match>evil root log</match>
+            <description>An attacker has reached "Root" node</description>
+        </wazuh_rule_config>
+    </node>
+</tree>
