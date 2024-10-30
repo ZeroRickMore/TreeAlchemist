@@ -17,14 +17,14 @@
             <match>very evil log2</match> <!-- STACKABLE String literal log search -->
             <regex>^very evil log$</regex> <!-- STACKABLE Regex log search -->
             <regex negate="yes">^very evil log2$</regex> <!-- STACKABLE Regex log search -->
-            <freq_srcip negate="yes">0.0.0.0</freq_srcip> <!-- STACKABLE src IP to look out for -->
-            <freq_srcip>10.0.0.0</freq_srcip> <!-- STACKABLE src IP to look out for -->
-            <freq_dstip negate="yes">1.1.1.1</freq_dstip> <!-- STACKABLE dst IP to look out for -->
-            <freq_dstip>10.1.1.1</freq_dstip> <!-- STACKABLE dst IP to look out for -->
-            <freq_srcport negate="yes" type="osregex">^8080$</freq_srcport> <!-- STACKABLE src PORT to look out for -->
-            <freq_srcport>^8080$</freq_srcport> <!-- STACKABLE dst PORT to look out for -->
-            <freq_dstport negate="yes" type="osregex">^9090$</freq_dstport> <!-- STACKABLE src PORT to look out for -->
-            <freq_dstport>^9090$</freq_dstport> <!-- STACKABLE dst PORT to look out for -->
+            <srcip negate="yes">0.0.0.0</srcip> <!-- STACKABLE src IP to look out for -->
+            <srcip>10.0.0.0</srcip> <!-- STACKABLE src IP to look out for -->
+            <dstip negate="yes">1.1.1.1</dstip> <!-- STACKABLE dst IP to look out for -->
+            <dstip>10.1.1.1</dstip> <!-- STACKABLE dst IP to look out for -->
+            <srcport negate="yes" type="osregex">^8080$</srcport> <!-- STACKABLE src PORT to look out for -->
+            <srcport>8080</srcport> <!-- STACKABLE dst PORT to look out for -->
+            <dstport negate="yes" type="osregex">^9090$</dstport> <!-- STACKABLE src PORT to look out for -->
+            <dstport>9090</dstport> <!-- STACKABLE dst PORT to look out for -->
             <time>8-10</time> <!-- Time interval when the rule is active -->
             <weekday>monday - sunday</weekday> <!-- Week interval when the rule is active -->
             <freq_same_srcip /> <!-- Tells system to increse frequency counter for alerts having same srcip -->

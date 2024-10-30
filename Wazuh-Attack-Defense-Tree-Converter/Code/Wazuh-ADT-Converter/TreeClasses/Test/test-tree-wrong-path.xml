@@ -12,14 +12,14 @@
             <match>very evil log2</match> 
             <regex>^very evil log$</regex> 
             <regex negate="yes">^very evil log2$</regex> 
-            <freq_srcip negate="yes">0.0.0.0</freq_srcip> 
-            <freq_srcip>10.0.0.0</freq_srcip> 
-            <freq_dstip negate="yes">1.1.1.1</freq_dstip> 
-            <freq_dstip>10.1.1.1</freq_dstip> 
-            <freq_srcport negate="yes" type="osregex">^8080$</freq_srcport> 
-            <freq_srcport>^8080$</freq_srcport> 
-            <freq_dstport negate="yes" type="osregex">^9090$</freq_dstport> 
-            <freq_dstport>^9090$</freq_dstport> 
+            <srcip negate="yes">0.0.0.0</srcip> 
+            <srcip>10.0.0.0</srcip> 
+            <dstip negate="yes">1.1.1.1</dstip> 
+            <dstip>10.1.1.1</dstip> 
+            <srcport negate="yes" type="osregex">^8080$</srcport> 
+            <srcport>^8080$</srcport> 
+            <dstport negate="yes" type="osregex">^9090$</dstport> 
+            <dstport>^9090$</dstport> 
             <time>8-10</time> 
             <weekday>monday - sunday</weekday> 
             <freq_same_srcip /> 
@@ -39,12 +39,5 @@
             <options>no_full_log</options> 
             <options>no_counter</options> 
         </wazuh_rule_config>
-        
-
     </node>
-    
-    
-    <conjunction>#4,5#</conjunction>
-    
-    <conjunction>#Files access,, very bad , Other node#</conjunction>
 </tree>
