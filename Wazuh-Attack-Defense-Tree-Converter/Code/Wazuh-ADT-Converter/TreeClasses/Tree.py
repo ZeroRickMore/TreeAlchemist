@@ -1,4 +1,11 @@
-from TreeNode import *
+# Annoying way to make the import always work
+import sys
+import os
+# Get the directory where the current file is located
+current_directory = os.path.dirname(os.path.abspath(__file__))
+# Append the current directory to sys.path
+sys.path.append(current_directory)
+from TreeClasses.TreeNode import TreeNode
 
 class Tree:
     '''
