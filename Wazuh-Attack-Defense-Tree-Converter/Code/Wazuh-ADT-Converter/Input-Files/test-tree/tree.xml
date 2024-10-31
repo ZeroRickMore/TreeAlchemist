@@ -4,6 +4,7 @@
         <id>0</id>
         <name>Root</name>
         <wazuh_rule_config>
+            <rule_id>100000</rule_id>
             <match>evil root log</match>
             <description>An attacker has reached "Root" node</description>
         </wazuh_rule_config>
@@ -14,6 +15,7 @@
         <id>1</id>
         <name>Child1 Conj</name>
         <wazuh_rule_config>
+            <rule_id>100001</rule_id>
             <match>evil Child1 Conj log</match>
             <description>An attacker has reached "Child1 Conj" node</description>
         </wazuh_rule_config>
@@ -24,6 +26,7 @@
         <id>2</id>
         <name>Child2 Conj</name>
         <wazuh_rule_config>
+            <rule_id>100002</rule_id>
             <match>evil Child2 Conj log</match>
             <description>An attacker has reached "Child2 Conj" node</description>
         </wazuh_rule_config>
@@ -36,6 +39,7 @@
         <id>3</id>
         <name>Child3</name>
         <wazuh_rule_config>
+            <rule_id>100003</rule_id>
             <match>evil Child3 log</match>
             <description>An attacker has reached "Child3" node</description>
         </wazuh_rule_config>
@@ -46,6 +50,7 @@
         <id>4</id>
         <name>Child4</name>
         <wazuh_rule_config>
+            <rule_id>100004</rule_id>
             <match>evil Child4 log</match>
             <description>An attacker has reached "Child4" node</description>
         </wazuh_rule_config>
@@ -56,6 +61,7 @@
         <id>5</id>
         <name>Child1_1</name>
         <wazuh_rule_config>
+            <rule_id>100005</rule_id>
             <match>evil Child1_1 log</match>
             <description>An attacker has reached "Child1_1" node</description>
         </wazuh_rule_config>
@@ -66,6 +72,7 @@
         <id>6</id>
         <name>Child1_2</name>
         <wazuh_rule_config>
+            <rule_id>100006</rule_id>
             <match>evil Child1_2 log</match>
             <description>An attacker has reached "Child1_2" node</description>
         </wazuh_rule_config>
@@ -76,6 +83,7 @@
         <id>7</id>
         <name>Child4_1</name>
         <wazuh_rule_config>
+            <rule_id>100007</rule_id>
             <match>evil Child4_1 log</match>
             <description>An attacker has reached "Child4_1" node</description>
         </wazuh_rule_config>
