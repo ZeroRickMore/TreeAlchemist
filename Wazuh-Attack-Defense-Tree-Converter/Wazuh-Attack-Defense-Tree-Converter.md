@@ -347,4 +347,10 @@ no_counter -> Omit field rule.firedtimes in the JSON alert.
 
 
 
-# 
+# 4 - Appunti
+
+- Il match atomico va per primo nel file (nell'ordine di regole che scrivo nel file, quelle più in alto sono sicuramente quelle atomiche):
+Visto che la regola matcha un log, quello specifico log deve essere matchato, e solo una alert può farlo.
+La gerarchia qui non si applica, vanno all'inizio in ordine qualsiasi.
+
+- Il rule group name si fa con il nome del nodo root , ADTCVT (Attack Defense Tree ConVerTed)
