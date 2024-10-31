@@ -73,3 +73,17 @@ class TreeNode:
     
     def to_string_minimal_children(self):
         return f"{ "\n".join(_.to_string_minimal() for _ in self.get_children())}"
+    
+
+    def to_string_with_subnodes(self) -> str:
+        # Start the string for this node with indentation based on depth
+        if self is None:
+            return ''
+        string = ''
+        string += self.to_string(tab_times=1)
+
+        # Recursively add each child's string with increased depth
+        for child in self.children:
+            string += child.to_string_with_subnodes()
+        
+        return string
