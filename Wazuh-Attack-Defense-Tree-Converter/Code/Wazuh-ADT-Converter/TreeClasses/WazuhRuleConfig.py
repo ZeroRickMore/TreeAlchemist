@@ -59,7 +59,7 @@ class WazuhRuleConfig:
                 freq_different_srcuser  : bool = False, #Set this to False by default because it is not mandatory and can be omitted 
                 description             : str  = None, #Set this to False by default because it is not mandatory and can be omitted 
                 info_list               : List[Info] = None, #Set this to False by default because it is not mandatory and can be omitted 
-                options_list            : List[str]  = None, #Set this to False by default because it is not mandatory and can be omitted 
+                options_list            : List[str]  = None, #Set this to False by default because it is not mandatory and can be omitted
                 ):
             
             self.relative_node_name =   relative_node_name
@@ -87,6 +87,8 @@ class WazuhRuleConfig:
             self.description        =   description
             self.info               =   info_list
             self.options            =   options_list
+            self.rule_id     : int  =   None                # THIS MUST BE SET THROUGH SYSTEM
+            self.level       : int  =   None                # THIS MUST BE SET THROUGH SYSTEM
 
             
     # ========================================================================================
@@ -949,6 +951,57 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
 
 
     # ============================================
+    # level operations
+    # ============================================
+
+    def get_level(self):
+        return self.level
+    
+    def set_level(self, level : int):
+        self.level = level
+        self.validate_level()
+    
+    @staticmethod
+    def get_level_allow_criteria() -> str:
+        return 'Level must be an int between 3 and 16, extremes included.'
+
+
+    def validate_level(self):
+        return isinstance(self.get_level(), int) and self.get_level() in range(3, 17)
+    
+    def validate_level_with_error_launch(self):
+        if not self.validate_level():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            ExitUtils.exit_with_error(f"{error_prefix} level. {self.get_level_allow_criteria()}. {self.get_level()} of type {type(self.get_level())} was given instead")
+
+
+    # ============================================
+    # rule_id operations
+    # ============================================
+
+    def get_rule_id(self):
+        return self.rule_id
+    
+    def set_rule_id(self, rule_id : int):
+        self.rule_id = rule_id
+        self.validate_rule_id()
+    
+    @staticmethod
+    def get_rule_id_allow_criteria() -> str:
+        return 'rule_id must be an int between 100000 and 120000, extremes included.'
+
+
+    def validate_rule_id(self):
+        return isinstance(self.get_rule_id(), int) and self.get_rule_id() in range(100000, 120001)
+    
+    def validate_rule_id_with_error_launch(self):
+        if not self.validate_rule_id():
+            error_prefix = f"The node {self.relative_node_name} failed validation on"
+            ExitUtils.exit_with_error(f"{error_prefix} rule_id. {self.get_rule_id_allow_criteria()}. {self.get_rule_id()} of type {type(self.get_rule_id())} was given instead")
+
+
+
+    # ============================================
     # Validate All Node Tags
     # ============================================   
 
@@ -1040,12 +1093,8 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
         '''
         Method that returns a stringified version of the wazuh_rule_config part of the node.
         This is what will compose the rule itself.
-
-        To populate id and level, replace
-        PLACEHOLDER_ID with the id
-        PLACEHOLDER_LEVEL with the level
         '''
-        string   =   '\t'*tab_times + '<rule id="PLACEHOLDER_ID" level="PLACEHOLDER_LEVEL"'
+        string   =   '\t'*tab_times + f'<rule id="{"PLACEHOLDER_ID" if self.get_rule_id() is None else self.get_rule_id()}" level="{"PLACEHOLDER_LEVEL" if self.get_level() is None else self.get_level()}"'
 
         # Insert frequency=""
         if self.get_wrc_frequency() is not None:

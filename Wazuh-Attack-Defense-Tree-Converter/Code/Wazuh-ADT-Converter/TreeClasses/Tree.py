@@ -108,3 +108,36 @@ class Tree:
 
         print_subtree(self.root)
 
+
+
+    def assign_system_required_values_to_nodes(self):
+        '''
+        Some of the values of the rules MUST be set through system.
+        This means: they are not tags a user can give as input.
+
+        Currently:
+        <rule id="">
+        <rule level="">
+
+        Level is set through the depth of the ADT, starting from 16 (max threat level)
+        going downwards.
+        Min is 3, else Wazuh would NOT trigger the alert, and it's absolutely not advised
+        as the whole system functionality would be compromised:
+        alerts not triggered -> state and defenses ruined.
+        '''
+        
+        # Helper function to recursively print the tree
+        def assign_sys_req_val_to_n_rec(node : TreeNode, depth=0):
+            if node is None:
+                return
+            # Set the parameters of the node =======
+
+            # level: max(3, 16 - node_depth)
+            level = max(3, 16 - depth)
+            node.get_informations().get_wazuh_rule_config().set_level(level=level)
+
+            # Recursively print each child
+            for child in node.children:
+                assign_sys_req_val_to_n_rec(child, depth + 1)
+
+        assign_sys_req_val_to_n_rec(self.root)

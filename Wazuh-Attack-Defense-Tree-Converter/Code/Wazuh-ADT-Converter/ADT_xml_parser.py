@@ -577,7 +577,7 @@ ADT : Tree = generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack
 #generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-duplicate-id.xml")
 #ADT: Tree = generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-invalid-path.xml")
 
-
+ADT.assign_system_required_values_to_nodes()
 ADT.print_tree_for_debug_with_explicit_nodes()
 
 #print(ADT.get_root().to_string_minimal())
