@@ -54,18 +54,35 @@ class Tree:
 
 
     def to_string(self) -> str:
-        
-        tab_times = 0
 
         string = ''
         # Insert group name tag
-        string += f'<group name="{self.get_rule_group()}">\n'
+        string += f'<group name="{self.get_rule_group()}">\n\n'
+        
+        string += self.print_every_single_node_rules_appended()
+        # append states here
 
-        tab_times += 1
+        string += '</group>'
+        
+        return string
 
-        # TODO
+    def to_string_group_and_single_nodes(self):
+        string = ''
+        # Insert group name tag
+        string += f'<group name="{self.get_rule_group()}">\n\n'
+        
+        string += self.print_every_single_node_rules_appended()
 
-    
+        string += '</group>'
+        
+        return string
+
+
+    def print_every_single_node_rules_appended(self) -> str:
+        string = ''
+        string += self.get_root().to_string_with_subnodes()
+        return string
+
     def print_tree_for_debug(self):
         # Helper function to recursively print the tree
         def print_subtree(node : TreeNode, depth=0):
@@ -116,7 +133,6 @@ class Tree:
         This means: they are not tags a user can give as input.
 
         Currently:
-        <rule id="">
         <rule level="">
 
         Level is set through the depth of the ADT, starting from 16 (max threat level)
@@ -136,7 +152,7 @@ class Tree:
             level = max(3, 16 - depth)
             node.get_informations().get_wazuh_rule_config().set_level(level=level)
 
-            # Recursively print each child
+            # Move forward in the tree
             for child in node.children:
                 assign_sys_req_val_to_n_rec(child, depth + 1)
 
