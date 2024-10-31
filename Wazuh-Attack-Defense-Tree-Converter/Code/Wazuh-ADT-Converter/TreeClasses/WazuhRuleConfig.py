@@ -57,9 +57,10 @@ class WazuhRuleConfig:
                 freq_same_location      : bool = False, #Set this to False by default because it is not mandatory and can be omitted     
                 freq_same_srcuser       : bool = False, #Set this to False by default because it is not mandatory and can be omitted            
                 freq_different_srcuser  : bool = False, #Set this to False by default because it is not mandatory and can be omitted 
-                description             : str  = None, #Set this to False by default because it is not mandatory and can be omitted 
+                description             : str  = None, # If this does not get set later, it will throw errors.
                 info_list               : List[Info] = None, #Set this to False by default because it is not mandatory and can be omitted 
                 options_list            : List[str]  = None, #Set this to False by default because it is not mandatory and can be omitted
+                rule_id                 : int  =   None, # If this does not get set later, it will throw errors.
                 ):
             
             self.relative_node_name =   relative_node_name
@@ -87,8 +88,8 @@ class WazuhRuleConfig:
             self.description        =   description
             self.info               =   info_list
             self.options            =   options_list
-            self.rule_id     : int  =   None                # THIS MUST BE SET THROUGH SYSTEM
-            self.level       : int  =   None                # THIS MUST BE SET THROUGH SYSTEM
+            self.rule_id   : int    =   None # THIS MUST BE SET THROUGH SYSTEM
+            self.level              =   rule_id
 
             
     # ========================================================================================
@@ -959,7 +960,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     
     def set_level(self, level : int):
         self.level = level
-        self.validate_level()
+        self.validate_level_with_error_launch()
     
     @staticmethod
     def get_level_allow_criteria() -> str:
@@ -984,7 +985,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
     
     def set_rule_id(self, rule_id : int):
         self.rule_id = rule_id
-        self.validate_rule_id()
+        self.validate_rule_id_with_error_launch()
     
     @staticmethod
     def get_rule_id_allow_criteria() -> str:
@@ -1111,7 +1112,6 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
         if self.get_wrc_description() is not None:
             string      +=   '\t'*tab_times +  '\t'+self.to_string_wrc_description()+'\n'  # Mandatory
 
-
         # Insert <info>
         if self.get_wrc_info() is not None:
             string  +=    self.to_string_wrc_info(tab_times=tab_times+1)+'\n' # Optional
@@ -1120,7 +1120,6 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
         if self.get_wrc_already_existing_id() is not None:
             string  +=    '\t'*tab_times + '\t'+self.to_string_wrc_already_existing_id()+'\n' # Optional
             return string # Already done! No more to check, as this is a standalone tag.  
-
 
         # Insert <match>
         if self.get_wrc_match() is not None:
@@ -1177,7 +1176,7 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
         if self.get_wrc_options() is not None:
             string  +=    self.to_string_wrc_options(tab_times=tab_times+1)+'\n' # Optional   
 
-        string +=  '\t'*tab_times + '</rule>'
+        string +=  '\t'*tab_times + '</rule>\n\n'
         return string
 
 
