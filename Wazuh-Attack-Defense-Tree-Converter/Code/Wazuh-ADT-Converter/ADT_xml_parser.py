@@ -502,7 +502,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
                 else: # It is a name
                     node_id_to_node[node_name_to_id[node_name_or_id]]
             except: # This is a value error if not found in the dict, hence it does not exist and is not identified as a valid existing node
-                ExitUtils.exit_with_error(f"The path:\n\n\t[{path}]\n\ncontains an invalid node name or id : \n\n[{node_name_or_id}].\n\nFix it before trying again.")
+                ExitUtils.exit_with_error(f"The path:\n\n\t[{path}]\n\ncontains an invalid node name or id : \n\n\t[{node_name_or_id}] .\n\nFix it before trying again.")
 
 
 
@@ -566,7 +566,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
 
 
 # Oh no! My extremely secret path has been leaked on Github...
-ADT : Tree = generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-functional.xml")
+#ADT : Tree = generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-functional.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-wrong-alr-exist-id.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-wrong-alr-exist-id.xml")
 ADT : Tree = generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\test-tree\tree.xml")
@@ -574,6 +574,7 @@ ADT : Tree = generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-D
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-too-many-roots.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-duplicate-name.xml")
 #generate_ADT_from_xml_file(r"Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-duplicate-id.xml")
+#ADT: Tree = generate_ADT_from_xml_file(r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-invalid-path.xml")
 
 
 ADT.print_tree_for_debug_with_explicit_nodes()
