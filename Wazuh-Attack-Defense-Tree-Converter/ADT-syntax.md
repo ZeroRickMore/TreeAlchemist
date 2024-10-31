@@ -57,6 +57,7 @@ Un vero nodo è MOLTO più snello.
         <id>#0#</id>                  <!-- ** Recommended to follow ID BEST PRACTICE -->
         <name>#any string#</name>   <!-- Any name that describes the node -->
         <wazuh_rule_config>        <!-- ** The rule itself. Not everything is necessary -->
+            <rule_id>#any number from 100000 to 120000#</rule_id> <!-- the <rule id=""> that goes into Wazuh. Do NOT reuse IDs systemwide, or Wazuh won't start.-->
             <description>#a good rule description#</description> <!-- ** Node == Rule description that will appear on Wazuh dashboard -->
             <info type="{text} | cve | link | ovsdb">#any information#</info> <!-- Extra information -->
             <options>alert_by_email | no_email_alert | no_log | no_full_log | no_counter</options> <!-- One tag for each you need -->
