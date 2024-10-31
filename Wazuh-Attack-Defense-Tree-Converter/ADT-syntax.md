@@ -8,11 +8,6 @@ STEPS:
 
 Proprio come in un filesystem, posso scrivere l'intero cammino per raggiungere un nodo per identificarlo.
 
-POSSIBILE SEMPLIFICAZIONE: 
-    PERCORSO ASSOLUTO: /(path here)
-    PERCORSO RELATIVO ALLA RIGA PRECEDENTE: ./(path here)
-                                            Per usare il path precedente, posso usare "./"
-
 <tree>
     <node conjuncted_children="yes" root="yes">
         <!-- The last string after / is the node name -->
