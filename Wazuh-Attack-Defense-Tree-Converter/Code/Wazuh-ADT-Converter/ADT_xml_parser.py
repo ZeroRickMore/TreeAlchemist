@@ -37,7 +37,7 @@ from TreeClasses.Srcport import Srcport
 
 
 
-def convert_xml_ADT_to_usable_structure(tree_dir_path : str):
+def convert_xml_ADT_to_usable_structure(tree_dir_path : str) -> Tree:
     '''
     Function that, taken a valid path to a file containing ADT necessary files, 
     returns the ADT converted to a usable data structure.
@@ -49,7 +49,13 @@ def convert_xml_ADT_to_usable_structure(tree_dir_path : str):
     defense_definition_xml_path : str = os.path.join(tree_dir_path, "defense_definition.xml")
     defense_to_nodes_json_path  : str = os.path.join(tree_dir_path, "defense_to_nodes.json")
 
-    tree_with_attack_nodes_only = get_ADT_with_attack_nodes_only(xml_tree_path=xml_tree_path)
+    # Read the xml file, validate it, and create a validates Tree structure from it
+    tree_with_attack_nodes_only : Tree = get_ADT_with_attack_nodes_only(xml_tree_path=xml_tree_path)
+
+    # Assing the values that do not get assigned from user
+    tree_with_attack_nodes_only.assign_system_required_values_to_nodes()
+
+    return tree_with_attack_nodes_only
 
 
 
@@ -57,17 +63,18 @@ def convert_xml_ADT_to_usable_structure(tree_dir_path : str):
 
 
 
-def get_ADT_with_attack_nodes_only(xml_tree_path : str):
+def get_ADT_with_attack_nodes_only(xml_tree_path : str) -> Tree:
     validate_xml_tree_file_and_launch_error(xml_tree_path=xml_tree_path)
 
-    ADT = generate_ADT_from_xml_file(xml_tree_path)
+    ADT : Tree = generate_ADT_from_xml_file(xml_tree_path)
+    return ADT
 
 def validate_xml_tree_file_and_launch_error(xml_tree_path : str):
     if not validate_xml_tree_file(xml_tree_path=xml_tree_path):
         ExitUtils.exit_with_error(f"{xml_tree_path} is not a valid .xml file.")
 
-def validate_xml_tree_file(xml_tree_path : str):
-    if not os.path.isfile(xml_tree_path) or not xml_tree_path.endswith('.xml'):
+def validate_xml_tree_file(xml_tree_path : str) -> bool:
+    if not (os.path.isfile(xml_tree_path) and xml_tree_path.endswith('.xml') ):
       return False
     tree = ET.parse(xml_tree_path)
     root = tree.getroot()
@@ -95,8 +102,10 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
         
     root = t.getroot()
 
-    for node in root.findall("node"):
+    for i, node in enumerate(root.findall("node")):
         
+        exit_error_prefix = f"=== In <node> tag number [ {i} ] from the beginning of the given xml file. ===\n"
+
         curr_infos = TreeNodeInformations()
         # Set <node> attributes ============================
         # conjuncted_children
@@ -120,13 +129,13 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
         # <path>
         path = node.findall('path')
         if len(path) != 1:
-            ExitUtils.exit_with_error("<path> must be given exactly once!\nIf you are using path with both names and IDs, just keep one.")
+            ExitUtils.exit_with_error(exit_error_prefix+"<path> must be given exactly once!\nIf you are using path with both names and IDs, just keep one.")
         curr_infos.set_path(path[0].text)
 
         # <id>
         id = node.findall('id')
         if len(id) != 1:
-            ExitUtils.exit_with_error("<id> must be given exactly once!")
+            ExitUtils.exit_with_error(exit_error_prefix+"<id> must be given exactly once!")
         try:
             id = int(id[0].text)
         except:
@@ -136,25 +145,40 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
         # <name>
         name = node.findall('name')
         if len(name) != 1:
-            ExitUtils.exit_with_error("<name> must be given exactly once!")
+            ExitUtils.exit_with_error(exit_error_prefix+"<name> must be given exactly once!")
         curr_infos.set_name(name[0].text)
 
         # <wazuh_rule_config> ================================================
         curr_wrc = WazuhRuleConfig(relative_node_name=curr_infos.get_name())
         wrc_tag = node.findall('wazuh_rule_config')
         if len(wrc_tag) != 1:
-            ExitUtils.exit_with_error("<wazuh_rule_config> must be given exactly once!")
+            ExitUtils.exit_with_error(exit_error_prefix+"<wazuh_rule_config> must be given exactly once!")
         wrc_tag = wrc_tag[0]
+
+
 
 
         # <description>
         description = wrc_tag.findall('description')
         # if it is present, must be only once
         if len(description) != 1 and len(description) != 0:
-            ExitUtils.exit_with_error("<description> must be given exactly once, if given! If you gave more than one, just collapse them into a sigle string.\nIt will not go in a new line on Wazuh Dashboard, anyway.")
+            ExitUtils.exit_with_error(exit_error_prefix+"<description> must be given exactly once, if given! If you gave more than one, just collapse them into a sigle string.\nIt will not go in a new line on Wazuh Dashboard, anyway.")
         # if given, process it
         if len(description) == 1:
             curr_wrc.set_wrc_description(description[0].text)
+
+
+        # <rule_id>
+        rule_id = wrc_tag.findall('rule_id')
+        # if it is present, must be only once
+        if len(rule_id) != 1:
+            ExitUtils.exit_with_error(exit_error_prefix+"<rule_id> must be given exactly once! Friendly reminder: Do NOT use sytem-wide duplicate IDs, else Wazuh itself won't start.")
+        try:
+            rule_id = int(rule_id[0].text)
+        except:
+            curr_wrc.set_rule_id(rule_id[0].text) # Listen... This gives the perfect error output string...
+        
+        curr_wrc.set_rule_id(rule_id)
 
 
         # <info>
@@ -188,7 +212,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
         frequency = wrc_tag.findall('frequency')
         # if it is present, must be only once
         if len(frequency) != 1 and len(frequency) != 0:
-            ExitUtils.exit_with_error("<frequency> must be given exactly once, if given!")
+            ExitUtils.exit_with_error(exit_error_prefix+"<frequency> must be given exactly once, if given!")
         # if given, process it
         if len(frequency) == 1: 
             try:
@@ -201,7 +225,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
         timeframe = wrc_tag.findall('timeframe')
         # if it is present, must be only once
         if len(timeframe) != 1 and len(timeframe) != 0:
-            ExitUtils.exit_with_error("<timeframe> must be given exactly once, if given!")
+            ExitUtils.exit_with_error(exit_error_prefix+"<timeframe> must be given exactly once, if given!")
         # if given, process it
         if len(timeframe) == 1: 
             try:
@@ -214,7 +238,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
         ignore_after = wrc_tag.findall('ignore_after')
         # if it is present, must be only once
         if len(ignore_after) != 1 and len(ignore_after) != 0:
-            ExitUtils.exit_with_error("<ignore_after> must be given exactly once, if given!")
+            ExitUtils.exit_with_error(exit_error_prefix+"<ignore_after> must be given exactly once, if given!")
         # if given, process it
         if len(ignore_after) == 1: 
             try:
@@ -228,7 +252,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
         already_existing_id = wrc_tag.findall('already_existing_id')
         # if it is present, must be only once
         if len(already_existing_id) != 1 and len(already_existing_id) != 0:
-            ExitUtils.exit_with_error("<already_existing_id> must be given exactly once, if given!")
+            ExitUtils.exit_with_error(exit_error_prefix+"<already_existing_id> must be given exactly once, if given!")
         # if given, process it
         if len(already_existing_id) == 1: 
             try:
@@ -355,7 +379,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
         time = wrc_tag.findall('time')
         # if it is present, must be only once
         if len(time) != 1 and len(time) != 0:
-            ExitUtils.exit_with_error("<time> must be given exactly once, if given!")
+            ExitUtils.exit_with_error(exit_error_prefix+"<time> must be given exactly once, if given!")
         # if given, process it
         if len(time) == 1:
             curr_wrc.set_wrc_time(time[0].text)
@@ -364,7 +388,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
         weekday = wrc_tag.findall('weekday')
         # if it is present, must be only once
         if len(weekday) != 1 and len(weekday) != 0:
-            ExitUtils.exit_with_error("<weekday> must be given exactly once, if given!")
+            ExitUtils.exit_with_error(exit_error_prefix+"<weekday> must be given exactly once, if given!")
         # if given, process it
         if len(weekday) == 1:
             curr_wrc.set_wrc_weekday(weekday[0].text) 
@@ -376,7 +400,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
         freq_same_srcip = wrc_tag.findall('freq_same_srcip')
         # if it is present, must be only once
         if len(freq_same_srcip) != 1 and len(freq_same_srcip) != 0:
-            ExitUtils.exit_with_error("<freq_same_srcip> must be given exactly once, if given!")
+            ExitUtils.exit_with_error(exit_error_prefix+"<freq_same_srcip> must be given exactly once, if given!")
         # if given, process it
         if len(freq_same_srcip) == 1:
             curr_wrc.set_wrc_same_srcip(True) 
@@ -386,7 +410,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
         freq_different_srcip = wrc_tag.findall('freq_different_srcip')
         # if it is present, must be only once
         if len(freq_different_srcip) != 1 and len(freq_different_srcip) != 0:
-            ExitUtils.exit_with_error("<freq_different_srcip> must be given exactly once, if given!")
+            ExitUtils.exit_with_error(exit_error_prefix+"<freq_different_srcip> must be given exactly once, if given!")
         # if given, process it
         if len(freq_different_srcip) == 1:
             curr_wrc.set_wrc_different_srcip(True) 
@@ -396,7 +420,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
         freq_same_srcport = wrc_tag.findall('freq_same_srcport')
         # if it is present, must be only once
         if len(freq_same_srcport) != 1 and len(freq_same_srcport) != 0:
-            ExitUtils.exit_with_error("<freq_same_srcport> must be given exactly once, if given!")
+            ExitUtils.exit_with_error(exit_error_prefix+"<freq_same_srcport> must be given exactly once, if given!")
         # if given, process it
         if len(freq_same_srcport) == 1:
             curr_wrc.set_wrc_same_srcport(True) 
@@ -405,7 +429,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
         freq_different_srcport = wrc_tag.findall('freq_different_srcport')
         # if it is present, must be only once
         if len(freq_different_srcport) != 1 and len(freq_different_srcport) != 0:
-            ExitUtils.exit_with_error("<freq_different_srcport> must be given exactly once, if given!")
+            ExitUtils.exit_with_error(exit_error_prefix+"<freq_different_srcport> must be given exactly once, if given!")
         # if given, process it
         if len(freq_different_srcport) == 1:
             curr_wrc.set_wrc_different_srcport(True) 
@@ -414,7 +438,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
         freq_same_dstport = wrc_tag.findall('freq_same_dstport')
         # if it is present, must be only once
         if len(freq_same_dstport) != 1 and len(freq_same_dstport) != 0:
-            ExitUtils.exit_with_error("<freq_same_dstport> must be given exactly once, if given!")
+            ExitUtils.exit_with_error(exit_error_prefix+"<freq_same_dstport> must be given exactly once, if given!")
         # if given, process it
         if len(freq_same_dstport) == 1:
             curr_wrc.set_wrc_same_dstport(True) 
@@ -423,7 +447,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
         freq_different_dstport = wrc_tag.findall('freq_different_dstport')
         # if it is present, must be only once
         if len(freq_different_dstport) != 1 and len(freq_different_dstport) != 0:
-            ExitUtils.exit_with_error("<freq_different_dstport> must be given exactly once, if given!")
+            ExitUtils.exit_with_error(exit_error_prefix+"<freq_different_dstport> must be given exactly once, if given!")
         # if given, process it
         if len(freq_different_dstport) == 1:
             curr_wrc.set_wrc_different_dstport(True) 
@@ -432,7 +456,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
         freq_same_location = wrc_tag.findall('freq_same_location')
         # if it is present, must be only once
         if len(freq_same_location) != 1 and len(freq_same_location) != 0:
-            ExitUtils.exit_with_error("<freq_same_location> must be given exactly once, if given!")
+            ExitUtils.exit_with_error(exit_error_prefix+"<freq_same_location> must be given exactly once, if given!")
         # if given, process it
         if len(freq_same_location) == 1:
             curr_wrc.set_wrc_same_location(True) 
@@ -441,7 +465,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
         freq_same_srcuser = wrc_tag.findall('freq_same_srcuser')
         # if it is present, must be only once
         if len(freq_same_srcuser) != 1 and len(freq_same_srcuser) != 0:
-            ExitUtils.exit_with_error("<freq_same_srcuser> must be given exactly once, if given!")
+            ExitUtils.exit_with_error(exit_error_prefix+"<freq_same_srcuser> must be given exactly once, if given!")
         # if given, process it
         if len(freq_same_srcuser) == 1:
             curr_wrc.set_wrc_same_srcuser(True) 
@@ -450,7 +474,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
         freq_different_srcuser = wrc_tag.findall('freq_different_srcuser')
         # if it is present, must be only once
         if len(freq_different_srcuser) != 1 and len(freq_different_srcuser) != 0:
-            ExitUtils.exit_with_error("<freq_different_srcuser> must be given exactly once, if given!")
+            ExitUtils.exit_with_error(exit_error_prefix+"<freq_different_srcuser> must be given exactly once, if given!")
         # if given, process it
         if len(freq_different_srcuser) == 1:
             curr_wrc.set_wrc_different_srcuser(True) 
@@ -471,13 +495,14 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
 
         curr_id = curr_node.get_informations().get_id()
         if curr_id in node_id_to_node:
-            ExitUtils.exit_with_error(f"The <id> [ {curr_id} ] is duplicated! You MUST use different <id> for each node.")
+            ExitUtils.exit_with_error(exit_error_prefix+f"The <id> [ {curr_id} ] is duplicated! You MUST use different <id> for each node.")
         node_id_to_node[curr_id] = curr_node    
     
         curr_name = curr_node.get_informations().get_name()
         if curr_name in node_name_to_id:
-            ExitUtils.exit_with_error(f"The <name> [ {curr_name} ] is duplicated! You MUST use different <name> for each node.")
+            ExitUtils.exit_with_error(exit_error_prefix+f"The <name> [ {curr_name} ] is duplicated! You MUST use different <name> for each node.")
         node_name_to_id[curr_name] = curr_id 
+    # End of the single node computation
 
 
     # Very human syntax to print the dict
@@ -565,21 +590,26 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
     return ADT
 
 
-# Oh no! My extremely secret path has been leaked on Github...
-path_append = os.getcwd()
-#ADT : Tree = generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-functional.xml")
-#generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-wrong-alr-exist-id.xml")
-#generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-wrong-alr-exist-id.xml")
-ADT : Tree = generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\test-tree\tree.xml"))
-#generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-mismatched-root-path.xml")
-#generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-too-many-roots.xml")
-#generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-duplicate-name.xml")
-#generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-duplicate-id.xml")
-#ADT: Tree = generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-invalid-path.xml")
 
-ADT.assign_system_required_values_to_nodes()
-ADT.print_tree_for_debug_with_explicit_nodes()
+def test():
+    # Oh no! My extremely secret path has been leaked on Github...
+    path_append = os.getcwd()
+    #ADT : Tree = generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-functional.xml")
+    #generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-wrong-alr-exist-id.xml"))
+    #generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-wrong-alr-exist-id.xml"))
+    #ADT : Tree = generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-wrong-rule-id.xml"))
+    ADT : Tree = generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-multinode-functional.xml"))
+    #generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-mismatched-root-path.xml")
+    #generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-too-many-roots.xml")
+    #generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-duplicate-name.xml")
+    #generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-duplicate-id.xml")
+    #ADT: Tree = generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\TreeClasses\Test\test-tree-invalid-path.xml")
 
-#print(ADT.get_root().to_string_minimal())
-#print(ADT.get_root().to_string_minimal_children())
+    ADT.assign_system_required_values_to_nodes()
+    ADT.print_tree_for_debug_with_explicit_nodes()
 
+    #print(ADT.get_root().to_string_minimal())
+    #print(ADT.get_root().to_string_minimal_children())
+
+if __name__ == '__main__':
+    test()
