@@ -35,13 +35,6 @@ class TreeNode:
         '''
         return child_node in self.get_children()
 
-    def __repr__(self, level=0):
-        # A string representation of the tree for easy visualization
-        ret = "  " * level + f"{self.informations.to_string()}\n"
-        for child in self.children:
-            ret += child.__repr__(level + 1)
-        return ret
-
     def get_informations(self) -> TreeNodeInformations:
         return self.informations
     
