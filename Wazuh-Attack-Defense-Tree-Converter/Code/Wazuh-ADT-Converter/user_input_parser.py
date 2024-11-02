@@ -41,7 +41,7 @@ def get_valid_tree_path() -> str:
             PrintUtils.print_in_green(f"Relative path to directory found. Using:\n\t[ {tree_dir_path} ]")
     
     # Check if the required files are present
-    NECESSARY_FILES = ["tree.xml", "defense_definition.xml", "defense_to_nodes.json"]
+    NECESSARY_FILES = ["tree.xml", "defense_definition.xml", "states_to_defense.xml"]
     
     files_in_directory = os.listdir(tree_dir_path)
     missing_files = []

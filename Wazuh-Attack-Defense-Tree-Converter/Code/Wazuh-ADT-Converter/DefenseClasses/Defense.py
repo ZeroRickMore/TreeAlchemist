@@ -17,7 +17,7 @@ class Defense:
     '''
 
     def __init__(self, 
-                 #mapped_states : List[int] = None, # The states the defense is mapped to, inside of defense_to_nodes.json
+                 #mapped_states : List[int] = None, # The states the defense is mapped to, inside of states_to_defense.xml
                  
 
                 ):

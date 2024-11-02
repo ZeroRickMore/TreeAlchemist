@@ -47,7 +47,7 @@ def convert_xml_ADT_to_usable_structure(tree_dir_path : str) -> Tree:
 
     xml_tree_path               : str = os.path.join(tree_dir_path, "tree.xml")
     defense_definition_xml_path : str = os.path.join(tree_dir_path, "defense_definition.xml")
-    defense_to_nodes_json_path  : str = os.path.join(tree_dir_path, "defense_to_nodes.json")
+    defense_to_nodes_json_path  : str = os.path.join(tree_dir_path, "states_to_defense.xml")
 
     # Read the xml file, validate it, and create a validates Tree structure from it
     tree_with_attack_nodes_only : Tree = get_ADT_with_attack_nodes_only(xml_tree_path=xml_tree_path)

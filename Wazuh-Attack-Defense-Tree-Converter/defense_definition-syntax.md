@@ -27,7 +27,7 @@ It is MANDATORY.
 It is the name of the defensive script, meaning that for a correct functionality you MUST
 call your defensive script with this format:
 {name}.extension
-Also, it is the name that will be used for the mapping in defense_to_nodes.json
+Also, it is the name that will be used for the mapping in states_to_defense.xml
 
 Important note:
 NOT giving an extension in this attribute means every file on the agent that's called like that, extension excluded, will be looked for.
