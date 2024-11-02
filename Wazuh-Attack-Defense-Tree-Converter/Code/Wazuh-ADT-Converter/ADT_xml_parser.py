@@ -85,7 +85,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
     '''
     Read the xml and generate the real data structure.
     '''
-    node_conjunctions : List[tuple]     = []
+    #node_conjunctions : List[tuple]     = []
 
     # These dictionaries allow a quick lookup for the nodes rather than a tree visit later on.
     node_path_to_nodes : dict           = {}   # str -> List[TreeNode]
@@ -93,7 +93,7 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
     node_name_to_id    : dict           = {}
 
     try:
-      t = ET.parse(xml_tree_path)
+        t = ET.parse(xml_tree_path)
     except ET.ParseError as e:
         if "duplicate attribute" in str(e):
             ExitUtils.exit_with_error("Duplicate attribute found in XML.")
