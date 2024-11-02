@@ -18,46 +18,12 @@ class ActiveResponse:
                  location : str = "local", # Set this to local by default because it is not mandatory and can be omitted
                  agent_id : str = None,  # Set this to None by default because it is not mandatory and can be omitted
                  timeout  : int = None,   # Set this to None by default because it is not mandatory and can be omitted
-                 command  : Command = None,
-                 name     : str = "unspecified" # This is just for debug honestly
                  ):
         
         self.location = location
         self.agent_id = agent_id
-        self.name = name
 
         self.timeout = timeout
-        self.command = command
-
-
-    # ============================================
-    # name operations
-    # ============================================
-
-    def get_name(self) -> str:
-        return self.name
-
-    def validate_name(self) -> bool:
-        return  isinstance(self.get_name(), str)
-    
-    def validate_name_with_error_launch(self):
-        if not self.validate_name():
-            error_prefix = f"The ActiveResponse {self.get_name()} failed validation on"
-            error_suffix = f"was given instead."
-            ExitUtils.exit_with_error(f"{error_prefix} name of ActiveResponse. {Command.get_name_allow_criteria()} {self.get_name()} of type {type(self.get_name())} {error_suffix}")
-
-    @staticmethod
-    def get_name_allow_criteria() -> str:
-        return "It must be a string."
-
-    def set_name(self, name : int):
-        self.name = name
-
-        self.validate_name_with_error_launch()
-        
-        if self.print_diagnostics:
-            PrintUtils.print_in_green(f"- Backend name assignment of ActiveResponse {self.get_name()} has been succesfully set to {self.get_name()}")
-
 
 
     # ============================================
@@ -72,7 +38,7 @@ class ActiveResponse:
     
     def validate_location_with_error_launch(self):
         if not self.validate_location():
-            error_prefix = f"The ActiveResponse {self.get_name()} failed validation on"
+            error_prefix = f"One ActiveResponse failed validation on"
             error_suffix = f"was given instead."
             ExitUtils.exit_with_error(f"{error_prefix} location of ActiveResponse. {ActiveResponse.get_location_allow_criteria()} {self.get_location()} of type {type(self.get_location())} {error_suffix}")
 
@@ -86,7 +52,7 @@ class ActiveResponse:
         self.validate_location_with_error_launch()
         
         if self.print_diagnostics:
-            PrintUtils.print_in_green(f"- <location> of ActiveResponse {self.get_name()} has been succesfully set to {self.get_location()}")
+            PrintUtils.print_in_green(f"- <location> of one ActiveResponse has been succesfully set to {self.get_location()}")
 
 
 
@@ -103,7 +69,7 @@ class ActiveResponse:
     
     def validate_agent_id_with_error_launch(self):
         if not self.validate_agent_id():
-            error_prefix = f"The ActiveResponse {self.get_name()} failed validation on"
+            error_prefix = f"One ActiveResponse failed validation on"
             error_suffix = f"was given instead."
             ExitUtils.exit_with_error(f"{error_prefix} <agent_id> of ActiveResponse. {ActiveResponse.get_agent_id_allow_criteria()} {self.get_agent_id()} of type {type(self.get_agent_id())} {error_suffix}")
 
@@ -117,7 +83,7 @@ class ActiveResponse:
         self.validate_agent_id_with_error_launch()
         
         if self.print_diagnostics:
-            PrintUtils.print_in_green(f"- <agent_id> of one ActiveResponse {self.get_name()} has been succesfully set to {self.get_agent_id()}")
+            PrintUtils.print_in_green(f"- <agent_id> of one one ActiveResponse has been succesfully set to {self.get_agent_id()}")
 
 
     # ============================================
@@ -132,7 +98,7 @@ class ActiveResponse:
     
     def validate_timeout_with_error_launch(self):
         if not self.validate_timeout():
-            error_prefix = f"The ActiveResponse {self.get_name()} failed validation on"
+            error_prefix = f"One ActiveResponse failed validation on"
             error_suffix = f"was given instead."
             ExitUtils.exit_with_error(f"{error_prefix} <timeout> of ActiveResponse. {ActiveResponse.get_timeout_allow_criteria()} {self.get_timeout()} of type {type(self.get_timeout())} {error_suffix}")
 
@@ -146,4 +112,25 @@ class ActiveResponse:
         self.validate_timeout_with_error_launch()
         
         if self.print_diagnostics:
-            PrintUtils.print_in_green(f"- <timeout> of one ActiveResponse {self.get_name()} has been succesfully set to {self.get_timeout()}")
+            PrintUtils.print_in_green(f"- <timeout> of one one ActiveResponse has been succesfully set to {self.get_timeout()}")
+
+
+
+
+    # ============================================
+    # Validate All
+    # ============================================   
+
+
+    def validate_all(self):
+
+        self.validate_timeout_with_error_launch()
+        self.validate_agent_id_with_error_launch()
+        self.validate_location_with_error_launch()
+
+        # Agent id if and only if location is defined-agent
+        if self.get_agent_id() is not None and self.get_location() != 'defined-agent' :
+            error_prefix = f"One ActiveResponse failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f"{error_prefix} <agent-id> and <location> of ActiveResponse. If agent-id is given, location MUST be defined-agent.\n <agent-id>{self.get_agent_id()} and <location> {self.get_location()} {error_suffix}")
+
