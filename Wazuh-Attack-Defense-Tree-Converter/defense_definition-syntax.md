@@ -14,7 +14,7 @@
     <!-- After defining some defenses, if you need a combination of them -->
     <defense name="any def name#">
         <defenses-together>#any list of ids separated by comma#</defenses-together>
-        <!-- Do NOT add other tags here -->
+        <!-- Do NOT add other tags here. They will be ignored. -->
     </defense>
 </defenses-definition>
 
