@@ -1002,11 +1002,11 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
 
 
     # ============================================
-    # Validate All Node Tags
+    # Validate All
     # ============================================   
 
 
-    def validate_all(self) -> bool:
+    def validate_all(self):
 
         self.validate_wrc_frequency_with_error_launch()
                   
