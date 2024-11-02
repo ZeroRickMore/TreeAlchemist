@@ -1,6 +1,6 @@
 <defenses-definition>
     <!-- List every defense node replicating this syntax -->
-    <defense name="#any def name#">
+    <defense name="#any def name#" id="#any number#">
         <command> <!-- OPTIONAL Start of the Wazuh "command" configuration for the defense -->
             <extra_args>#arg1 arg2 arg3#</extra_args> <!-- OPTIONAL This is Wazuh's <extra_args> tag in command. The arguments for the defensive script. -->
             <timeout_allowed>#yes#</timeout_allowed>  <!-- OPTIONAL Activate the <timeout> tag inside of the next <wazuh_activeres_config> -->
@@ -10,6 +10,11 @@
             <agent_id>001</agent_id> <!-- OPTIONAL Only with "defined-agent" declared in <location> -->
             <timeout>180</timeout> <!-- OPTIONAL Seconds after which the response is reverted. You must have <timeout_allowed> on the command section -->
         </active-response> 
+    </defense>
+    <!-- After defining some defenses, if you need a combination of them -->
+    <defense name="any def name#">
+        <defenses-together>#any list of ids separated by comma#</defenses-together>
+        <!-- Do NOT add other tags here -->
     </defense>
 </defenses-definition>
 
@@ -51,19 +56,29 @@ IMPLEMENTATION NOTE:
 </active-response>
 
 
-## Dentro <command>
+### <defenses-together>
+
+Use the tag to tell that the defense is composed of pre-defined defenses,
+listing their id separated by comma.
+
+<defense name="Union of 1 2 3">
+    <defenses-together>1,2,3</defenses-together>
+</defense>
+
+
+### Dentro <command>
 Omettere l'intero tag <command> è lecito.
 Le opzioni seguenti sono TUTTE opzionali.
 
-### <extra_args>
+#### <extra_args>
 
 Allows the user to customize the parameters sent to the active response script living on the agent side.
 
-### <timeout_allowed>
+#### <timeout_allowed>
 
 Allows a timeout after a period of time. Setting this value to yes reverts the action after a period of time. Check stateful active response below for more details.
 
-##### Dentro <active-response>
+###### Dentro <active-response>
 Omettere l'intero tag <wazuh_activeres_config> è lecito.
 Le opzioni seguenti sono TUTTE opzionali.
 
