@@ -1,15 +1,24 @@
 <defenses-definition>
 
-    <defense name="Def1"> </defense_config> <!-- This is the most basic defense, just tell Wazuh to execute the script "Def1" -->
+    <defense name="Def1">
+        <!-- This is the most basic defense, just tell Wazuh to execute the script "Def1" -->
+    </defense_config> 
 
-    <defense name="Def2"> </defense_config> <!-- This is the most basic defense, just tell Wazuh to execute the script "Def2" -->
+    <defense name="Def2"> 
+        <!-- This is the most basic defense, just tell Wazuh to execute the script "Def2" -->
+    </defense_config>
 
-    <defense name="Def3"> </defense_config> <!-- This is the most basic defense, just tell Wazuh to execute the script "Def3" -->
+    <defense name="Def3">
+        <!-- This is the most basic defense, just tell Wazuh to execute the script "Def3" -->
+    </defense_config>
 
-    <defense name="Def1_1"> </defense_config> <!-- This is the most basic defense, just tell Wazuh to execute the script "Def1_1" -->
+    <defense name="Def1_1">
+        <!-- This is the most basic defense, just tell Wazuh to execute the script "Def1_1" -->
+    </defense_config> 
 
-    <defense name="Def1_2"> </defense_config> <!-- This is the most basic defense, just tell Wazuh to execute the script "Def1_2" -->
+    <defense name="Def1_2-3-4">
+        <!-- This is the most basic defense, just tell Wazuh to execute the script "Def1_2-3-4" -->
+    </defense_config>
 
-    <defense name="Def4_1"> </defense_config> <!-- This is the most basic defense, just tell Wazuh to execute the script "Def4_1" -->
 
 </defenses-definition>
