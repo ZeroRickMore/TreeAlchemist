@@ -1,0 +1,43 @@
+<states>
+        <state>
+                <nodes>1</nodes>
+                <defense name="Def1">
+                        <optimality-type>BEST_SCORE</optimality-type>
+                        <score>10</score> <!-- Very low -->
+                </defense>
+        </state>
+
+        <state>
+                <nodes>2</nodes>
+                <defense name="Def2">
+                        <optimality-type>BEST_SCORE</optimality-type>
+                        <!-- <score> omitted: it will be 50 -->
+                </defense>
+        </state>
+
+        <state>
+                <nodes>3</nodes>
+                <defense name="Def3">
+                        <optimality-type>BEST_SCORE</optimality-type>
+                        <!-- <score> omitted: it will be 50 -->
+                </defense>
+        </state>
+
+
+        <state>
+                <nodes>5</nodes>
+                <defense name="Def1_1">
+                        <optimality-type>BEST_SCORE</optimality-type>
+                        <!-- <score> omitted: it will be 50 -->
+                </defense>
+        </state>
+
+        <state>
+                <nodes>6,3,4</nodes>
+                <defense name="Def1_2-3-4">
+                        <optimality-type>BEST_SCORE</optimality-type>
+                        <score>100</score> <!-- Very high -->
+                </defense>
+        </state>
+
+</states>
