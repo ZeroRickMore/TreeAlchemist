@@ -16,9 +16,248 @@ class Defense:
     and has a Command and Active response.
     '''
 
-    def __init__(self, 
-                 #mapped_states : List[int] = None, # The states the defense is mapped to, inside of states_to_defense.xml
-                 
+    print_diagnostics = True
 
+    def __init__(self,
+                name : str = None, # The name given in defense name=""
+                id : int = None,
+                command : Command = None,
+                active_response : ActiveResponse = None,
+                
                 ):
-        pass
+        
+        self.name = name
+        self.id = id
+
+        self.command = command
+
+        self.active_response = active_response
+
+        self.comm_name = None # MUST be set calling generate_extra_values()
+
+
+
+
+    # ============================================
+    # name operations
+    # ============================================
+
+    def get_name(self) -> str:
+        return self.name
+
+    def validate_name(self) -> bool:
+        return self.get_name() is None or isinstance(self.get_name(), str)
+    
+    def validate_name_with_error_launch(self):
+        if not self.validate_name():
+            error_prefix = f"Defense named {self.get_name()} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f'{error_prefix} <defense name="">. {Defense.get_name_allow_criteria()} {self.get_name()} of type {type(self.get_name())} {error_suffix}')
+
+    @staticmethod
+    def get_name_allow_criteria() -> str:
+        return "It must be a string."
+
+    def set_name(self, name : int):
+        self.name = name
+
+        self.validate_name_with_error_launch()
+        
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f'- <defense name=""> assignment of Defense named {self.get_name()} has been succesfully set to {self.get_name()}')
+
+    # ============================================
+    # id operations
+    # ============================================
+
+    def get_id(self) -> int:
+        return self.id
+
+    def validate_id(self) -> bool:
+        return self.get_id() is None or isinstance(self.get_id(), int)
+    
+    def validate_id_with_error_launch(self):
+        if not self.validate_id():
+            error_prefix = f"Defense idd {self.get_id()} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f'{error_prefix} <defense id="">. {Defense.get_id_allow_criteria()} {self.get_id()} of type {type(self.get_id())} {error_suffix}')
+
+    @staticmethod
+    def get_id_allow_criteria() -> str:
+        return "It must be a int."
+
+    def set_id(self, id : int):
+        self.id = id
+
+        self.validate_id_with_error_launch()
+        
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f'- <defense id=""> assignment of Defense named {self.get_name()} has been succesfully set to {self.get_id()}')
+
+
+
+    # ============================================
+    # command operations
+    # ============================================
+
+    def get_command(self) -> Command:
+        return self.command
+
+    def validate_command(self) -> bool:
+        return self.get_command().validate_all()
+    
+    def validate_command_with_error_launch(self):
+        self.validate_command()
+
+    def set_command(self, command : Command):
+        self.command = command
+
+        self.validate_command_with_error_launch()
+
+    # ============================================
+    # active_response operations
+    # ============================================
+
+    def get_active_response(self) -> ActiveResponse:
+        return self.active_response
+
+    def validate_active_response(self) -> bool:
+        return self.get_active_response().validate_all()
+    
+    def validate_active_response_with_error_launch(self):
+        if not self.validate_active_response():
+            error_prefix = f"Defense active_responsed {self.get_active_response()} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f'{error_prefix} <defense active_response="">. {Defense.get_active_response_allow_criteria()} {self.get_active_response()} of type {type(self.get_active_response())} {error_suffix}')
+
+    @staticmethod
+    def get_active_response_allow_criteria() -> str:
+        return "It must be a string."
+
+    def set_active_response(self, active_response : ActiveResponse):
+        self.active_response = active_response
+
+        self.validate_active_response_with_error_launch()
+        
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f'- <defense active_response=""> assignment of Defense active_responsed {self.get_active_response()} has been succesfully set to {self.get_active_response()}')
+
+    # ===============================================
+    # Extra values generation over object attributes
+    # ===============================================
+
+    def generate_extra_values(self):
+        '''
+        This function generates:
+        of <command>:
+        <name> as "Launch "+self.get_name()
+        <executable> as self.get_name()
+
+        of <active-response>
+        <command>
+        '''
+
+        self.comm_name = "Launch" + self.get_name()
+
+    def get_comm_name(self):
+        return self.comm_name
+
+    # ============================================
+    # Validate All
+    # ============================================   
+
+
+    def validate_all(self):
+        self.validate_name_with_error_launch()
+        self.validate_command_with_error_launch()
+        self.validate_active_response_with_error_launch()
+
+    
+
+    def to_string_command(self, tab_times : int = 0) -> str:
+        '''
+        Generates following the syntax
+
+        <command>
+            <name>self.get_comm_name()</name>
+            <executable>self.get_name()</executable>
+            <extra_args>self.get_extra_args()</extra_args>
+            <timeout_allowed>self.get_timeout_allowed()</timeout_allowed>
+        </command>
+        
+        '''
+        give_tabs = '\t'*tab_times
+        string = f'{give_tabs}<command>\n'
+
+        comm_name = self.get_comm_name()
+        if comm_name is not None:
+            string += f'{give_tabs}\t<name>{comm_name}</name>\n'
+        
+        name = self.get_name()
+        if name is not None:
+            string += f'{give_tabs}\t<executable>{name}</executable>\n'
+        
+        extra_args = self.get_command().get_extra_args()
+        if extra_args is not None:
+            string += f'{give_tabs}\t<extra_args>{extra_args}</extra_args>\n'
+
+        timeout_allowed = self.get_command().get_timeout_allowed()
+        if timeout_allowed is not None:
+            string += f'{give_tabs}\t<timeout_allowed>{timeout_allowed}</timeout_allowed>\n'
+
+        string = f'{give_tabs}</command>\n'
+
+        return string
+    
+
+    def to_string_active_response(self, tab_times : int = 0) -> str:
+        '''
+        Generates following the syntax
+
+        <active-response>
+            <command>self.get_comm_name()</command>
+            <location>self.get_active_response().get_location()</location>
+            <agent_id>self.get_active_response().get_agent_id()</agent_id>
+            <rules_id>GENERATION TO BE SPECIFIED</rules_id>
+            <timeout>self.get_active_response().get_timeout()</timeout>
+        </active-response>
+        
+        '''
+        give_tabs = '\t'*tab_times
+        string = f'{give_tabs}<active_response>\n'
+
+        comm_name = self.get_comm_name()
+        if comm_name is not None:
+            string += f'{give_tabs}\t<command>{comm_name}</command>\n'
+        
+        location = self.get_active_response().get_location()
+        if location is not None:
+            string += f'{give_tabs}\t<location>{location}</location>\n'
+        
+        agent_id = self.get_active_response().get_agent_id()
+        if agent_id is not None:
+            string += f'{give_tabs}\t<agent_id>{agent_id}</agent_id>\n'
+
+        timeout = self.get_active_response().get_timeout()
+        if timeout is not None:
+            string += f'{give_tabs}\t<timeout>{timeout}</timeout>\n'
+
+
+        string += f'{give_tabs}\t<rules_id>GENERATION TO BE SPECIFIED</rules_id>\n'
+
+        string = f'{give_tabs}</active_response>\n'
+
+        return string
+    
+
+    def to_string_total(self, tab_times : int = 0):
+        give_tabs = '\t'*tab_times
+        string = f'{give_tabs}<ossec_config>\n'
+
+        string += self.to_string_command(tab_times=tab_times+1)
+
+        string += self.to_string_active_response(tab_times=tab_times+1)
+
+        string = f'{give_tabs}</ossec_config>\n'
+
+        return string
