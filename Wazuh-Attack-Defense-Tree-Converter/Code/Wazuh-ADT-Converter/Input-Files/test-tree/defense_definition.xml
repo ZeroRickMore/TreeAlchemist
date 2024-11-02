@@ -1,24 +1,30 @@
 <defenses-definition>
 
-    <defense name="Def1">
+    <defense name="Def1" id="1">
         <!-- This is the most basic defense, just tell Wazuh to execute the script "Def1" -->
-    </defense_config> 
+    </defense> 
 
-    <defense name="Def2"> 
+    <defense name="Def2" id="2"> 
         <!-- This is the most basic defense, just tell Wazuh to execute the script "Def2" -->
-    </defense_config>
+    </defense>
 
-    <defense name="Def3">
+    <defense name="Def3" id="3">
         <!-- This is the most basic defense, just tell Wazuh to execute the script "Def3" -->
-    </defense_config>
+    </defense>
 
-    <defense name="Def1_1">
+    <defense name="Def1_1" id="4">
         <!-- This is the most basic defense, just tell Wazuh to execute the script "Def1_1" -->
-    </defense_config> 
+    </defense> 
 
-    <defense name="Def1_2-3-4">
+    <defense name="Def4" id="5">
+        <!-- This is not attached to any singular node, only to a state of multiple nodes. -->
+        <!-- This is the most basic defense, just tell Wazuh to execute the script "Def1_1" -->
+    </defense>  
+
+    <defense name="Def1_2-3-4" id="6">
         <!-- This is the most basic defense, just tell Wazuh to execute the script "Def1_2-3-4" -->
-    </defense_config>
+        <defenses-together>3,5</defenses-together>
+    </defense>
 
 
 </defenses-definition>
