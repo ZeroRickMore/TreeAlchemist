@@ -58,7 +58,7 @@ class Defense:
     def get_name_allow_criteria() -> str:
         return "It must be a string."
 
-    def set_name(self, name : int):
+    def set_name(self, name : str):
         self.name = name
 
         self.validate_name_with_error_launch()
@@ -78,7 +78,7 @@ class Defense:
     
     def validate_id_with_error_launch(self):
         if not self.validate_id():
-            error_prefix = f"Defense idd {self.get_id()} failed validation on"
+            error_prefix = f"Defense named {self.get_name()} failed validation on"
             error_suffix = f"was given instead."
             ExitUtils.exit_with_error(f'{error_prefix} <defense id="">. {Defense.get_id_allow_criteria()} {self.get_id()} of type {type(self.get_id())} {error_suffix}')
 
@@ -157,7 +157,7 @@ class Defense:
         <command>
         '''
 
-        self.comm_name = "Launch" + self.get_name()
+        self.comm_name = "Launch " + self.get_name()
 
     def get_comm_name(self):
         return self.comm_name
@@ -197,15 +197,16 @@ class Defense:
         if name is not None:
             string += f'{give_tabs}\t<executable>{name}</executable>\n'
         
-        extra_args = self.get_command().get_extra_args()
-        if extra_args is not None:
-            string += f'{give_tabs}\t<extra_args>{extra_args}</extra_args>\n'
+        if self.get_command() is not None:
+            extra_args = self.get_command().get_extra_args()
+            if extra_args is not None:
+                string += f'{give_tabs}\t<extra_args>{extra_args}</extra_args>\n'
 
-        timeout_allowed = self.get_command().get_timeout_allowed()
-        if timeout_allowed is not None:
-            string += f'{give_tabs}\t<timeout_allowed>{timeout_allowed}</timeout_allowed>\n'
+            timeout_allowed = self.get_command().get_timeout_allowed()
+            if timeout_allowed is not None:
+                string += f'{give_tabs}\t<timeout_allowed>{timeout_allowed}</timeout_allowed>\n'
 
-        string = f'{give_tabs}</command>\n'
+        string += f'{give_tabs}</command>\n'
 
         return string
     
@@ -230,22 +231,26 @@ class Defense:
         if comm_name is not None:
             string += f'{give_tabs}\t<command>{comm_name}</command>\n'
         
-        location = self.get_active_response().get_location()
-        if location is not None:
-            string += f'{give_tabs}\t<location>{location}</location>\n'
-        
-        agent_id = self.get_active_response().get_agent_id()
-        if agent_id is not None:
-            string += f'{give_tabs}\t<agent_id>{agent_id}</agent_id>\n'
+        if self.get_command() is not None:
+            location = self.get_active_response().get_location()
+            if location is not None:
+                string += f'{give_tabs}\t<location>{location}</location>\n'
+            
+            agent_id = self.get_active_response().get_agent_id()
+            if agent_id is not None:
+                string += f'{give_tabs}\t<agent_id>{agent_id}</agent_id>\n'
 
-        timeout = self.get_active_response().get_timeout()
-        if timeout is not None:
-            string += f'{give_tabs}\t<timeout>{timeout}</timeout>\n'
+            timeout = self.get_active_response().get_timeout()
+            if timeout is not None:
+                string += f'{give_tabs}\t<timeout>{timeout}</timeout>\n'
+        else:
+                string += f'{give_tabs}\t<location>local</location>\n'
+
 
 
         string += f'{give_tabs}\t<rules_id>GENERATION TO BE SPECIFIED</rules_id>\n'
 
-        string = f'{give_tabs}</active_response>\n'
+        string += f'{give_tabs}</active_response>\n'
 
         return string
     
@@ -258,6 +263,6 @@ class Defense:
 
         string += self.to_string_active_response(tab_times=tab_times+1)
 
-        string = f'{give_tabs}</ossec_config>\n'
+        string += f'{give_tabs}</ossec_config>\n'
 
         return string
