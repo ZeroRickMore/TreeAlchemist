@@ -1,5 +1,9 @@
 from AbstractOptimality import AbstractOptimality
-
+# Import scripts from above folder
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+from terminal_UI_utils import PrintUtils, ExitUtils
 
 class BEST_SCORE(AbstractOptimality):
     '''
@@ -11,14 +15,14 @@ class BEST_SCORE(AbstractOptimality):
     '''
 
     def validate_score(self):
-        return isinstance(self.get_property_value('score'), int)
+        return isinstance(self.get_property_value_attribute_no_duplicate_tags_traversed('score'), int)
     
     def validate_score_with_error_launch(self):
         if not self.validate_score():
-            error_prefix = f"BEST_SCORE with score {self.get_score()} failed validation on"
+            score = self.get_property_value_attribute_no_duplicate_tags_traversed('score')
+            error_prefix = f"BEST_SCORE with score {score} failed validation on"
             error_suffix = f"was given instead."
-            ExitUtils.exit_with_error(f'{error_prefix} <defense id="">. {Defense.get_id_allow_criteria()} {self.get_id()} of type {type(self.get_id())} {error_suffix}')
-
+            ExitUtils.exit_with_error(f'{error_prefix} <score>. It should be and int, but {score} of type {type(score)} {error_suffix}')
 
     def validate_all(self):
         # Every validation for the properties.
