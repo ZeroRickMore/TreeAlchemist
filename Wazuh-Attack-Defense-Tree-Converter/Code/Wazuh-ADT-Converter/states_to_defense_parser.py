@@ -274,29 +274,6 @@ def generate_properties_dict(element : ET.Element, exit_error_prefix : str) -> d
 
     return result
 
-# Helper function to understand the dictionary.
-def properties_dict_pretty_print(data, indent=0):
-    """Recursively print the dictionary in a structured format with values next to keys."""
-    for key, value in data.items():
-        # Print the current key with indentation
-        print('    ' * indent + f"{key}: ", end='')
-        
-        if isinstance(value, dict):
-            print("{")  # Open the dictionary
-            properties_dict_pretty_print(value, indent + 1)
-            print('    ' * indent + "}")  # Close the dictionary
-        elif isinstance(value, list):
-            print("[")  # Open the list
-            for item in value:
-                if isinstance(item, dict):
-                    properties_dict_pretty_print(item, indent + 1)
-                else:
-                    print('    ' * (indent + 1) + str(item))
-            print('    ' * indent + "]")  # Close the list
-        else:
-            # Print the value if it's neither a dict nor a list
-            print(str(value))  # Print value next to the key
-
 
 def test_properties_dict():
     # Load the XML file
@@ -307,11 +284,13 @@ def test_properties_dict():
     result_dict = generate_properties_dict(root, exit_error_prefix='Sta andando tutto male! ')
 
     # Print the result
-    properties_dict_pretty_print(result_dict)
+    from pprint import pprint
+    pprint(result_dict)
+    print("\n")
     # Access <score> of the second <state>
 
-    print("The score should be 2 ->", result_dict['states']['children']['state'][1]['children']['defense'][0]['children']['score'][0]['text'])
-
+    print("--- The score should be 100. Taken: ->", result_dict['states']['children']['state'][4]['children']['defense'][0]['children']['score'][0]['text'])
+    print("\n")
 
 if __name__ == '__main__':
     test_properties_dict()
