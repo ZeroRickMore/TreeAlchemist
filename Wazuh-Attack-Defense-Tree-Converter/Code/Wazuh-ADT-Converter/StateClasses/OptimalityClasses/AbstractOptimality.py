@@ -15,6 +15,8 @@ class AbstractOptimality(ABC):
     Any other usage is not directly supported, nor recommended.
     '''
 
+    print_diagnostics = True
+
     def __init__(self):
         self.properties : dict = {}
 
@@ -29,27 +31,34 @@ class AbstractOptimality(ABC):
         self.properties = properties
 
 
-
-
-    def find_key_and_return_value(self, data : dict, needed_key : str) -> dict:
+    def find_key_and_return_value(self, dictionary: dict, needed_key: str) -> dict:
         """
-        Recursively searches for a specified key in a nested dictionary.
+        Recursively searches for a specified key in a nested dictionary or list.
 
-        :param data: The dictionary to search through. Use self.get_properties() here.
-        :param needed_key: The key to find. It is one of your xml tags inside of <defense> and its children.
-        :return: the value if it's found, else None
+        :param dictionary: The dictionary to search through. Use self.get_properties() here.
+        :param needed_key: The key to find. It is one of your XML tags inside of <defense> and its children.
+        :return: The value if it's found, else None.
         """
-        if not isinstance(data, dict):
+        if not isinstance(dictionary, (dict, list)):
             return None
 
-        # Check if the key is in the current dictionary
-        if needed_key in data:
-            return data[needed_key]
+        # If the current element is a dictionary
+        if isinstance(dictionary, dict):
+            # Check if the key is in the current dictionary
+            if needed_key in dictionary:
+                return dictionary[needed_key]
 
-        # Recursively check each value
-        for value in data.values():
-            if isinstance(value, dict):
+            # Recursively check each value in the dictionary
+            for value in dictionary.values():
                 res = self.find_key_and_return_value(value, needed_key)
+                if res is not None:
+                    return res
+
+        # If the current element is a list
+        elif isinstance(dictionary, list):
+            # Recursively check each item in the list
+            for item in dictionary:
+                res = self.find_key_and_return_value(item, needed_key)
                 if res is not None:
                     return res
 
@@ -57,10 +66,12 @@ class AbstractOptimality(ABC):
 
 
     # Get the value of a property through the dictionary key
-    def get_property_value_attribute_no_duplicate_tags_traversed(self, property_key):
+    def get_property_value_attribute_no_duplicate_tags_traversed(self, property_key, property_attribute):
         '''
         Useful if and only if the tag you are looking for traverses
         and xpath composed of tags that DO NOT repeat.
+
+        If they do repeat, the first occurence is taken, but this hasn't been throughly tested so don't play with it too much...
 
         [ UNIQUE TAGS ONLY !!!]
 
@@ -68,28 +79,33 @@ class AbstractOptimality(ABC):
         If needed, use the dictionary syntax and not the methods provided.
         '''
         
-        value = self.find_key_and_return_value(data=self.get_properties(), needed_key=property_key).get('attribute')
-
-        if value is not None:
-            return value
+        # Note that we use [0] to access the first occurrence of the tag.
+        # This is EXACTLY why this method is UNIQUE TAGS ONLY, because first occurrence in this case is also the only one.
+        value = self.find_key_and_return_value(dictionary=self.get_properties(), needed_key=property_key)[0].get('attributes').get(property_attribute)
         
-        ExitUtils.exit_with_error(f"Attemped to get attribute with key {property_key} in dict :\n\n{self.get_properties()}\n\nbut not found")
+        return value
+        
+        #ExitUtils.exit_with_error(f"Attemped to get attribute with key {property_key} in dict :\n\n{self.get_properties()}\n\nbut not found")
     
 
-    
+
     # Get the text of a property through the dictionary key
-    def get_property_value_text(self, property_key):
+    def get_property_value_text_no_duplicate_tags_traversed(self, property_key):
         '''
         Useful if and only if the tag you are looking for traverses
         and xpath composed of tags that DO NOT repeat.
+
+        If they do repeat, the first occurence is taken, but this hasn't been throughly tested so don't play with it too much...
 
         [ UNIQUE TAGS ONLY !!!]
 
         It is EXTREMELY recommended not to duplicate tags in the xml property section.
         If needed, use the dictionary syntax and not the methods provided.
         '''
-        
-        value = self.find_key_and_return_value(data=self.get_properties(), needed_key=property_key).get('text')
+
+        # Note that we use [0] to access the first occurrence of the tag.
+        # This is EXACTLY why this method is UNIQUE TAGS ONLY, because first occurrence in this case is also the only one.
+        value = self.find_key_and_return_value(dictionary=self.get_properties(), needed_key=property_key)[0].get('text')
 
         if value is not None:
             return value
@@ -102,3 +118,8 @@ class AbstractOptimality(ABC):
         Implement all of the validations for the properties here.
         '''
         pass
+
+    def to_string(self, tab_times : int = 0):
+        give_tabs = '\t'*tab_times
+        return f"{give_tabs}Optimality ======================\n{give_tabs}\tClass: {type(self)}\n{give_tabs}\tVariables: { {k: v for k, v in vars(self).items() if k != 'properties' }}\n{give_tabs}\tProperties: {self.get_properties()}"
+    
