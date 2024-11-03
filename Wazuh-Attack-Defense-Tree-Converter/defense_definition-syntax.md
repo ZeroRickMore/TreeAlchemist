@@ -14,6 +14,11 @@
     <!-- After defining some defenses, if you need a combination of them -->
     <defense name="any def name#">
         <defenses-together>#any list of ids separated by comma#</defenses-together>
+        <active-response> <!-- OPTIONAL Start of the Wazuh "active-response" configuration for the defense -->
+            <location>{local} | server | defined-agent | all</location> <!-- OPTIONAL Specify where to execute the script once the node is reached -->
+            <agent_id>001</agent_id> <!-- OPTIONAL Only with "defined-agent" declared in <location> -->
+            <timeout>180</timeout> <!-- OPTIONAL Seconds after which the response is reverted. You must have <timeout_allowed> on the command section -->
+        </active-response> 
         <!-- Do NOT add other tags here. They will be ignored. -->
     </defense>
 </defenses-definition>
