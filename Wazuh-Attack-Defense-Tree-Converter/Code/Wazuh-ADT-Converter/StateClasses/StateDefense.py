@@ -96,6 +96,42 @@ class StateDefense:
             PrintUtils.print_in_green(f'- Inside <defense>, <optimality> has been succesfully set to {optimality}')
 
 
+    # ============================================
+    # <defense> operations
+    # ============================================
+    
+    def get_defense(self) -> Union[Defense, DefensesTogether]:
+        return self.defense
+
+    def validate_defense(self) -> bool:
+        defense = self.get_defense()
+        if not ( isinstance(defense, Defense) or isinstance(defense, DefensesTogether) ) :
+            return False
+        
+        defense.validate_all()
+        return True
+
+    def validate_defense_with_error_launch(self):
+        if not self.validate_defense():
+            error_prefix = f"The StateDefense with defense [ {self.get_defense()} ] failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f'{error_prefix} <defense> in <state>. {StateDefense.get_defense_allow_criteria()} {self.get_defense()} of type {type(self.get_defense())} {error_suffix}')
+
+    @staticmethod
+    def get_defense_allow_criteria() -> str:
+        return "It must be an object of type Defense or DefensesTogether."
+
+    def set_defense(self, defense : Union[Defense, DefensesTogether]) -> None:
+        self.defense = defense
+
+        self.validate_defense_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f'- <defense> in <state> has been succesfully set to {defense}')
+
+
+
+
 
     # ============================================
     # Validate All
@@ -107,6 +143,8 @@ class StateDefense:
         self.validate_id_with_error_launch()
 
         self.validate_optimality_with_error_launch()
+
+        self.validate_defense_with_error_launch()
 
 
 
