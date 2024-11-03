@@ -15,7 +15,7 @@ from DefenseClasses.DefensesTogether import DefensesTogether
 
 
 
-def get_all_defenses(tree_dir_path : str) -> tuple[List[Union[Defense, DefensesTogether]], dict[int, Union[Defense, DefensesTogether]]]:
+def get_all_defenses_from_defense_definition_xml(tree_dir_path : str) -> tuple[List[Union[Defense, DefensesTogether]], dict[int, Union[Defense, DefensesTogether]]]:
     defense_definition_xml_path : str = os.path.join(tree_dir_path, "defense_definition.xml")
 
     validate_xml_file_and_launch_error(defense_definition_xml_path)
@@ -250,7 +250,7 @@ def validate_defenses_together(all_defenses_together : List[DefensesTogether], i
 
 # TEST ========================
 def test():
-    defs = get_all_defenses(r'Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\test-tree')
+    defs = get_all_defenses_from_defense_definition_xml(r'Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\test-tree')
     import wazuh_ready_printer
     print(wazuh_ready_printer.to_string_all_defenses_wazuh_ready(tree_name='BEST ADT', all_defenses=defs, tab_times=0))
 

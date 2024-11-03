@@ -14,7 +14,7 @@ from StateClasses.StateDefense import StateDefense
 from StateClasses.OptimalityClasses.AbstractOptimality import AbstractOptimality
 
 
-def get_all_states_to_defense(tree_dir_path : str) -> tuple[List[State], dict[int, State]]:
+def get_all_states_to_defense_from_states_to_defense_xml(tree_dir_path : str) -> tuple[List[State], dict[int, State]]:
     states_to_defense_xml_path : str = os.path.join(tree_dir_path, "states_to_defense.xml")
 
     validate_xml_file_and_launch_error(states_to_defense_xml_path)
@@ -329,7 +329,7 @@ def to_string_state_id_to_state_pretty(state_id_to_state : dict[int, State]) -> 
 
 
 def test():
-    all_states, state_id_to_state = get_all_states_to_defense(r'Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\test-tree')
+    all_states, state_id_to_state = get_all_states_to_defense_from_states_to_defense_xml(r'Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\test-tree')
     print(to_string_all_states_pretty(all_states=all_states))
     print(to_string_state_id_to_state_pretty(state_id_to_state=state_id_to_state))
     print("\n")
