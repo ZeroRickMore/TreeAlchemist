@@ -1,8 +1,18 @@
+# Import scripts from above folder
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from DefenseClasses.Defense import Defense
 from DefenseClasses.DefensesTogether import DefensesTogether
-from OptimalityClasses.AbstractOptimality import AbstractOptimality
+
+from StateClasses.OptimalityClasses.AbstractOptimality import AbstractOptimality
 
 from typing import Union, Any
+# Import scripts from above folder
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from terminal_UI_utils import PrintUtils, ExitUtils
 
 class StateDefense:
     '''
@@ -12,20 +22,49 @@ class StateDefense:
 
     This is just an intermediary between defense and state, let's say.
     '''
-    ALLOWED_OPTIMALITY_TYPES = ['BEST_SCORE']
 
     print_diagnostics = True
 
     def __init__(self,
+                 id : int = -1,
                  defense : Union[Defense, DefensesTogether] = None, # The Defense object linked to it 
-                 optimality_type : AbstractOptimality = None, 
+                 optimality : AbstractOptimality = None, 
                  ):
-        
+        self.id = id
+
         self.defense = defense
 
-        self.optimality_type = optimality_type
+        self.optimality = optimality
 
     
+    # ============================================
+    # <id> operations
+    # ============================================
     
+    def get_id(self) -> int:
+        return self.id
+
+    def validate_id(self) -> bool:
+        if (not isinstance(self.get_id(), int)) or self.get_id < 0:
+            return False
+
+    def validate_id_with_error_launch(self):
+        if not self.validate_id():
+            error_prefix = f"The StateDefense with id [ {self.get_id()} ] failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f'{error_prefix} <id> in <state>. {StateDefense.get_id_allow_criteria()} {self.get_id()} of type {type(self.get_id())} {error_suffix}')
+
+    @staticmethod
+    def get_id_allow_criteria() -> str:
+        return "It must be a number higher or equal to 0."
+
+    def set_id(self, id : int) -> None:
+        self.id = id
+
+        self.validate_id_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f'- Inside <defense>, <id> has been succesfully set to {id}')
+
 
 
