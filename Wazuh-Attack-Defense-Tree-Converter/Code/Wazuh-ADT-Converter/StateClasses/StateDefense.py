@@ -105,6 +105,10 @@ class StateDefense:
 
     def validate_defense(self) -> bool:
         defense = self.get_defense()
+        if defense is None:
+            PrintUtils.print_warning(f"StateDefense with id {self.get_id()} has no Defense attached.\nThis is normal during preparation, and overly verbose.")
+            return True
+
         if not ( isinstance(defense, Defense) or isinstance(defense, DefensesTogether) ) :
             return False
         
@@ -153,4 +157,4 @@ class StateDefense:
 
     def to_string(self, tab_times : int = 0):
         give_tabs = '\t'*tab_times
-        return f"{give_tabs}StateDefense ==========================\n\n{give_tabs}\tID: {self.get_id()}\n{self.get_optimality().to_string(tab_times=tab_times+1)}"
+        return f"{give_tabs}StateDefense ==========================\n\n{give_tabs}\tID: {self.get_id()}\n{self.get_optimality().to_string(tab_times=tab_times+1)}\n{give_tabs}\tDefense: {f'\n{give_tabs}\tType:{type(self.get_defense())}\n{self.get_defense().to_string_total(tab_times=tab_times+1)}' if self.get_defense() else 'unattached yet.'}"
