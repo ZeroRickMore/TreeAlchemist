@@ -168,17 +168,30 @@ class Defense:
 
     def validate_all(self):
         error_prefix = f"Defense named {self.get_name()} failed validation on"
-        error_suffix = f"was given instead."
 
         self.validate_name_with_error_launch()
-        self.validate_command_with_error_launch()
-        self.validate_active_response_with_error_launch()
+
+        self_command = self.get_command()
+        if self_command is not None:
+            self.validate_command_with_error_launch()
+
+        self_actres = self.get_active_response()
+        if self_actres is not None:        
+            self.validate_active_response_with_error_launch()
+
+        if self.get_comm_name() is None:
+            self.generate_extra_values()
 
         # Timeout validation
-        if self.get_command().get_timeout_allowed() == "no" and self.get_active_response().get_timeout() is not None:
+        if self_command is None and self_actres is None: # Both None? No issue.
+            return
+        if (self_command.get_timeout_allowed() == "no" or self_command is None) and self_actres.get_timeout() is not None:
             ExitUtils.exit_with_error(f'{error_prefix} <command> timeout_allowed and <active-response> timeout.\nYou have given a <timeout> but <timeout_allowed> is not "yes".')
 
 
+    # ============================================
+    # to_string()
+    # ============================================   
     
 
     def to_string_command(self, tab_times : int = 0) -> str:
@@ -238,7 +251,7 @@ class Defense:
         if comm_name is not None:
             string += f'{give_tabs}\t<command>{comm_name}</command>\n'
         
-        if self.get_command() is not None:
+        if self.get_active_response() is not None:
             location = self.get_active_response().get_location()
             if location is not None:
                 string += f'{give_tabs}\t<location>{location}</location>\n'
@@ -263,13 +276,12 @@ class Defense:
     
 
     def to_string_total(self, tab_times : int = 0):
-        give_tabs = '\t'*tab_times
-        string = f'{give_tabs}<ossec_config>\n'
+        string = ''
 
-        string += self.to_string_command(tab_times=tab_times+1)
+        string += self.to_string_command(tab_times=tab_times)
 
-        string += self.to_string_active_response(tab_times=tab_times+1)
+        string += '\n'
 
-        string += f'{give_tabs}</ossec_config>\n'
+        string += self.to_string_active_response(tab_times=tab_times)
 
         return string
