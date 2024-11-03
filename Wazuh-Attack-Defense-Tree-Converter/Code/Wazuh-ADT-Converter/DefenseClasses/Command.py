@@ -62,7 +62,7 @@ class Command:
         return self.timeout_allowed
 
     def validate_timeout_allowed(self) -> bool:
-        return self.get_timeout_allowed() is None or( isinstance(self.get_timeout_allowed(), str) and validations.is_allowed(allowed_values=['yes', 'no'], string=self.get_timeout_allowed()))
+        return isinstance(self.get_timeout_allowed(), str) and validations.is_allowed(allowed_values=['yes', 'no'], string=self.get_timeout_allowed())
     
     def validate_timeout_allowed_with_error_launch(self):
         if not self.validate_timeout_allowed():
