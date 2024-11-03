@@ -16,12 +16,7 @@
         <!-- This is the most basic defense, just tell Wazuh to execute the script "Def1_1" -->
     </defense> 
 
-    <defense name="Def4" id="5">
-        <!-- This is not attached to any singular node, only to a state of multiple nodes. -->
-        <!-- This is the most basic defense, just tell Wazuh to execute the script "Def1_1" -->
-    </defense>  
-
-    <defense name="Def1_2-3-4" id="6">
+    <defense name="Def1_2-3-4" id="5">
         <!-- This is the most basic defense, just tell Wazuh to execute the script "Def1_2-3-4" -->
         <defenses-together>3,5</defenses-together>
     </defense>
