@@ -15,7 +15,7 @@ from DefenseClasses.DefensesTogether import DefensesTogether
 
 
 
-def get_all_defenses(tree_dir_path : str) -> List[Union[Defense, DefensesTogether]]:
+def get_all_defenses(tree_dir_path : str) -> tuple[List[Union[Defense, DefensesTogether]], dict[int, Union[Defense, DefensesTogether]]]:
     defense_definition_xml_path : str = os.path.join(tree_dir_path, "defense_definition.xml")
 
     validate_xml_file_and_launch_error(defense_definition_xml_path)
@@ -37,13 +37,13 @@ def validate_defense_definition_xml_file(defense_definition_xml_path : str) -> b
 
 
 
-def generate_all_defenses_from_xml(defense_definition_xml_path : str) -> List[Union[Defense, DefensesTogether]]:
+def generate_all_defenses_from_xml(defense_definition_xml_path : str) -> tuple[List[Union[Defense, DefensesTogether]], dict[int, Union[Defense, DefensesTogether]]]:
     '''
     Read the xml and generate the real data structures.
     '''
     all_defenses : List[Defense] = []
     all_defenses_together : List[DefensesTogether] = []
-    id_to_defense : dict = {}
+    id_to_defense : dict[int, Union[Defense, DefensesTogether]] = {}
 
     root = get_xml_root(defense_definition_xml_path)
 
@@ -104,7 +104,7 @@ def generate_all_defenses_from_xml(defense_definition_xml_path : str) -> List[Un
     validate_defense(all_defenses=all_defenses)
     validate_defenses_together(all_defenses_together=all_defenses_together, id_to_defense=id_to_defense)
 
-    return all_defenses + all_defenses_together
+    return all_defenses + all_defenses_together , id_to_defense
 
 
 # ==================================================================================
