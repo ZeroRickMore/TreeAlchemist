@@ -20,6 +20,7 @@ def map_states_to_defense(state_id_to_state : List[Union[Defense, DefensesTogeth
                           id_to_defense : dict[int, Union[Defense, DefensesTogether]],
                           all_defenses : dict[int, State],
                         ):
+    
     check_validity_with_error_throw(state_id_to_state, all_states, id_to_defense, all_defenses)
 
 
@@ -30,13 +31,14 @@ def are_they_valid(state_id_to_state : List[Union[Defense, DefensesTogether]],
                     all_states : List[State], 
                     id_to_defense : dict[int, Union[Defense, DefensesTogether]],
                     all_defenses : dict[int, State],
-                ):
+                ) -> bool :
     '''
     Function that checks if they are overall valid or not.
     Honestly, this is unused.
     '''
     # Invalidity code 0 is "everything is fine"
-    return get_invalidity_code(state_id_to_state, all_states, id_to_defense, all_defenses) == 0
+    err_code, _ = get_invalidity_code_and_error_string(state_id_to_state, all_states, id_to_defense, all_defenses)
+    return bool(err_code == 0)
 
 
 
@@ -65,8 +67,10 @@ def get_invalidity_code_and_error_string(state_id_to_state : List[Union[Defense,
             return 3, f"Too many states compared to how many defenses you have.\nStates: {all_states}\nDefenses: {all_defenses}\n\nDifferences found: {to_string_error_differences(state_id_to_state, all_states, id_to_defense, all_defenses)}"
         else:
             return 4, f"Too many defenses compared to how many states you have.\nDefenses: {all_defenses}\nStates: {all_states}\n\nDifferences found: {to_string_error_differences(state_id_to_state, all_states, id_to_defense, all_defenses)}"
-        
-
+    
+    err_string = to_string_error_differences(state_id_to_state=state_id_to_state, id_to_defense=id_to_defense)
+    if err_string != '':
+        return 5, f'Found a <defense id=""> not mapped between defense_definition.xml and states_to_defense.xml .\n{err_string}'
 
     return 0
     
@@ -106,4 +110,5 @@ def check_validity_with_error_throw(state_id_to_state : List[Union[Defense, Defe
                           all_defenses : dict[int, State],
                         ):
     
-    invalidity_code = get_invalidity_code(state_id_to_state, all_states, id_to_defense, all_defenses)
+    invalidity_code, err_str = get_invalidity_code_and_error_string(state_id_to_state, all_states, id_to_defense, all_defenses)
+    if invalidity_code != 0: ExitUtils.exit_with_error(err_str)
