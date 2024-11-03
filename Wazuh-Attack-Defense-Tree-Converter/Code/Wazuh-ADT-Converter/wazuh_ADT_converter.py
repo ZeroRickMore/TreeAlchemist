@@ -38,6 +38,8 @@ def main():
     print(states_to_defense_parser.to_string_all_states_pretty(all_states=all_states))
     print(states_to_defense_parser.to_string_state_id_to_state_pretty(state_id_to_state=state_id_to_state))
 
+    ultimate_generator.get_invalidity_code_and_error_string(state_id_to_state=state_id_to_state, id_to_defense=id_to_defense, all_defenses=all_defenses, all_states=all_states)
+
 
     
 
