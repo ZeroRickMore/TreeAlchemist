@@ -1,40 +1,45 @@
 <states>
+
         <state>
+                <description>Very cool state 1 desc</description>
                 <nodes>1</nodes>
-                <defense name="Def1">
+                <defense id="1"> <!-- This is Def1 -->
                         <optimality-type>BEST_SCORE</optimality-type>
                         <score>10</score> <!-- Very low -->
                 </defense>
         </state>
 
         <state>
+                <description>Very cool state 2 desc</description>
                 <nodes>2</nodes>
-                <defense name="Def2">
+                <defense id="2"> <!-- This is Def2 -->
                         <optimality-type>BEST_SCORE</optimality-type>
                         <!-- <score> omitted: it will be 50 -->
                 </defense>
         </state>
 
         <state>
+                <description>Very cool state 3 desc</description>
                 <nodes>3</nodes>
-                <defense name="Def3">
+                <defense id="3"> <!-- This is Def3 -->
                         <optimality-type>BEST_SCORE</optimality-type>
                         <!-- <score> omitted: it will be 50 -->
                 </defense>
         </state>
 
-
         <state>
+                <description>Very cool state 4 desc</description>
                 <nodes>5</nodes>
-                <defense name="Def1_1">
+                <defense id="4"> <!-- This is Def1_1 -->
                         <optimality-type>BEST_SCORE</optimality-type>
                         <!-- <score> omitted: it will be 50 -->
                 </defense>
         </state>
 
         <state>
+                <description>Very cool state 5 desc</description>
                 <nodes>6,3,4</nodes>
-                <defense name="Def1_2-3-4">
+                <defense id="5"> <!-- This is Def1_2-3-4 -->
                         <optimality-type>BEST_SCORE</optimality-type>
                         <score>100</score> <!-- Very high -->
                 </defense>

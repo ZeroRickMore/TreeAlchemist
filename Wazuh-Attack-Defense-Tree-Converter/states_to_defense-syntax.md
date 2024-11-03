@@ -1,7 +1,8 @@
 <states>
         <state>
-                <nodes>1,5,8,10</nodes>
-                <defense name="Def1">
+                <description>#any string#</description> <!-- Rule description that will appear on Wazuh dashboard when triggered -->
+                <nodes>1,5,8,10</nodes> <!-- Required nodes -->
+                <defense id="1"> <!-- The id of the defense you want to map to. This IS one of the <defense id=""> you declared in defense_definition.xml -->
                         <optimality-type>BEST_SCORE</optimality-type>
                         <!-- Here all the tags, depending on the chosen <optimality-type> -->
                 </defense>
@@ -23,9 +24,9 @@ A list of <node><id>s that you have declared in tree.xml. Every id must be separ
 
 ### <defense>
 
-#### name
+#### id
 
-The name of the defense. Must be one of the ones declared in defense_definition.xml in <defense name="{here}">
+The id of the defense. Must be one of the ones declared in defense_definition.xml in <defense id="{here}">
 
 #### <optimality-type>
 
