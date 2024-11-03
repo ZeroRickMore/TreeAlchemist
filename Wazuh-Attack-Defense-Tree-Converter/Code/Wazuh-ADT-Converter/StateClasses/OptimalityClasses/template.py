@@ -32,12 +32,6 @@ class OPTIMALITY_NAME(AbstractOptimality):
     
     '''
 
-    def __init__(self,
-                 # properties here
-                 ):
-        self.properties = {}
-        # Initialize every property here
-
     def validate_PROPERTYKEY(self):
         # Insert the validation for a key of "properties" dict
         return True
