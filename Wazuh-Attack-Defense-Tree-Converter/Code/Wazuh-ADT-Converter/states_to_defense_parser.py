@@ -7,13 +7,14 @@ import xml.etree.ElementTree as ET
 import os
 from terminal_UI_utils import PrintUtils, ExitUtils
 import importlib # Used to dynamically generate OptimalityType objects
+from typing import List
 
 from StateClasses.State import State
 from StateClasses.StateDefense import StateDefense
 from StateClasses.OptimalityClasses.AbstractOptimality import AbstractOptimality
 
 
-def get_all_states_to_defense(tree_dir_path : str) -> dict[tuple[int], str]:
+def get_all_states_to_defense(tree_dir_path : str) -> tuple[List[State], dict[int, State]]:
     states_to_defense_xml_path : str = os.path.join(tree_dir_path, "states_to_defense.xml")
 
     validate_xml_file_and_launch_error(states_to_defense_xml_path)
@@ -34,13 +35,14 @@ def validate_states_to_defense_xml_file(states_to_defense_xml_path : str) -> boo
 
 
 
-def generate_states_to_defense_from_xml(states_to_defense_xml_path : str) -> dict[tuple[int], str]:
+def generate_states_to_defense_from_xml(states_to_defense_xml_path : str) -> tuple[List[State], dict[int, State]]:
     '''
     Read the xml and generate the real data structures.
     '''
 
 
-    state_to_defense : dict[tuple[int], str] = {}
+    all_states : List[State] = []
+    state_id_to_state : dict[int, State] = {}
 
 
     root = get_xml_root(states_to_defense_xml_path)
@@ -65,7 +67,13 @@ def generate_states_to_defense_from_xml(states_to_defense_xml_path : str) -> dic
         curr_state.set_node_ids(node_ids)
 
         state_defense = generate_state_defense(state=state, exit_error_prefix=exit_error_prefix)
-        
+
+        curr_state.set_state_defense(state_defense)
+
+        all_states.append(curr_state)
+        state_id_to_state[curr_state.get_state_defense().get_id()] = curr_state
+
+    return all_states, state_id_to_state
 
 
 
@@ -109,25 +117,27 @@ def generate_state_defense(state : ET.Element, exit_error_prefix : str) -> State
         ExitUtils.exit_with_error(exit_error_prefix+"<defense> must be given exactly once!")
     
     state_defense = state_defense[0] # Get the first tag, which is the only one
-    id = get_id(state=state, exit_error_prefix=exit_error_prefix)
+    id = get_id(tag=state_defense, exit_error_prefix=exit_error_prefix)
     
     curr_state_def = StateDefense()
     curr_state_def.set_id(id)
 
     optimality = generate_optimality(state_defense=state_defense, exit_error_prefix=exit_error_prefix)
+    curr_state_def.set_optimality(optimality)
+
+    return curr_state_def
 
 
 
-
-def get_id(state : ET.Element, exit_error_prefix : str) -> int:
+def get_id(tag : ET.Element, exit_error_prefix : str) -> int:
     # get id=""
-    id = state.get('id')
+    id = tag.get('id')
     if id is None: 
-        ExitUtils.exit_with_error(exit_error_prefix+'id="" must be given!')
+        ExitUtils.exit_with_error(exit_error_prefix+'<defense id=""> must be given!')
     try:
         id = int(id)
     except:
-        ExitUtils.exit_with_error(exit_error_prefix+'id="" must be an int!')
+        ExitUtils.exit_with_error(exit_error_prefix+'<defense id=""> must be an int!')
     return id
 
 
@@ -136,25 +146,38 @@ def generate_optimality(state_defense : ET.Element, exit_error_prefix : str) -> 
     opt_type = get_optimality_type(state_defense=state_defense, exit_error_prefix=exit_error_prefix)
     # Let's use introspection to generate this object dynamically
     curr_opt : AbstractOptimality = None
-
+    
     try:
         # Import the module where the class resides
         module = importlib.import_module(f"StateClasses.OptimalityClasses.{opt_type}")
-        
         # Retrieve the class by name
         OptClass = getattr(module, opt_type)
-        
+
         # Instantiate the class
         curr_opt = OptClass()
 
     except ModuleNotFoundError as e:
-        ExitUtils.exit_with_error("The defined optimality-type is not supported, specifically:\n\nModule not found:", e)
+        ExitUtils.exit_with_error(f"The defined optimality-type is not supported, specifically:\n\nModule not found: {e}")
     except AttributeError as e:
-        ExitUtils.exit_with_error("The defined optimality-type is not supported, specifically:\n\nClass not found in module:", e)
+        ExitUtils.exit_with_error(f"The defined optimality-type is not supported, specifically:\n\nClass not found in module: {e}")
     except Exception as e:
-        ExitUtils.exit_with_error("The defined optimality-type is not supported, specifically:\n\nAn error occurred:", e)
+        ExitUtils.exit_with_error(f"The defined optimality-type is not supported, specifically:\n\nAn error occurred: {e}")
 
-    curr_opt.set_properties(generate_properties_dict(state_defense, exit_error_prefix))
+    curr_opt.set_properties(generate_properties_dict(state_defense, exit_error_prefix)['defense']['children'])
+    
+    # Position [0] because it only one. We get 'text' because that's where the optimality_type is written in the xml
+    opt_type_taken = curr_opt.get_properties().pop('optimality-type')[0]['text']
+
+    if opt_type_taken != opt_type:
+        ExitUtils.exit_with_error(f"Something went wrong during generate_optimality().\n{opt_type} was previously found but the property dictionary contains\n{opt_type_taken}...\nThis is not a user error, rather a backend parsing error.\n")
+
+    if curr_opt.print_diagnostics:
+        PrintUtils.print_in_green(f"An object of AbstractOptimality of expected type {opt_type} was created with type {type(curr_opt)}")
+    return curr_opt
+
+
+
+
 
 
 def get_optimality_type(state_defense : ET.Element, exit_error_prefix : str) -> str:
@@ -274,6 +297,25 @@ def generate_properties_dict(element : ET.Element, exit_error_prefix : str) -> d
 
     return result
 
+def to_string_all_states_pretty(all_states : List[State]) -> str:
+    string = ''
+    for i, state in enumerate(all_states):
+        string += f"\n{i}] =========\n{state.to_string(tab_times=0)}\n"
+    string += "\n==========================\n\n"
+    return string
+
+
+def to_string_state_id_to_state_pretty(state_id_to_state : dict[int, State]) -> str:
+    string = ''
+    for id in state_id_to_state:
+        string += f"{id} : {state_id_to_state[id].get_description()}\n"
+    return string
+
+def test():
+    all_states, state_id_to_state = get_all_states_to_defense(r'Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\test-tree')
+    print(to_string_all_states_pretty(all_states=all_states))
+    print(to_string_state_id_to_state_pretty(state_id_to_state=state_id_to_state))
+    print("\n")
 
 def test_properties_dict():
     # Load the XML file
@@ -286,11 +328,31 @@ def test_properties_dict():
     # Print the result
     from pprint import pprint
     pprint(result_dict)
-    print("\n")
+    print("\n\n========================================================================")
     # Access <score> of the second <state>
 
-    print("--- The score should be 100. Taken: ->", result_dict['states']['children']['state'][4]['children']['defense'][0]['children']['score'][0]['text'])
-    print("\n")
+    assert(100 == int(result_dict['states']['children']['state'][4]['children']['defense'][0]['children']['score'][0]['text']))
+
+    # We use BEST_SCORE for pure testing here
+    from StateClasses.OptimalityClasses.BEST_SCORE import BEST_SCORE
+    state = root.find('state')
+    result_dict = generate_properties_dict(state, exit_error_prefix='Sta andando tutto male qui sotto! ')
+    pprint(result_dict)
+    print("\n\n========================================================================")
+    bs = BEST_SCORE()
+    bs.set_properties(result_dict)
+    
+    bs.validate_all()
+
+    score = bs.get_score()
+    assert(score == 10)
+    # We get into the first <state> so that we can utilize the prerequisite "the tags towards it must be present only once"
+    def_id = bs.get_property_value_attribute_no_duplicate_tags_traversed(property_key='defense', property_attribute='id')
+    assert(1 == int(def_id))
+
+
+
 
 if __name__ == '__main__':
-    test_properties_dict()
+    #test_properties_dict()
+    test()
