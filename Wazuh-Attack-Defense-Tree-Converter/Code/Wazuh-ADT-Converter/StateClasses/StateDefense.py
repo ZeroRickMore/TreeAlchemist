@@ -47,7 +47,8 @@ class StateDefense:
     def validate_id(self) -> bool:
         if (not isinstance(self.get_id(), int)) or self.get_id < 0:
             return False
-
+        return True
+    
     def validate_id_with_error_launch(self):
         if not self.validate_id():
             error_prefix = f"The StateDefense with id [ {self.get_id()} ] failed validation on"
@@ -67,4 +68,33 @@ class StateDefense:
             PrintUtils.print_in_green(f'- Inside <defense>, <id> has been succesfully set to {id}')
 
 
+    # ============================================
+    # <optimality> operations
+    # ============================================
+    
+    def get_optimality(self) -> int:
+        return self.optimality
+
+    def validate_optimailty(self) -> bool:
+        if (not isinstance(self.get_optimality(), AbstractOptimality)):
+            return False
+        self.get_optimality().validate_all()
+
+    def valoptimalityate_optimality_with_error_launch(self):
+        if not self.valoptimalityate_optimality():
+            error_prefix = f"The StateDefense with optimality [ {self.get_optimality()} ] failed valoptimalityation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f'{error_prefix} <optimality> in <state>. {StateDefense.get_optimality_allow_criteria()} {self.get_optimality()} of type {type(self.get_optimality())} {error_suffix}')
+
+    @staticmethod
+    def get_optimality_allow_criteria() -> str:
+        return "It must be a number higher or equal to 0."
+
+    def set_optimality(self, optimality : int) -> None:
+        self.optimality = optimality
+
+        self.valoptimalityate_optimality_with_error_launch()
+
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f'- Insoptimalitye <defense>, <optimality> has been succesfully set to {optimality}')
 
