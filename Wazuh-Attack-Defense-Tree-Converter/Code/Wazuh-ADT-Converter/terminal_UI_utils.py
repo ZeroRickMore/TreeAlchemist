@@ -44,7 +44,7 @@ class PrintUtils:
 
     @staticmethod
     def print_warning(text):
-        PrintUtils.print_in_red(text)
+        PrintUtils.print_in_red("WARNING=========================\n"+text+"\n=========================")
 
     @staticmethod
     def print_equals_detatcher():
