@@ -55,7 +55,12 @@ def generate_states_to_defense_from_xml(states_to_defense_xml_path : str) -> dic
         
         exit_error_prefix = f"=== In <state> tag number [ {i} ] from the beginning of the given xml file. ===\n"
 
-        curr_state : State = None
+        curr_state = State()
+
+        description = get_description(state=state, exit_error_prefix=exit_error_prefix)
+        curr_stat
+        
+
 
 
 
@@ -77,4 +82,10 @@ def get_xml_root(states_to_defense_xml_path) -> ET.Element:
     return t.getroot()
 
 
+def get_description(state : ET.Element, exit_error_prefix : str) -> str:
+    description = state.findall('description')
+    if len(description) > 1 or len(description) == 0:
+        ExitUtils.exit_with_error(exit_error_prefix+"<description> must be given exactly once!")
+    
+    return description[0].text
 
