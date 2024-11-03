@@ -23,7 +23,6 @@ class Defense:
                 id : int = None,
                 command : Command = None,
                 active_response : ActiveResponse = None,
-                
                 ):
         
         self.name = name
@@ -268,7 +267,7 @@ class Defense:
 
 
 
-        string += f'{give_tabs}\t<rules_id>GENERATION TO BE SPECIFIED</rules_id>\n'
+        string += f'{give_tabs}\t<rules_id>GENERATION TO BE SPECIFIED</rules_id>\n' # This gets replaced with real id in StateDefense
 
         string += f'{give_tabs}</active_response>\n'
 
