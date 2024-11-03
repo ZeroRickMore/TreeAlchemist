@@ -32,7 +32,7 @@ class State:
     # ============================================
     
     def get_description(self) -> str:
-        return self.negate
+        return self.description
 
     def validate_description(self) -> bool:
         if not isinstance(self.get_description(), str):
@@ -45,10 +45,10 @@ class State:
             ExitUtils.exit_with_error(f'{error_prefix} <description> in <state>. {State.get_description_allow_criteria()} {self.get_description()} of type {type(self.get_description())} {error_suffix}')
 
     @staticmethod
-    def get_description_allow_criteria():
+    def get_description_allow_criteria() -> str:
         return "It must be a string."
 
-    def set_description(self, description : str):
+    def set_description(self, description : str) -> None:
         self.description = description
 
         self.validate_description_with_error_launch()
