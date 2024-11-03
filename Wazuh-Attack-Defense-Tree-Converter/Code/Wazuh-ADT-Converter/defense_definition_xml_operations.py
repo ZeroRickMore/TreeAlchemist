@@ -15,7 +15,7 @@ from DefenseClasses.DefensesTogether import DefensesTogether
 
 
 
-def get_all_defenses_from_xml(tree_dir_path : str) -> List[Union[Defense, DefensesTogether]]:
+def get_all_defenses(tree_dir_path : str) -> List[Union[Defense, DefensesTogether]]:
     defense_definition_xml_path : str = os.path.join(tree_dir_path, "defense_definition.xml")
 
     validate_xml_tree_file_and_launch_error(defense_definition_xml_path)
@@ -250,32 +250,13 @@ def validate_defenses_together(all_defenses_together : List[DefensesTogether], i
 
 
 
-def to_string_all_defenses_wazuh_ready(tree_name : str = 'unspecified', all_defenses : List[Union[Defense, DefensesTogether]] = None, tab_times : int = 0) -> str:
-    give_tabs = '\t'*tab_times
 
-    string = ''
-    
-    string += f'{give_tabs}<!-- Start of Commands and Active-Response for ADT: [ {tree_name} ] .-->\n'
-
-    string = f'{give_tabs}<ossec_config>\n'
-
-    for defense in all_defenses:
-        defense : Union[Defense, DefensesTogether]
-        string += f'\n{give_tabs}<!-- Start of <defense name="{defense.get_name()}" id="{defense.get_id()}" -->\n\n'
-        string += defense.to_string_total(tab_times = tab_times + 1)
-        string += f'\n{give_tabs}<!-- End of <defense name="{defense.get_name()}" id="{defense.get_id()}" -->\n\n'
-
-    string += f'\n{give_tabs}</ossec_config>\n\n'
-
-    string += f'<!-- End of Commands and Active-Response for ADT: [ {tree_name} ] .-->\n\n'
-
-    return string
     
 
 
 # TEST ========================
 def test():
-    defs = get_all_defenses_from_xml(r'Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\test-tree')
+    defs = get_all_defenses(r'Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\test-tree')
     
     print(to_string_all_defenses_wazuh_ready(tree_name='BEST ADT', all_defenses=defs, tab_times=0))
 
