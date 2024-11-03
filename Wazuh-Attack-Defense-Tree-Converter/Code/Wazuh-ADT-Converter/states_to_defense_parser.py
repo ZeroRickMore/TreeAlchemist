@@ -311,6 +311,23 @@ def to_string_state_id_to_state_pretty(state_id_to_state : dict[int, State]) -> 
         string += f"{id} : {state_id_to_state[id].get_description()}\n"
     return string
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def test():
     all_states, state_id_to_state = get_all_states_to_defense(r'Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\test-tree')
     print(to_string_all_states_pretty(all_states=all_states))
