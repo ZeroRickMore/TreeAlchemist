@@ -16,7 +16,7 @@ class Command:
 
     def __init__(self,
                 extra_args : str = None, # Set this to None by default because it is not mandatory and can be omitted
-                timeout_allowed : str = None  # Set this to False by default because it is not mandatory and can be omitted
+                timeout_allowed : str = "no"  # Set this to False by default because it is not mandatory and can be omitted
                 ):
 
         self.extra_args = extra_args
