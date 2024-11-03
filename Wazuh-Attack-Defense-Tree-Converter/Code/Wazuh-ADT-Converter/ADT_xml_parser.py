@@ -37,7 +37,7 @@ from TreeClasses.Srcport import Srcport
 
 
 
-def convert_xml_ADT_to_usable_structure(tree_dir_path : str) -> Tree:
+def get_ADT_from_tree_xml(tree_dir_path : str) -> tuple[Tree, dict[int, TreeNode]]:
     '''
     Function that, taken a valid path to a file containing ADT necessary files, 
     returns the ADT converted to a usable data structure.
@@ -45,17 +45,15 @@ def convert_xml_ADT_to_usable_structure(tree_dir_path : str) -> Tree:
     The input path validation MUST be done in advance.
     '''
 
-    xml_tree_path               : str = os.path.join(tree_dir_path, "tree.xml")
-    
-    defense_to_nodes_json_path  : str = os.path.join(tree_dir_path, "states_to_defense.xml")
+    xml_tree_path = os.path.join(tree_dir_path, "tree.xml")
 
     # Read the xml file, validate it, and create a validates Tree structure from it
-    tree_with_attack_nodes_only : Tree = get_ADT_with_attack_nodes_only(xml_tree_path=xml_tree_path)
+    tree_with_attack_nodes_only, id_to_node = get_ADT_with_attack_nodes_only(xml_tree_path=xml_tree_path)
 
     # Assing the values that do not get assigned from user
     tree_with_attack_nodes_only.assign_system_required_values_to_nodes()
 
-    return tree_with_attack_nodes_only
+    return tree_with_attack_nodes_only, id_to_node
 
 
 
@@ -63,11 +61,11 @@ def convert_xml_ADT_to_usable_structure(tree_dir_path : str) -> Tree:
 
 
 
-def get_ADT_with_attack_nodes_only(xml_tree_path : str) -> Tree:
+def get_ADT_with_attack_nodes_only(xml_tree_path : str) -> tuple[Tree, dict[int, TreeNode]]:
     validate_xml_tree_file_and_launch_error(xml_tree_path=xml_tree_path)
 
-    ADT : Tree = generate_ADT_from_xml_file(xml_tree_path)
-    return ADT
+    adt, id_to_node = generate_ADT_from_xml_file(xml_tree_path)
+    return adt, id_to_node
 
 def validate_xml_tree_file_and_launch_error(xml_tree_path : str):
     if not validate_xml_tree_file(xml_tree_path=xml_tree_path):
@@ -81,7 +79,7 @@ def validate_xml_tree_file(xml_tree_path : str) -> bool:
     return root.tag == 'tree'
 
 
-def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
+def generate_ADT_from_xml_file(xml_tree_path : str) -> tuple[Tree, dict[int, TreeNode]]:
     '''
     Read the xml and generate the real data structure.
     '''
@@ -544,11 +542,11 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
 
 
 
-    ADT = Tree()
+    adt = Tree()
 
     # Try to assign the root and see if it's present
     try:
-        ADT.set_root(node_path_to_nodes['/'][0])
+        adt.set_root(node_path_to_nodes['/'][0])
     except:
         ExitUtils.exit_with_error('You MUST provide a <node> as root="yes".\nElse, the tree would have no root...')
 
@@ -587,29 +585,29 @@ def generate_ADT_from_xml_file(xml_tree_path : str) -> Tree:
         # This is not a human syntax but I somehow like it...
         #print(f"[{parent_name_or_id if parent_name_or_id is not None else ''}] is a [{("digit" if is_id else "name") if is_id is not None else ''}] mapped to [{parent_node.get_informations().get_name()}]. His children are: {[_.get_informations().get_name() for _ in parent_node.get_children() ]}")
     
-    return ADT
+    return adt, node_id_to_node
 
 
 
 def test():
     # Oh no! My extremely secret path has been leaked on Github...
     path_append = os.getcwd()
-    #ADT : Tree = generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\Test\test-tree-functional.xml")
+    #adt, _ = generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\Test\test-tree-functional.xml")
     #generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\Test\test-tree-wrong-alr-exist-id.xml"))
     #generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\Test\test-tree-wrong-alr-exist-id.xml"))
-    #ADT : Tree = generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\Test\test-tree-wrong-rule-id.xml"))
-    ADT : Tree = generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\Test\test-tree-multinode-functional.xml"))
+    #adt = generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\Test\test-tree-wrong-rule-id.xml"))
+    adt, _  = generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\Test\test-tree-multinode-functional.xml"))
     #generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\Test\test-tree-mismatched-root-path.xml")
     #generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\Test\test-tree-too-many-roots.xml")
     #generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\Test\test-tree-duplicate-name.xml")
     #generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\Test\test-tree-duplicate-id.xml")
-    #ADT: Tree = generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\Test\test-tree-invalid-path.xml")
+    #adt = generate_ADT_from_xml_file(os.path.join(path_append, r"Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\Test\test-tree-invalid-path.xml")
 
-    ADT.assign_system_required_values_to_nodes()
-    ADT.print_tree_for_debug_with_explicit_nodes()
+    adt.assign_system_required_values_to_nodes()
+    adt.print_tree_for_debug_with_explicit_nodes()
 
-    #print(ADT.get_root().to_string_minimal())
-    #print(ADT.get_root().to_string_minimal_children())
+    #print(adt.get_root().to_string_minimal())
+    #print(adt.get_root().to_string_minimal_children())
 
 if __name__ == '__main__':
     test()
