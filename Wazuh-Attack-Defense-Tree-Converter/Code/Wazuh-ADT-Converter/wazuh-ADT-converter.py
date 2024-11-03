@@ -5,7 +5,7 @@ and obtain the Wazuh implementation of it.
 '''
 import user_input_parser
 import ADT_xml_parser
-import defense_definition_xml_operations
+import defense_definition_xml_parser
 from TreeClasses.Tree import Tree
 import wazuh_ready_printer
 
@@ -25,7 +25,7 @@ def main():
 
     print(wazuh_ready_atk_nodes_no_states)
 
-    all_defenses = defense_definition_xml_operations.get_all_defenses(tree_dir_path = tree_dir_path)
+    all_defenses = defense_definition_xml_parser.get_all_defenses(tree_dir_path = tree_dir_path)
 
     wazuh_ready_def_nodes = wazuh_ready_printer.to_string_all_defenses_wazuh_ready(tree_name='COOLEST ADT', all_defenses=all_defenses, tab_times=0)
 
