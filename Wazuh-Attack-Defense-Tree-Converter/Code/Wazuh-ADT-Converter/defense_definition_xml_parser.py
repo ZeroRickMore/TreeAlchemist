@@ -18,12 +18,12 @@ from DefenseClasses.DefensesTogether import DefensesTogether
 def get_all_defenses(tree_dir_path : str) -> List[Union[Defense, DefensesTogether]]:
     defense_definition_xml_path : str = os.path.join(tree_dir_path, "defense_definition.xml")
 
-    validate_xml_tree_file_and_launch_error(defense_definition_xml_path)
+    validate_xml_file_and_launch_error(defense_definition_xml_path)
 
     return generate_all_defenses_from_xml(defense_definition_xml_path)
 
 
-def validate_xml_tree_file_and_launch_error(defense_definition_xml_path : str) -> None:
+def validate_xml_file_and_launch_error(defense_definition_xml_path : str) -> None:
     if not validate_defense_definition_xml_file(defense_definition_xml_path=defense_definition_xml_path):
         ExitUtils.exit_with_error(f"{defense_definition_xml_path} is not a valid .xml file.")
 
@@ -246,12 +246,6 @@ def validate_defenses_together(all_defenses_together : List[DefensesTogether], i
 
 
 
-
-
-
-
-
-    
 
 
 # TEST ========================
