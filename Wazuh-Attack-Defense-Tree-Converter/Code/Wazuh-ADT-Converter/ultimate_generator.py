@@ -5,6 +5,7 @@ that takes the structures and ultimately processes them.
 
 All roads lead to ultimate_generator.py
 '''
+
 from typing import Union, List
 
 from DefenseClasses.Defense import Defense
@@ -12,26 +13,39 @@ from DefenseClasses.DefensesTogether import DefensesTogether
 
 from StateClasses.State import State
 
+from TreeClasses.Tree import Tree
+from TreeClasses.TreeNode import TreeNode
+
 from terminal_UI_utils import PrintUtils, ExitUtils
 
 
-def map_states_to_defense(state_id_to_state : List[Union[Defense, DefensesTogether]],
+# =================================================================================================================================================
+#                                                                  STATE <-> DEFENSE
+# =================================================================================================================================================
+
+
+def map_states_to_defense(state_id_to_state : dict[int, State],
                           all_states : List[State], 
                           id_to_defense : dict[int, Union[Defense, DefensesTogether]],
-                          all_defenses : dict[int, State],
+                          all_defenses : List[Union[Defense, DefensesTogether]],
                         ):
     
     check_validity_with_error_throw(state_id_to_state, all_states, id_to_defense, all_defenses)
 
+    map_states_to_defense_real(state_id_to_state=state_id_to_state, id_to_defense=id_to_defense)
 
 
 
+# ========================================================================================================
+#                                VALIDATIONS AND ERROR STRING GENERATION
+# ========================================================================================================
 
-def are_they_valid(state_id_to_state : List[Union[Defense, DefensesTogether]],
+
+def are_they_valid(state_id_to_state : dict[int, State],
                     all_states : List[State], 
                     id_to_defense : dict[int, Union[Defense, DefensesTogether]],
-                    all_defenses : dict[int, State],
-                ) -> bool :
+                    all_defenses : List[Union[Defense, DefensesTogether]],
+            ) -> bool :
     '''
     Function that checks if they are overall valid or not.
     Honestly, this is unused.
@@ -42,10 +56,10 @@ def are_they_valid(state_id_to_state : List[Union[Defense, DefensesTogether]],
 
 
 
-def get_invalidity_code_and_error_string(state_id_to_state : List[Union[Defense, DefensesTogether]],
+def get_invalidity_code_and_error_string(state_id_to_state : dict[int, State],
                                         all_states : List[State], 
                                         id_to_defense : dict[int, Union[Defense, DefensesTogether]],
-                                        all_defenses : dict[int, State],
+                                        all_defenses : List[Union[Defense, DefensesTogether]],
                                     ) -> tuple[int, str] :
     '''
     Checks validity, and throws a code based on the invalidity type.
@@ -72,10 +86,10 @@ def get_invalidity_code_and_error_string(state_id_to_state : List[Union[Defense,
     if err_string != '':
         return 5, f'Found a <defense id=""> not mapped between defense_definition.xml and states_to_defense.xml .\n{err_string}'
 
-    return 0
-    
+    return 0, 'All good!'
 
-def to_string_error_differences(state_id_to_state : List[Union[Defense, DefensesTogether]],
+
+def to_string_error_differences(state_id_to_state : dict[int, State],
                                 id_to_defense : dict[int, Union[Defense, DefensesTogether]],
                             ) -> str:
     '''
@@ -104,11 +118,44 @@ def to_string_error_differences(state_id_to_state : List[Union[Defense, Defenses
     
 
 
-def check_validity_with_error_throw(state_id_to_state : List[Union[Defense, DefensesTogether]],
-                          all_states : List[State], 
-                          id_to_defense : dict[int, Union[Defense, DefensesTogether]],
-                          all_defenses : dict[int, State],
-                        ):
+def check_validity_with_error_throw(state_id_to_state : dict[int, State],
+                                    all_states : List[State], 
+                                    id_to_defense : dict[int, Union[Defense, DefensesTogether]],
+                                    all_defenses : List[Union[Defense, DefensesTogether]],
+                                ):
     
     invalidity_code, err_str = get_invalidity_code_and_error_string(state_id_to_state, all_states, id_to_defense, all_defenses)
     if invalidity_code != 0: ExitUtils.exit_with_error(err_str)
+
+
+
+# ========================================================================================================
+#                                        TRUE MAPPING PROCESS
+# ========================================================================================================
+
+
+
+def map_states_to_defense_real(state_id_to_state : dict[int, State],
+                               id_to_defense : dict[int, Union[Defense, DefensesTogether]],
+                            ):
+    
+    for id in state_id_to_state:
+        curr_state = state_id_to_state[id]
+        curr_def = id_to_defense[id]
+
+        curr_state.get_state_defense().set_defense(curr_def)
+        curr_state.validate_all()
+        
+
+
+# =================================================================================================================================================
+#                                                        END OF    STATE <-> DEFENSE
+# =================================================================================================================================================
+
+
+
+def generate_state_rules(node_id_to_node : dict[int, TreeNode], 
+                        adt : Tree,
+                        all_states: List[State]
+                        ):
+    pass
