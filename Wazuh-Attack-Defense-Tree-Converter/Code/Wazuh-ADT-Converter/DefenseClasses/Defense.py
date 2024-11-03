@@ -114,6 +114,10 @@ class Defense:
 
         self.validate_command_with_error_launch()
 
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f'- <defense> <command> assignment of Defense named {self.get_name()} has been succesfully set to {self.get_command()}')
+
+
     # ============================================
     # active_response operations
     # ============================================
@@ -125,14 +129,8 @@ class Defense:
         return self.get_active_response().validate_all()
     
     def validate_active_response_with_error_launch(self):
-        if not self.validate_active_response():
-            error_prefix = f"Defense active_responsed {self.get_active_response()} failed validation on"
-            error_suffix = f"was given instead."
-            ExitUtils.exit_with_error(f'{error_prefix} <defense active_response="">. {Defense.get_active_response_allow_criteria()} {self.get_active_response()} of type {type(self.get_active_response())} {error_suffix}')
+        self.validate_active_response()
 
-    @staticmethod
-    def get_active_response_allow_criteria() -> str:
-        return "It must be a string."
 
     def set_active_response(self, active_response : ActiveResponse):
         self.active_response = active_response
@@ -140,7 +138,8 @@ class Defense:
         self.validate_active_response_with_error_launch()
         
         if self.print_diagnostics:
-            PrintUtils.print_in_green(f'- <defense active_response=""> assignment of Defense active_responsed {self.get_active_response()} has been succesfully set to {self.get_active_response()}')
+            PrintUtils.print_in_green(f'- <defense> <active-response> assignment of Defense named {self.get_name()} has been succesfully set to {self.get_active_response()}')
+    
 
     # ===============================================
     # Extra values generation over object attributes
@@ -168,9 +167,17 @@ class Defense:
 
 
     def validate_all(self):
+        error_prefix = f"Defense named {self.get_name()} failed validation on"
+        error_suffix = f"was given instead."
+
         self.validate_name_with_error_launch()
         self.validate_command_with_error_launch()
         self.validate_active_response_with_error_launch()
+
+        # Timeout validation
+        if self.get_command().get_timeout_allowed() == "no" and self.get_active_response().get_timeout() is not None:
+            ExitUtils.exit_with_error(f'{error_prefix} <command> timeout_allowed and <active-response> timeout.\nYou have given a <timeout> but <timeout_allowed> is not "yes".')
+
 
     
 
@@ -241,7 +248,7 @@ class Defense:
                 string += f'{give_tabs}\t<agent_id>{agent_id}</agent_id>\n'
 
             timeout = self.get_active_response().get_timeout()
-            if timeout is not None:
+            if timeout != 'no':
                 string += f'{give_tabs}\t<timeout>{timeout}</timeout>\n'
         else:
                 string += f'{give_tabs}\t<location>local</location>\n'
