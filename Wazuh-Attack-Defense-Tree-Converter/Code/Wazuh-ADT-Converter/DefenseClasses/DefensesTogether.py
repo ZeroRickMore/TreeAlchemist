@@ -191,6 +191,35 @@ class DefensesTogether:
             PrintUtils.print_in_green(f'- <defense> <active-response> assignment of DefenseTogether named {self.get_name()} has been succesfully set to {self.get_active_response()}')
 
 
+    # ============================================
+    # rules_id operations
+    # ============================================
+
+    def get_rules_id(self) -> str:
+        return self.rules_id
+
+    def validate_rules_id(self) -> bool:
+        return isinstance(self.get_rules_id(), str)
+    
+    def validate_rules_id_with_error_launch(self):
+        if not self.validate_rules_id():
+            error_prefix = f"DefensesTogether named {self.get_name()} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f'{error_prefix} rules_id. {DefensesTogether.get_rules_id_allow_criteria()} {self.get_rules_id()} of type {type(self.get_rules_id())} {error_suffix}')
+
+    @staticmethod
+    def get_rules_id_allow_criteria() -> str:
+        return "It must be a string."
+
+    def set_rules_id(self, rules_id : str):
+        self.rules_id = rules_id
+
+        self.validate_rules_id_with_error_launch()
+        
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f'- rules_id assignment of DefensesTogether named {self.get_name()} has been succesfully set to {self.get_rules_id()}')
+
+
 
 
     # ============================================
@@ -207,6 +236,8 @@ class DefensesTogether:
         self.validate_id_with_error_launch()
 
         self.validate_defenses_with_error_launch()
+
+        self.validate_rules_id_with_error_launch()
 
         self_actres = self.get_active_response()
         if self_actres is not None:  
@@ -244,7 +275,7 @@ class DefensesTogether:
                 string += f'{give_tabs}\t<location>local</location>\n' 
 
 
-        string += f'{give_tabs}\t<rules_id>GENERATION TO BE SPECIFIED</rules_id>\n'
+        string += f'{give_tabs}\t<rules_id>{self.get_rules_id()}</rules_id>\n'
 
         string += f'{give_tabs}</active_response>\n'
 
