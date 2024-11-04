@@ -44,6 +44,10 @@ def main():
 
     ultimate_generator.generate_state_rules(node_id_to_node, adt, all_states)
 
+    wazuh_ready_def_nodes = wazuh_ready_printer.to_string_all_defenses_wazuh_ready(tree_name='COOLEST ADT', all_defenses=all_defenses, tab_times=0)
+
+    print(wazuh_ready_def_nodes)
+
     
     
 
