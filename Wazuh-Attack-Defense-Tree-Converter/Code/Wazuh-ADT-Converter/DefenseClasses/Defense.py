@@ -23,6 +23,7 @@ class Defense:
                 id : int = None,
                 command : Command = None,
                 active_response : ActiveResponse = None,
+                rules_id : str = 'GENERATION TO BE SPECIFIED' 
                 ):
         
         self.name = name
@@ -33,6 +34,8 @@ class Defense:
         self.active_response = active_response
 
         self.comm_name = None # MUST be set calling generate_extra_values()
+
+        self.rules_id = rules_id
 
 
 
@@ -140,6 +143,36 @@ class Defense:
             PrintUtils.print_in_green(f'- <defense> <active-response> assignment of Defense named {self.get_name()} has been succesfully set to {self.get_active_response()}')
     
 
+    # ============================================
+    # rules_id operations
+    # ============================================
+
+    def get_rules_id(self) -> str:
+        return self.rules_id
+
+    def validate_rules_id(self) -> bool:
+        return isinstance(self.get_rules_id(), str)
+    
+    def validate_rules_id_with_error_launch(self):
+        if not self.validate_rules_id():
+            error_prefix = f"Defense named {self.get_name()} failed validation on"
+            error_suffix = f"was given instead."
+            ExitUtils.exit_with_error(f'{error_prefix} rules_id. {Defense.get_rules_id_allow_criteria()} {self.get_rules_id()} of type {type(self.get_rules_id())} {error_suffix}')
+
+    @staticmethod
+    def get_rules_id_allow_criteria() -> str:
+        return "It must be a string."
+
+    def set_rules_id(self, rules_id : str):
+        self.rules_id = rules_id
+
+        self.validate_rules_id_with_error_launch()
+        
+        if self.print_diagnostics:
+            PrintUtils.print_in_green(f'- rules_id assignment of Defense named {self.get_name()} has been succesfully set to {self.get_rules_id()}')
+
+
+
     # ===============================================
     # Extra values generation over object attributes
     # ===============================================
@@ -169,6 +202,8 @@ class Defense:
         error_prefix = f"Defense named {self.get_name()} failed validation on"
 
         self.validate_name_with_error_launch()
+
+        self.validate_rules_id_with_error_launch()
 
         self_command = self.get_command()
         if self_command is not None:
@@ -265,9 +300,7 @@ class Defense:
         else:
                 string += f'{give_tabs}\t<location>local</location>\n'
 
-
-
-        string += f'{give_tabs}\t<rules_id>GENERATION TO BE SPECIFIED</rules_id>\n' # This gets replaced with real id in StateDefense
+        string += f'{give_tabs}\t<rules_id>{self.get_rules_id()}</rules_id>\n' # This gets replaced with real id in StateDefense
 
         string += f'{give_tabs}</active_response>\n'
 
