@@ -29,12 +29,14 @@ class DefensesTogether:
                 name : str = None, # The name given in defense name=""
                 id : int = None,
                 active_response : ActiveResponse = None,
+                rules_id : str = ''
                 ):
         self.name = name
         self.defenses_ids = defenses_ids
         self.id = id
         self.defenses : List[Defense] = []
         self.active_response = active_response
+        self.rules_id = rules_id
 
 
     # ============================================

@@ -23,7 +23,7 @@ class Defense:
                 id : int = None,
                 command : Command = None,
                 active_response : ActiveResponse = None,
-                rules_id : str = 'GENERATION TO BE SPECIFIED' 
+                rules_id : str = '' 
                 ):
         
         self.name = name
