@@ -57,7 +57,10 @@ def generate_state_rules(node_id_to_node : dict[int, TreeNode],
 
             curr_def.set_rules_id(f'{old_rules_id}{curr_node.get_informations().get_wazuh_rule_config().get_rule_id()}') # Append the rule id of this single node
 
+            continue
 
+
+        # TODO: Implement this (hardest part tbh...)
         for node_id in curr_node_ids:
             curr_node = node_id_to_node.get(node_id) # Add check
             if curr_node is None:
