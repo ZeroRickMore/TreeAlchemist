@@ -159,4 +159,5 @@ def generate_state_rules(node_id_to_node : dict[int, TreeNode],
                         adt : Tree,
                         all_states: List[State]
                         ):
-    pass
+    
+    rules = state_rules_generator.generate_state_rules(node_id_to_node, adt, all_states)
