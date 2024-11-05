@@ -49,7 +49,7 @@ class Tree:
         '''
         The role groups are 'ADT' and the name of the root node.
         '''
-        return self.get_root().get_informations().get_name() + ', ADTCVT, '
+        return self.get_root().get_informations().get_name() + ', TreeAlchemized, '
  
 
 

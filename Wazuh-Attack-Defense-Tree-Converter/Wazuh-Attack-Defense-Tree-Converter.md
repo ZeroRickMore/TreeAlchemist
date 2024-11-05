@@ -2,7 +2,7 @@ Idea: Creare un software che converta Attack-Defense Trees in regole e active re
 
 NOTE DI SVILUPPO:
 
-ADTCVT == Attack Defense Tree ConVerTed
+TreeAlchemized == Attack Defense Tree ConVerTed
 
 user_{} == Attributi che DEVONO essere in INPUT dall'UTENTE
 
@@ -32,7 +32,7 @@ ADT_rules_generator.py ->
     a partire da quel dizionario, filla i campi del TEMPLATE REGOLE che troviamo al punto 3.
 
 
-# 2 - Creare {numero_prima_regola}-ADTCVT-{nome_root_ADT}.xml
+# 2 - Creare {numero_prima_regola}-TreeAlchemized-{nome_root_ADT}.xml
 
 Creazione del file:
 
@@ -48,7 +48,7 @@ In particolare, la sintassi per l'utente è definita in [./ADT-syntax.md]
 NOTA: Una regola rappresenta un nodo dell'ADT.
 
 TEMPLATE REGOLE:
-<group name="{nome_root_ADT-senza-underscore}, ADTCVT"> 
+<group name="{nome_root_ADT-senza-underscore}, TreeAlchemized"> 
     <rule level="{threat_level}" id="{rule_id}" frequency="{user_frequency}" timeframe="{user_timeframe}" ignore="{user_ignore}">
     <match negate="{user_match_negate}" type="{user_match_type}">{user_match}</match>
     <regex negate="{user_regex_negate}" type="{user_regex_type}">
@@ -84,7 +84,7 @@ SPIEGAZIONE DI TUTTI I TAG E I PARAMETRI TRA GRAFFE
 - nome_root_ADT-senza-underscore-camel-case == è più carino da leggere cosi
     USER REQUIRED (sta dentro <name> di <node root="yes" />)
 
-- ADTCVT == Vorrei che le regole nate da questo script siano tutte in questo gruppo
+- TreeAlchemized == Vorrei che le regole nate da questo script siano tutte in questo gruppo
     SYSTEM REQUIRED
 
 ------ </group> ------
@@ -353,4 +353,4 @@ no_counter -> Omit field rule.firedtimes in the JSON alert.
 Visto che la regola matcha un log, quello specifico log deve essere matchato, e solo una alert può farlo.
 La gerarchia qui non si applica, vanno all'inizio in ordine qualsiasi.
 
-- Il rule group name si fa con il nome del nodo root , ADTCVT (Attack Defense Tree ConVerTed)
+- Il rule group name si fa con il nome del nodo root , TreeAlchemized (Attack Defense Tree ConVerTed)
