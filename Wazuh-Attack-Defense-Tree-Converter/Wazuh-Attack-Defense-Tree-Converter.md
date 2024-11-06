@@ -41,6 +41,8 @@ Convenzione inventata da me.
 
 rome_root_ADT == il nome del nodo radice dell'ADT, che rappresenta anche l'intero albero in sé e la minaccia.
 
+Va messo in /var/ossec/etc/rules/
+
 # 3 - Dentro quel file, le regole.
 
 Dentro quel file, vanno inserite le regole a partire da quello che l'utente fornisce.
