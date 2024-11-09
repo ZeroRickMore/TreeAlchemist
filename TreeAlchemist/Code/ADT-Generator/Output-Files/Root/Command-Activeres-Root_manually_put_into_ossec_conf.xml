@@ -10,7 +10,6 @@
 	<active_response>
 		<command>Launch Def1</command>
 		<location>local</location>
-		<rules_id></rules_id>
 	</active_response>
 
 <!-- End of <defense name="Def1" id="1" -->
@@ -26,7 +25,6 @@
 	<active_response>
 		<command>Launch Def2</command>
 		<location>local</location>
-		<rules_id></rules_id>
 	</active_response>
 
 <!-- End of <defense name="Def2" id="2" -->
@@ -42,7 +40,6 @@
 	<active_response>
 		<command>Launch Def3</command>
 		<location>local</location>
-		<rules_id></rules_id>
 	</active_response>
 
 <!-- End of <defense name="Def3" id="3" -->
@@ -58,7 +55,6 @@
 	<active_response>
 		<command>Launch Def1_1</command>
 		<location>local</location>
-		<rules_id></rules_id>
 	</active_response>
 
 <!-- End of <defense name="Def1_1" id="4" -->
@@ -70,7 +66,6 @@
 		<command>Launch Def1_1</command>
 		<command>Launch Def3</command>
 		<location>local</location>
-		<rules_id></rules_id>
 	</active_response>
 
 <!-- End of <defense name="Def1_1-3-4" id="5" -->
