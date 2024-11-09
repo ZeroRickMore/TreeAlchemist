@@ -20,8 +20,8 @@ def main():
     #tree_dir_path = user_input_parser.get_valid_tree_path() # The path to the directory containing the ADT files used for execution.
 
     # TEMP
-    tree_dir_path = os.path.join(os.getcwd(), r'TreeAlchemist\Code\ADT-Generator\Input-Files\test-tree')
-    output_dir = r'Z:\GitHub\TreeAlchemist\TreeAlchemist\Code\ADT-Generator\Output-Files'
+    tree_dir_path = os.path.join(os.getcwd(), 'TreeAlchemist', 'Code', 'ADT-Generator', 'Input-Files', 'test-tree')
+    output_dir = os.path.join(os.getcwd(), 'TreeAlchemist', 'Code', 'ADT-Generator', 'Output-Files')
     # TEMP
 
     adt, node_id_to_node = ADT_xml_parser.get_ADT_from_tree_xml(tree_dir_path = tree_dir_path)

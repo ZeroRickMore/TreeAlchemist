@@ -114,4 +114,6 @@ class StateDefense:
 
     def to_string(self, tab_times : int = 0):
         give_tabs = '\t'*tab_times
-        return f"{give_tabs}StateDefense ==========================\n\n{give_tabs}\tID: {self.get_id()}\n{give_tabs}\tDefense: {f'\n{give_tabs}\tType:{type(self.get_defense())}\n{self.get_defense().to_string_total(tab_times=tab_times+1)}' if self.get_defense() else 'unattached yet.'}"
+        n = '\n'
+        t = '\t'
+        return f"{give_tabs}StateDefense ==========================\n\n{give_tabs}\tID: {self.get_id()}\n{give_tabs}\tDefense: {f'{n}{give_tabs}{t}Type:{type(self.get_defense())}{n}{self.get_defense().to_string_total(tab_times=tab_times+1)}' if self.get_defense() else 'unattached yet.'}"

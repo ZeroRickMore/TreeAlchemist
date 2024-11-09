@@ -276,7 +276,9 @@ class WazuhRuleConfig:
         # else: is covered inside of match.validate_all() already
 
     def to_string_wrc_match(self, tab_times : int = 0) -> str:
-        return f"{"\n".join([f"{'\t'*tab_times}{match.to_string()}" for match in self.get_wrc_match()])}"
+        n = '\n'
+        t = '\t'
+        return f"{n.join([f'{t * tab_times}{match.to_string()}' for match in self.get_wrc_match()])}"
 
 
     # ============================================
@@ -311,7 +313,9 @@ class WazuhRuleConfig:
         # else: is covered inside of regex.validate_all() already
 
     def to_string_wrc_regex(self, tab_times : int = 0) -> str:
-        return f"{"\n".join([f"{'\t'*tab_times}{regex.to_string()}" for regex in self.get_wrc_regex()])}"
+        n = '\n'
+        t = '\t'
+        return f"{n.join([f'{t * tab_times}{regex.to_string()}' for regex in self.get_wrc_regex()])}"
 
 
     # ============================================
@@ -346,8 +350,9 @@ class WazuhRuleConfig:
         # else: is covered inside of freqsrcip.validate_all() already
 
     def to_string_wrc_srcip(self, tab_times : int = 0) -> str:
-        return f"{"\n".join([f"{'\t'*tab_times}{srcip.to_string()}" for srcip in self.get_wrc_srcip()])}"
-
+        n = '\n'
+        t = '\t'
+        return f"{n.join([f'{t * tab_times}{srcip.to_string()}' for srcip in self.get_wrc_srcip()])}"
 
     # ============================================
     # <dstip> operations
@@ -381,8 +386,9 @@ class WazuhRuleConfig:
         # else: is covered inside of freqdstip.validate_all() already
 
     def to_string_wrc_dstip(self, tab_times : int = 0) -> str:
-        return f"{"\n".join([f"{'\t'*tab_times}{dstip.to_string()}" for dstip in self.get_wrc_dstip()])}"
-
+        n = '\n'
+        t = '\t'
+        return f"{n.join([f'{t * tab_times}{dstip.to_string()}' for dstip in self.get_wrc_dstip()])}"
 
     # ============================================
     # <srcport> operations
@@ -416,8 +422,9 @@ class WazuhRuleConfig:
         # else: is covered inside of freqsrcport.validate_all() already
 
     def to_string_wrc_srcport(self, tab_times : int = 0) -> str:
-        return f"{"\n".join([f"{'\t'*tab_times}{srcport.to_string()}" for srcport in self.get_wrc_srcport()])}"
-
+        n = '\n'
+        t = '\t'
+        return f"{n.join([f'{t * tab_times}{srcport.to_string()}' for srcport in self.get_wrc_srcport()])}"
 
     # ============================================
     # <dstport> operations
@@ -452,8 +459,9 @@ class WazuhRuleConfig:
         # else: is covered inside of freqdstport.validate_all() already
 
     def to_string_wrc_dstport(self, tab_times : int = 0) -> str:
-        return f"{"\n".join([f"{'\t'*tab_times}{dstport.to_string()}" for dstport in self.get_wrc_dstport()])}"
-
+        n = '\n'
+        t = '\t'
+        return f"{n.join([f'{t * tab_times}{dstport.to_string()}' for dstport in self.get_wrc_dstport()])}"
 
     # ============================================
     # <time> operations
@@ -903,8 +911,9 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
         # else: is covered inside of info.validate_all() already
 
     def to_string_wrc_info(self, tab_times : int = 0) -> str:
-        return f"{"\n".join([f"{'\t'*tab_times}{info.to_string()}" for info in self.get_wrc_info()])}"
-
+        n = '\n'
+        t = '\t'
+        return f"{n.join([f'{t * tab_times}{info.to_string()}' for info in self.get_wrc_info()])}"
 
     # ============================================
     # <options> operations
@@ -943,8 +952,9 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
         # else: is covered inside of self.validate_wrc_options() already
 
     def to_string_wrc_options(self, tab_times : int = 0) -> str:
-        return f"{"\n".join([f"{'\t'*tab_times}<options>{option}</options>" for option in self.get_wrc_options()])}"
-
+        n = '\n'
+        t = '\t'
+        return f"{n.join([f'{t * tab_times}<options>{option}</options>' for option in self.get_wrc_options()])}"
     # ========================================================================================
     # Out of <wazuh_rule_config>
     # ========================================================================================
@@ -1065,8 +1075,8 @@ where weekday is any day of the week in lowercase, such as "monday - sunday".\n
             is rather useless.
             '''
             need_one_at_least_list = ["already_existing_id", "match", "regex", "srcip", "dstip", "srcport", "dstport", "time", "weekday" ]
-
-            allow_criteria_for_error_print = f"One of the following tags must be present in order to identify the\nway to trigger the Wazuh rule related to it, inside of <wazuh_rule_config>:\n\n{"\n".join([f"<{item}>" for item in need_one_at_least_list])}"
+            n = '\n'
+            allow_criteria_for_error_print = f"One of the following tags must be present in order to identify the\nway to trigger the Wazuh rule related to it, inside of <wazuh_rule_config>:\n\n{n.join([f'<{item}>' for item in need_one_at_least_list])}"
 
             # NOTE: Careful that "need_one_at_least_list" contains names that are the exact name of one of the attributes of the class WazuhRuleConfig.
             # Reflection is used to access them, this is why! Else, the dict will not match and throw an exception.

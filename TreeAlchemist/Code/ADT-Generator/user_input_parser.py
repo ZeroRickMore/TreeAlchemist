@@ -41,7 +41,8 @@ def get_valid_tree_path() -> str:
             missing_files.append(needed)
             
     if missing_files:
-        ExitUtils.exit_with_error(f"The given directory:\n\t[ {tree_dir_path} ]\n\nDoes NOT contain all the necessary files.\n\nPlease include:\n\n\t- {'\n\t- '.join([_ for _ in missing_files])}")
+        separator = '\n\t- '
+        ExitUtils.exit_with_error(f"The given directory:\n\t[ {tree_dir_path} ]\n\nDoes NOT contain all the necessary files.\n\nPlease include:\n\n\t- {separator.join([_ for _ in missing_files])}")
 
     PrintUtils.print_in_green(f"- You have provided a valid directory. I will use:\n  {tree_dir_path}")
 

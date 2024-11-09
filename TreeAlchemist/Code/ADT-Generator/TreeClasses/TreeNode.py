@@ -65,7 +65,8 @@ class TreeNode:
         return f"{self.get_informations().get_name()}___ID={self.get_informations().get_id()}"
     
     def to_string_minimal_children(self):
-        return f"{ "\n".join(_.to_string_minimal() for _ in self.get_children())}"
+        n = '\n'
+        return f"{n.join(_.to_string_minimal() for _ in self.get_children())}"
     
 
     def to_string_with_subnodes(self) -> str:
