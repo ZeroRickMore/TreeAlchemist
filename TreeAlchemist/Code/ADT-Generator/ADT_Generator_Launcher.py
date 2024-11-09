@@ -10,7 +10,7 @@ from TreeClasses.Tree import Tree
 import wazuh_ready_printer
 import states_to_defense_parser
 import ultimate_generator
-import write_on_files
+from write_on_files import FilesWriter
 import os
 from terminal_UI_utils import ExitUtils
 
@@ -25,21 +25,20 @@ def main():
     # TEMP
 
     adt, node_id_to_node = ADT_xml_parser.get_ADT_from_tree_xml(tree_dir_path = tree_dir_path)
+    root_name = adt.get_root().get_informations().get_name()
 
     wazuh_ready_atk_nodes_no_states : str = wazuh_ready_printer.to_string_all_attacks_single_nodes(adt)
 
-    write_on_files.create_rules_xml_file(root_name=adt.get_root().get_informations().get_name(), all_rules_as_string=wazuh_ready_atk_nodes_no_states, output_folder=output_dir)
+    writer = FilesWriter()
+
+    writer.create_rules_xml_file(root_name=root_name, all_rules_as_string=wazuh_ready_atk_nodes_no_states, output_folder=output_dir)
     print(wazuh_ready_atk_nodes_no_states)
-
-
-
-    exit()
-
 
     all_defenses, id_to_defense = defense_definition_xml_parser.get_all_defenses_from_defense_definition_xml(tree_dir_path = tree_dir_path)
 
     wazuh_ready_def_nodes = wazuh_ready_printer.to_string_all_defenses_wazuh_ready(tree_name=adt.get_root().get_informations().get_name(), all_defenses=all_defenses, tab_times=0)
 
+    writer.create_command_activeres_xml_file(root_name=root_name, all_defenses_as_string=wazuh_ready_def_nodes, output_folder=output_dir)
     print(wazuh_ready_def_nodes)
 
     exit()
