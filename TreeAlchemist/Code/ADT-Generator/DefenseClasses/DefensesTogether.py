@@ -279,7 +279,7 @@ class DefensesTogether:
                 string += f'{give_tabs}\t<location>local</location>\n' 
 
 
-        string += f'{give_tabs}\t<rules_id>{self.get_rules_id()}</rules_id>\n'
+        #string += f'{give_tabs}\t<rules_id>{self.get_rules_id()}</rules_id>\n'
 
         string += f'{give_tabs}</active_response>\n'
 
