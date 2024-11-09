@@ -48,7 +48,25 @@ class Defense:
         return self.name
 
     def validate_name(self) -> bool:
-        return self.get_name() is None or isinstance(self.get_name(), str)
+        name = self.get_name()
+        # ok if None
+        if name is None:
+            return True
+        
+        # Check string and if valid
+        if not isinstance(name, str):
+            return False
+        # Check if ascii
+        if not name.isascii():
+            return False
+        # Check if first character is a number
+        if name[0].isdigit():
+            return False
+        # Check if extension is given
+        if '.' not in name:
+            return False
+        # Check if only letters, numbers and _
+        return all(c.isalnum() or c == '_' or c == '.' for c in name)
     
     def validate_name_with_error_launch(self):
         if not self.validate_name():
@@ -58,7 +76,7 @@ class Defense:
 
     @staticmethod
     def get_name_allow_criteria() -> str:
-        return "It must be a string."
+        return "It must be a string, composed of ascii characters only, must NOT start with a digit, must have a file extension, and must be composed only of letters, numbers, and underscores.\nThis is a file name, after all."
 
     def set_name(self, name : str):
         self.name = name

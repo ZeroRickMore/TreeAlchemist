@@ -1,6 +1,6 @@
 <defenses-definition>
     <!-- List every defense node replicating this syntax -->
-    <defense name="#any def name#" id="#any number#">
+    <defense name="#any def name and extension#" id="#any number#">
         <command> <!-- OPTIONAL Start of the Wazuh "command" configuration for the defense -->
             <extra_args>#arg1 arg2 arg3#</extra_args> <!-- OPTIONAL This is Wazuh's <extra_args> tag in command. The arguments for the defensive script. -->
             <timeout_allowed>#yes#</timeout_allowed>  <!-- OPTIONAL Activate the <timeout> tag inside of the next <wazuh_activeres_config> -->
@@ -36,19 +36,17 @@ ATTRIBUTE:
 It is MANDATORY.
 It is the name of the defensive script, meaning that for a correct functionality you MUST
 call your defensive script with this format:
-{name}.extension
+{name}.{extension}
 Also, it is the name that will be used for the mapping in states_to_defense.xml
 
 Important note:
-NOT giving an extension in this attribute means every file on the agent that's called like that, extension excluded, will be looked for.
-Meaning that you MUST NOT have multiple defensive scripts with the same name!
-It is recommended to put the extension too.
+YOU MUST GIVE THE EXTENSION ELSE IT WON'T WORK
 
 EXAMPLE:
-<defense name="strong-defense">
+<defense name="strong_defense.sh">
 
 the file on the monitored hosts will be called:
-strong-defense.[any]
+strong_defense.[any]
 
 IMPLEMENTATION NOTE:
 <command>
