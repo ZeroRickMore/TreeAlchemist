@@ -60,15 +60,23 @@ IMPLEMENTATION NOTE:
     <command>Launch {name}</command>
 </active-response>
 
+- id
+
+It is MANDATORY.
+It is the id of the defense that will be used within TreeAlchemist.
+It must be unique.
 
 ### <defenses-together>
 
 Use the tag to tell that the defense is composed of pre-defined defenses,
-listing their id separated by comma.
+listing their IDs separated by comma.
 
-<defense name="Union of 1 2 3">
+<defense name="Union of defenses with IDs 1 2 3" id="5">
     <defenses-together>1,2,3</defenses-together>
 </defense>
+
+Note that you must NOT list your own id here.
+Note that you must use EXISTING defense IDs here.
 
 
 ### Dentro <command>

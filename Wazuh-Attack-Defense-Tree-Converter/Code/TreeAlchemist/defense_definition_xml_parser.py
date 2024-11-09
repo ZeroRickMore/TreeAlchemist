@@ -64,12 +64,14 @@ def generate_all_defenses_from_xml(defense_definition_xml_path : str) -> tuple[L
         if len(defenses_together) == 1:
             curr_def = DefensesTogether()
             # Convert to a list of int
+            temp = []
             try:
-                defenses_together = map(int, defenses_together[0].text.split(","))
+                temp = list(map(int, defenses_together[0].text.split(",")))
             except:
                 curr_def.set_defenses_ids(defenses_together[0].text) # Error print is good this way
             
-            curr_def.set_defenses_ids(defenses_together)
+            curr_def.set_defenses_ids(temp)
+
             curr_def.set_name(name)
             curr_def.set_id(id)
             set_active_response(defense=defense, exit_error_prefix=exit_error_prefix, curr_def=curr_def)
@@ -102,6 +104,7 @@ def generate_all_defenses_from_xml(defense_definition_xml_path : str) -> tuple[L
 
     # Validations =======================================
     validate_defense(all_defenses=all_defenses)
+
     validate_defenses_together(all_defenses_together=all_defenses_together, id_to_defense=id_to_defense)
 
     return all_defenses + all_defenses_together , id_to_defense
@@ -236,7 +239,10 @@ def validate_defenses_together(all_defenses_together : List[DefensesTogether], i
     for defense_together in all_defenses_together:
         # This is a DefensesTogether object
         def_ids_needed = defense_together.get_defenses_ids()
+
         for id in def_ids_needed:
+            if id == defense_together.get_id():
+                ExitUtils.exit_with_error(f"The <defenses-together> on defense id {defense_together.get_id()} contains itself within the given IDs, with defense id: {id}.\nDo not repeat it.")
             if id not in id_to_defense:
                 ExitUtils.exit_with_error(f"The <defenses-together> on defense id {defense_together.get_id()} contains a non-existent defense id: {id}.")
             defense_together.add_defense(id_to_defense[id])
@@ -244,13 +250,9 @@ def validate_defenses_together(all_defenses_together : List[DefensesTogether], i
 
 
 
-
-
-
-
 # TEST ========================
 def test():
-    defs = get_all_defenses_from_defense_definition_xml(r'Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\Wazuh-ADT-Converter\Input-Files\test-tree')
+    defs = get_all_defenses_from_defense_definition_xml(r'Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\TreeAlchemist\Input-Files\test-tree')
     import wazuh_ready_printer
     print(wazuh_ready_printer.to_string_all_defenses_wazuh_ready(tree_name='BEST ADT', all_defenses=defs, tab_times=0))
 

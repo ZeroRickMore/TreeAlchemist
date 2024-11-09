@@ -160,6 +160,6 @@ cython_debug/
 #.idea/
 Wazuh-Attack-Defense-Tree-Converter/Code/appoggio.py
 Wazuh-Attack-Defense-Tree-Converter/Code/appunti.md
-Wazuh-Attack-Defense-Tree-Converter/Code/Wazuh-ADT-Converter/TreeClasses/appoggio.py
-Wazuh-Attack-Defense-Tree-Converter/Code/Wazuh-ADT-Converter/Input-Files/test-tree/~$tree.pptx
-Wazuh-Attack-Defense-Tree-Converter/Code/Wazuh-ADT-Converter/appoggio.py
+Wazuh-Attack-Defense-Tree-Converter/Code/TreeAlchemist/TreeClasses/appoggio.py
+Wazuh-Attack-Defense-Tree-Converter/Code/TreeAlchemist/Input-Files/test-tree/~$tree.pptx
+Wazuh-Attack-Defense-Tree-Converter/Code/TreeAlchemist/appoggio.py

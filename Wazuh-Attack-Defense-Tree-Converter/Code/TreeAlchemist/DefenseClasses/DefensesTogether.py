@@ -19,7 +19,9 @@ class DefensesTogether:
     in the script, then gathers <active-response> informations like Defense.
 
     If a user needs to use pre-existing commands defined outside of this script,
-    he can freely add them by hand after the generation.
+    he can freely add them by hand after the generation. (currently unsupported)
+
+    Note that this is a prototype, so it is up to changes
     '''
 
     print_diagnostics = True

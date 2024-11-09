@@ -12,26 +12,6 @@ Attributi senza quel prefisso sono sia calcolabili che da input
 
 # 1 - Leggere e validare il file .xml dell'ADT in input
 
-Il file è scritto secondo la sintassi di [./ADT-syntax.md].
-Quello che devo fare è mappare le variabili che stanno descritte allo step 3, in modo da poter generare le regole.
-
-L'idea potrebbe essere:
-
-ADT_xml_parser.py -> 
-
-    Script che fa il parsing del file xml e salva i dati nelle giuste variabili. 
-    Per ogni tag, interroga wazuh_tags_validator e vede se funziona.
-    Realisticamente, salverò i contenuti in un dizionario {str : list} al quale poi attingerà ADT_rules_generator.py
-
-wazuh_tags_validator.py ->
-
-    Per ogni tag, ho un metodo "validate_[tagname]()" che prende in input il contenuto di quel tag e ne verifica la validità. Ad esempio, se dovrei avere un IPv4, il metodo validate sarà una regex su un IPv4.
-    Se ci sono problemi, si ferma il programma lanciando un errore, che riporrà nel file error_logs.txt . In caso di warning (sintassi sbagliata ma accettabile), riporrà il warning dentro warning_logs.txt .
-    
-ADT_rules_generator.py -> 
-    a partire da quel dizionario, filla i campi del TEMPLATE REGOLE che troviamo al punto 3.
-
-
 # 2 - Creare {numero_prima_regola}-TreeAlchemized-{nome_root_ADT}.xml
 
 Creazione del file:
