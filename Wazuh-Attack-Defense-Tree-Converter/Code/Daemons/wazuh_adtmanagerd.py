@@ -9,3 +9,5 @@ This manager gets the alerts raised from syslog
 
 The folder ADT_generation_files contains a set of text files that help recreate the tree and nodes very simply
 '''
+
+
