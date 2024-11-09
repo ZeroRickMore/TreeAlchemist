@@ -3,46 +3,31 @@
         <state>
                 <description>Very cool state 1 desc</description>
                 <nodes>1</nodes>
-                <defense id="1"> <!-- This is Def1 -->
-                        <optimality-type>BEST_SCORE</optimality-type>
-                        <score>10</score> <!-- Very low -->
-                </defense>
+                <defense id="1"></defense> <!-- This is Def1 -->
         </state>
 
         <state>
                 <description>Very cool state 2 desc</description>
                 <nodes>2</nodes>
-                <defense id="2"> <!-- This is Def2 -->
-                        <optimality-type>BEST_SCORE</optimality-type>
-                        <score>50</score> <!-- Medium -->
-                </defense>
+                <defense id="2"></defense> <!-- This is Def2 -->
         </state>
 
         <state>
                 <description>Very cool state 3 desc</description>
                 <nodes>3</nodes>
-                <defense id="3"> <!-- This is Def3 -->
-                        <optimality-type>BEST_SCORE</optimality-type>
-                        <score>50</score> <!-- Medium -->
-                </defense>
+                <defense id="3"></defense> <!-- This is Def3 -->
         </state>
 
         <state>
                 <description>Very cool state 4 desc</description>
                 <nodes>5</nodes>
-                <defense id="4"> <!-- This is Def1_1 -->
-                        <optimality-type>BEST_SCORE</optimality-type>
-                        <score>50</score> <!-- Medium -->
-                </defense>
+                <defense id="4"></defense> <!-- This is Def1_1 -->
         </state>
 
         <state>
                 <description>Very cool state 5 desc</description>
                 <nodes>6,3,4</nodes>
-                <defense id="5"> <!-- This is Def1_2-3-4 -->
-                        <optimality-type>BEST_SCORE</optimality-type>
-                        <score>100</score> <!-- Very high -->
-                </defense>
+                <defense id="5"></defense> <!-- This is Def1_2-3-4 -->
         </state>
 
 </states>

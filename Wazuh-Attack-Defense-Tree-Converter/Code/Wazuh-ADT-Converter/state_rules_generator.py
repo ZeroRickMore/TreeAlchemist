@@ -21,10 +21,6 @@ for each curr_state in all_states:
     for each node_id in curr_state.get_node_ids():
         curr_node = node_id_to_node.get(node_id) # Add check
         if curr_node is None: throw error saying a node id is wrong
-
-        
-
-
 '''
 from typing import List
 
