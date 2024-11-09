@@ -1,22 +1,22 @@
 <defenses-definition>
 
-    <defense name="Def1" id="1">
+    <defense name="Def1.sh" id="1">
         <!-- This is the most basic defense, just tell Wazuh to execute the script "Def1" -->
     </defense> 
 
-    <defense name="Def2" id="2"> 
+    <defense name="Def2.sh" id="2"> 
         <!-- This is the most basic defense, just tell Wazuh to execute the script "Def2" -->
     </defense>
 
-    <defense name="Def3" id="3">
+    <defense name="Def3.sh" id="3">
         <!-- This is the most basic defense, just tell Wazuh to execute the script "Def3" -->
     </defense>
 
-    <defense name="Def1_1" id="4">
+    <defense name="Def1_1.sh" id="4">
         <!-- This is the most basic defense, just tell Wazuh to execute the script "Def1_1" -->
     </defense> 
 
-    <defense name="Def1_1-3-4" id="5">
+    <defense name="Def1_1_3_4.sh" id="5">
         <!-- This is the most basic defense, just tell Wazuh to execute the scripts of defense IDs 3 and 5 -->
         <defenses-together>4,3</defenses-together>
     </defense>
