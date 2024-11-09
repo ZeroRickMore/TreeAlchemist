@@ -257,7 +257,7 @@ class DefensesTogether:
         give_tabs = '\t'*tab_times
         string = ''
 
-        string = f'{give_tabs}<active_response>\n'
+        string = f'{give_tabs}<active-response>\n'
 
         for defense in self.get_defenses():
             defense_comm_name = defense.get_comm_name()
@@ -281,7 +281,7 @@ class DefensesTogether:
 
         #string += f'{give_tabs}\t<rules_id>{self.get_rules_id()}</rules_id>\n'
 
-        string += f'{give_tabs}</active_response>\n'
+        string += f'{give_tabs}</active-response>\n'
 
 
         return string

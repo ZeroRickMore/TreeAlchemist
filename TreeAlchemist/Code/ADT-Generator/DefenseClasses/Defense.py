@@ -279,7 +279,7 @@ class Defense:
         
         '''
         give_tabs = '\t'*tab_times
-        string = f'{give_tabs}<active_response>\n'
+        string = f'{give_tabs}<active-response>\n'
 
         comm_name = self.get_comm_name()
         if comm_name is not None:
@@ -302,7 +302,7 @@ class Defense:
 
         #string += f'{give_tabs}\t<rules_id>{self.get_rules_id()}</rules_id>\n' # Useless
 
-        string += f'{give_tabs}</active_response>\n'
+        string += f'{give_tabs}</active-response>\n'
 
         return string
     
