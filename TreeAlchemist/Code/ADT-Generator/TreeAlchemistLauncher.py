@@ -15,22 +15,20 @@ import os
 from terminal_UI_utils import ExitUtils
 
 
-def main():
-
-    check_cwd()
-            
+def main():  
 
     #tree_dir_path = user_input_parser.get_valid_tree_path() # The path to the directory containing the ADT files used for execution.
 
     # TEMP
-    tree_dir_path = os.path.join(os.getcwd(), r'Wazuh-Attack-Defense-Tree-Converter\Code\ADT-generator\Input-Files\test-tree')
+    tree_dir_path = os.path.join(os.getcwd(), r'TreeAlchemist\Code\ADT-Generator\Input-Files\test-tree')
+    output_dir = r'Z:\GitHub\TreeAlchemist\TreeAlchemist\Code\ADT-Generator\Output-Files'
     # TEMP
 
     adt, node_id_to_node = ADT_xml_parser.get_ADT_from_tree_xml(tree_dir_path = tree_dir_path)
 
     wazuh_ready_atk_nodes_no_states : str = wazuh_ready_printer.to_string_all_attacks_single_nodes(adt)
 
-    write_on_files.create_rules_xml_file(root_name=adt.get_root().get_informations().get_name(), all_rules_as_string=wazuh_ready_atk_nodes_no_states)
+    write_on_files.create_rules_xml_file(root_name=adt.get_root().get_informations().get_name(), all_rules_as_string=wazuh_ready_atk_nodes_no_states, output_folder=output_dir)
     print(wazuh_ready_atk_nodes_no_states)
 
 
@@ -60,27 +58,6 @@ def main():
     wazuh_ready_def_nodes = wazuh_ready_printer.to_string_all_defenses_wazuh_ready(tree_name='COOLEST ADT', all_defenses=all_defenses, tab_times=0)
 
     print(wazuh_ready_def_nodes)
-
-    
-    
-def check_cwd():
-    # Check if I'm in the correct working directory
-    cwd = os.getcwd()
-
-    if cwd.endswith(os.path.join("Code","TreeAlchemist")):
-        return
-    
-    if cwd.endswith("TreeAlchemist"):
-        good_cwd = os.path.join(cwd, "Code", "TreeAlchemist")
-        if os.path.isdir(good_cwd):
-            os.chdir(good_cwd)
-            return
-
-    ExitUtils.exit_with_error("You must launch the code from TreeAlchemist folder inside of Code or from TreeAlchemist parent folder.")
-
-
-
-
 
 
 

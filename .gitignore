@@ -158,8 +158,8 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
-Wazuh-Attack-Defense-Tree-Converter/Code/appoggio.py
-Wazuh-Attack-Defense-Tree-Converter/Code/appunti.md
-Wazuh-Attack-Defense-Tree-Converter/Code/ADT-generator/TreeClasses/appoggio.py
-Wazuh-Attack-Defense-Tree-Converter/Code/ADT-generator/Input-Files/test-tree/~$tree.pptx
-Wazuh-Attack-Defense-Tree-Converter/Code/ADT-generator/appoggio.py
+TreeAlchemist/Code/appoggio.py
+TreeAlchemist/Code/appunti.md
+TreeAlchemist/Code/ADT-Generator/TreeClasses/appoggio.py
+TreeAlchemist/Code/ADT-Generator/Input-Files/test-tree/~$tree.pptx
+TreeAlchemist/Code/ADT-Generator/appoggio.py

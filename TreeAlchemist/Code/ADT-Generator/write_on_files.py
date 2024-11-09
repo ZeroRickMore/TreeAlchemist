@@ -2,8 +2,11 @@ import os
 import re
 from terminal_UI_utils import ExitUtils
 
-def create_rules_xml_file(root_name:str, all_rules_as_string : str):
-    output_folder = os.path.join(os.getcwd(), 'Output-Files')
+def create_rules_xml_file(root_name:str, all_rules_as_string : str, output_folder : str):
+
+    if not os.path.isdir(output_folder):
+        ExitUtils.exit_with_error(f"The output folder {output_folder} does not exist.\nCannot generate anything.")
+
     tree_folder = os.path.join(output_folder, 'root_name')
     try:
         os.makedirs(tree_folder)

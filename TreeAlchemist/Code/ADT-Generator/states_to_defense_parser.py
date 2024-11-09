@@ -164,7 +164,7 @@ def to_string_state_id_to_state_pretty(state_id_to_state : dict[int, State]) -> 
 
 
 def test():
-    all_states, state_id_to_state = get_all_states_to_defense_from_states_to_defense_xml(r'Z:\GitHub\ADT-generator\Wazuh-Attack-Defense-Tree-Converter\Code\ADT-generator\Input-Files\test-tree')
+    all_states, state_id_to_state = get_all_states_to_defense_from_states_to_defense_xml(r'Z:\GitHub\ADT-Generator\TreeAlchemist\Code\ADT-Generator\Input-Files\test-tree')
     print(to_string_all_states_pretty(all_states=all_states))
     print(to_string_state_id_to_state_pretty(state_id_to_state=state_id_to_state))
     print("\n")
