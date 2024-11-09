@@ -155,9 +155,8 @@ def map_states_to_defense_real(state_id_to_state : dict[int, State],
 
 
 
-def generate_state_rules(node_id_to_node : dict[int, TreeNode], 
-                        adt : Tree,
+def map_states_to_nodes(node_id_to_node : dict[int, TreeNode],
                         all_states: List[State]
                         ):
     
-    rules = state_rules_generator.generate_state_rules(node_id_to_node, adt, all_states)
+    rules = state_rules_generator.map_states_to_nodes(node_id_to_node, all_states)
