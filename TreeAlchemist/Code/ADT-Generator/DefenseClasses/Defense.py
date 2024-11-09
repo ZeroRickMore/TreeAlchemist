@@ -300,7 +300,7 @@ class Defense:
         else:
                 string += f'{give_tabs}\t<location>local</location>\n'
 
-        string += f'{give_tabs}\t<rules_id>{self.get_rules_id()}</rules_id>\n' # This gets replaced with real id in StateDefense
+        #string += f'{give_tabs}\t<rules_id>{self.get_rules_id()}</rules_id>\n' # Useless
 
         string += f'{give_tabs}</active_response>\n'
 
