@@ -15,12 +15,12 @@ from DefenseClasses.DefensesTogether import DefensesTogether
 
 
 
-def get_all_defenses_from_defense_definition_xml(tree_dir_path : str) -> tuple[List[Union[Defense, DefensesTogether]], dict[int, Union[Defense, DefensesTogether]]]:
+def get_all_defenses_from_defense_definition_xml(tree_dir_path : str, adt_name : str = None) -> tuple[List[Union[Defense, DefensesTogether]], dict[int, Union[Defense, DefensesTogether]]]:
     defense_definition_xml_path : str = os.path.join(tree_dir_path, "defense_definition.xml")
 
     validate_xml_file_and_launch_error(defense_definition_xml_path)
 
-    return generate_all_defenses_from_xml(defense_definition_xml_path)
+    return generate_all_defenses_from_xml(defense_definition_xml_path, adt_name)
 
 
 def validate_xml_file_and_launch_error(defense_definition_xml_path : str) -> None:
@@ -37,7 +37,7 @@ def validate_defense_definition_xml_file(defense_definition_xml_path : str) -> b
 
 
 
-def generate_all_defenses_from_xml(defense_definition_xml_path : str) -> tuple[List[Union[Defense, DefensesTogether]], dict[int, Union[Defense, DefensesTogether]]]:
+def generate_all_defenses_from_xml(defense_definition_xml_path : str, adt_name : str = '') -> tuple[List[Union[Defense, DefensesTogether]], dict[int, Union[Defense, DefensesTogether]]]:
     '''
     Read the xml and generate the real data structures.
     '''
@@ -98,7 +98,7 @@ def generate_all_defenses_from_xml(defense_definition_xml_path : str) -> tuple[L
             ExitUtils.exit_with_error(f"A duplicated ID in defense_definition.xml was given: {id}.\nIDs MUST be unique.")
         id_to_defense[id] = curr_def
 
-        curr_def.generate_extra_values()
+        curr_def.generate_extra_values(adt_name=adt_name)
 
         all_defenses.append(curr_def)
 

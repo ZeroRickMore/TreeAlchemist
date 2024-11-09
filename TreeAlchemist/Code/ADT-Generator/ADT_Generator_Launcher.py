@@ -36,7 +36,7 @@ def main():
 
     #print(wazuh_ready_atk_nodes_no_states)
 
-    all_defenses, id_to_defense = defense_definition_xml_parser.get_all_defenses_from_defense_definition_xml(tree_dir_path = tree_dir_path)
+    all_defenses, id_to_defense = defense_definition_xml_parser.get_all_defenses_from_defense_definition_xml(tree_dir_path = tree_dir_path, adt_name=root_name)
 
     wazuh_ready_def_nodes = wazuh_ready_printer.to_string_all_defenses_wazuh_ready(tree_name=root_name, all_defenses=all_defenses, tab_times=0)
 

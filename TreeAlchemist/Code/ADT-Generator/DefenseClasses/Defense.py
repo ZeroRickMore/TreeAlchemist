@@ -195,7 +195,7 @@ class Defense:
     # Extra values generation over object attributes
     # ===============================================
 
-    def generate_extra_values(self):
+    def generate_extra_values(self, adt_name : str = ''):
         '''
         This function generates:
         of <command>:
@@ -206,7 +206,7 @@ class Defense:
         <command>
         '''
 
-        self.comm_name = "Launch " + self.get_name()
+        self.comm_name = "Launch_TA_" + adt_name + '_' + self.get_name()
 
     def get_comm_name(self):
         return self.comm_name
