@@ -32,32 +32,44 @@ def main():
     writer = FilesWriter()
 
     writer.create_rules_xml_file(root_name=root_name, all_rules_as_string=wazuh_ready_atk_nodes_no_states, output_folder=output_dir)
-    print(wazuh_ready_atk_nodes_no_states)
+
+
+    #print(wazuh_ready_atk_nodes_no_states)
 
     all_defenses, id_to_defense = defense_definition_xml_parser.get_all_defenses_from_defense_definition_xml(tree_dir_path = tree_dir_path)
 
-    wazuh_ready_def_nodes = wazuh_ready_printer.to_string_all_defenses_wazuh_ready(tree_name=adt.get_root().get_informations().get_name(), all_defenses=all_defenses, tab_times=0)
+    wazuh_ready_def_nodes = wazuh_ready_printer.to_string_all_defenses_wazuh_ready(tree_name=root_name, all_defenses=all_defenses, tab_times=0)
 
     writer.create_command_activeres_xml_file(root_name=root_name, all_defenses_as_string=wazuh_ready_def_nodes, output_folder=output_dir)
-    print(wazuh_ready_def_nodes)
 
-    exit()
+    #print(wazuh_ready_def_nodes)
+
 
     all_states, state_id_to_state = states_to_defense_parser.get_all_states_to_defense_from_states_to_defense_xml(tree_dir_path=tree_dir_path)
 
     #print(states_to_defense_parser.to_string_all_states_pretty(all_states=all_states))
     #print(states_to_defense_parser.to_string_state_id_to_state_pretty(state_id_to_state=state_id_to_state))
 
+    # This is just to check if the ids were correct or not
     ultimate_generator.map_states_to_defense(state_id_to_state=state_id_to_state, id_to_defense=id_to_defense, all_defenses=all_defenses, all_states=all_states)
+
 
     #print(states_to_defense_parser.to_string_all_states_pretty(all_states=all_states))
 
-    ultimate_generator.generate_state_rules(node_id_to_node, adt, all_states)
+    ultimate_generator.map_states_to_nodes(node_id_to_node, all_states)
+    # The node rules are placed inside of the State's node_ids
 
-    wazuh_ready_def_nodes = wazuh_ready_printer.to_string_all_defenses_wazuh_ready(tree_name='COOLEST ADT', all_defenses=all_defenses, tab_times=0)
+
+    for _ in all_states:
+        print(_.get_description(),_.get_node_ids(), _.get_state_defense().get_defense().get_name())
+
+
+
+    wazuh_ready_def_nodes = wazuh_ready_printer.to_string_all_defenses_wazuh_ready(tree_name=root_name, all_defenses=all_defenses, tab_times=0)
+
+    writer.generate_guide_file()
 
     print(wazuh_ready_def_nodes)
-
 
 
 
