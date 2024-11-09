@@ -79,9 +79,9 @@ class FilesWriter:
 
         string += 'Hello, and welcome to the TreeAlchemist guide!\nThis is an extremely short text to guide you through the upload of these files inside of Wazuh.\n\n'
 
-        string += f'Rules File=======================\n\t- Go into /var/ossec/etc/rules/\n\t- Move the rules file {self.rules_file} inside of it, and job done!\n\n'
+        string += f'Rules File=======================\n\n\t- Go into /var/ossec/etc/rules/\n\t- Move the rules file {self.rules_file} inside of it, and job done!\n\nElse, just copy these commands:\n\n\tsudo su\n\tcd /var/ossec/etc/rules\n\tmv {self.rules_file} .\n\n'
 
-        string += f'Command Active-Response File=======================\n\t- Modify content of /var/ossec/etc/ossec.conf\n\t- Copypaste all of the content of {self.def_file} inside of it, at the very end, and job done!\n\n'
+        string += f'Command Active-Response File=======================\n\n\t- Modify content of /var/ossec/etc/ossec.conf\n\t- Copypaste all of the content of {self.def_file} inside of it, at the very end, and job done!\n\n'
 
 
         string += '\nI hope everything worked for you!\nHave fun with your tree, and do not forget to launch the daemon in order to make the tree handling functional!'
