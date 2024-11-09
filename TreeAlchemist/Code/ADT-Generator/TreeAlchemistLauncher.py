@@ -16,18 +16,14 @@ from terminal_UI_utils import ExitUtils
 
 
 def main():
-    # Check if I'm in the correct working directory
-    cwd = os.getcwd()
 
-    # Check if it ends with 'TreeAlchemist'
-    if not cwd.endswith("TreeAlchemist"):
-        ExitUtils.exit_with_error("You must launch the code from TreeAlchemist folder inside of Code")
-
+    check_cwd()
+            
 
     #tree_dir_path = user_input_parser.get_valid_tree_path() # The path to the directory containing the ADT files used for execution.
 
     # TEMP
-    tree_dir_path = os.path.join(os.getcwd(), r'Wazuh-Attack-Defense-Tree-Converter\Code\TreeAlchemist\Input-Files\test-tree')
+    tree_dir_path = os.path.join(os.getcwd(), r'Wazuh-Attack-Defense-Tree-Converter\Code\ADT-generator\Input-Files\test-tree')
     # TEMP
 
     adt, node_id_to_node = ADT_xml_parser.get_ADT_from_tree_xml(tree_dir_path = tree_dir_path)
@@ -67,7 +63,20 @@ def main():
 
     
     
+def check_cwd():
+    # Check if I'm in the correct working directory
+    cwd = os.getcwd()
 
+    if cwd.endswith(os.path.join("Code","TreeAlchemist")):
+        return
+    
+    if cwd.endswith("TreeAlchemist"):
+        good_cwd = os.path.join(cwd, "Code", "TreeAlchemist")
+        if os.path.isdir(good_cwd):
+            os.chdir(good_cwd)
+            return
+
+    ExitUtils.exit_with_error("You must launch the code from TreeAlchemist folder inside of Code or from TreeAlchemist parent folder.")
 
 
 

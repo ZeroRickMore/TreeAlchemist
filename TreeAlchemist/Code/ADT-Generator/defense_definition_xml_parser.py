@@ -252,7 +252,7 @@ def validate_defenses_together(all_defenses_together : List[DefensesTogether], i
 
 # TEST ========================
 def test():
-    defs = get_all_defenses_from_defense_definition_xml(r'Z:\GitHub\TreeAlchemist\Wazuh-Attack-Defense-Tree-Converter\Code\TreeAlchemist\Input-Files\test-tree')
+    defs = get_all_defenses_from_defense_definition_xml(r'Z:\GitHub\ADT-generator\Wazuh-Attack-Defense-Tree-Converter\Code\ADT-generator\Input-Files\test-tree')
     import wazuh_ready_printer
     print(wazuh_ready_printer.to_string_all_defenses_wazuh_ready(tree_name='BEST ADT', all_defenses=defs, tab_times=0))
 

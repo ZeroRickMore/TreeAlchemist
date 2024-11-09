@@ -1,8 +1,14 @@
-
-
+import os
 import re
+from terminal_UI_utils import ExitUtils
 
 def create_rules_xml_file(root_name:str, all_rules_as_string : str):
+    output_folder = os.path.join(os.getcwd(), 'Output-Files')
+    tree_folder = os.path.join(output_folder, 'root_name')
+    try:
+        os.makedirs(tree_folder)
+    except:
+        ExitUtils.exit_with_error(f"The folder {root_name} already exist, cannot generate the files.\nIf you want to generate the files, rename or remove the folder.")
 
     def find_lowest_rule_id(all_rules_as_string : str):
         # Extract all rule IDs using a regular expression
@@ -16,5 +22,5 @@ def create_rules_xml_file(root_name:str, all_rules_as_string : str):
     lowest_rule_id = find_lowest_rule_id(all_rules_as_string)
     file_name = f'{lowest_rule_id}-TreeAlchemized-{root_name}.xml'
 
-    with open(file_name, "w") as f:
+    with open(os.path.join(tree_folder, file_name), "w") as f:
         f.write(all_rules_as_string)
