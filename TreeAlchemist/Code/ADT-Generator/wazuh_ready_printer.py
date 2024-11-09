@@ -18,7 +18,11 @@ def to_string_all_defenses_wazuh_ready(tree_name : str = 'unspecified', all_defe
     string = f'{give_tabs}<ossec_config>\n'
 
     for defense in all_defenses:
-        defense : Union[Defense, DefensesTogether]
+        # DefensesTogether has no effect over the generation of the commands, it actually bugs stuff duplicating commands. Just use it for the daemon
+        if isinstance(defense, DefensesTogether):
+            continue
+
+        defense : Defense
         string += f'\n{give_tabs}<!-- Start of <defense name="{defense.get_name()}" id="{defense.get_id()}" -->\n\n'
         string += defense.to_string_total(tab_times = tab_times + 1)
         string += f'\n{give_tabs}<!-- End of <defense name="{defense.get_name()}" id="{defense.get_id()}" -->\n\n'
