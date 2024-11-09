@@ -7,7 +7,7 @@ def create_rules_xml_file(root_name:str, all_rules_as_string : str, output_folde
     if not os.path.isdir(output_folder):
         ExitUtils.exit_with_error(f"The output folder {output_folder} does not exist.\nCannot generate anything.")
 
-    tree_folder = os.path.join(output_folder, 'root_name')
+    tree_folder = os.path.join(output_folder, root_name)
     try:
         os.makedirs(tree_folder)
     except:
