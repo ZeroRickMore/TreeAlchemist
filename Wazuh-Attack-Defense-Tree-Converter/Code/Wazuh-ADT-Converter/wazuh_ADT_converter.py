@@ -27,20 +27,25 @@ def main():
 
     print(wazuh_ready_atk_nodes_no_states)
 
+
+
+
+
+
     all_defenses, id_to_defense = defense_definition_xml_parser.get_all_defenses_from_defense_definition_xml(tree_dir_path = tree_dir_path)
 
     wazuh_ready_def_nodes = wazuh_ready_printer.to_string_all_defenses_wazuh_ready(tree_name='COOLEST ADT', all_defenses=all_defenses, tab_times=0)
 
-    print(wazuh_ready_def_nodes)
+    #print(wazuh_ready_def_nodes)
 
     all_states, state_id_to_state = states_to_defense_parser.get_all_states_to_defense_from_states_to_defense_xml(tree_dir_path=tree_dir_path)
 
-    print(states_to_defense_parser.to_string_all_states_pretty(all_states=all_states))
-    print(states_to_defense_parser.to_string_state_id_to_state_pretty(state_id_to_state=state_id_to_state))
+    #print(states_to_defense_parser.to_string_all_states_pretty(all_states=all_states))
+    #print(states_to_defense_parser.to_string_state_id_to_state_pretty(state_id_to_state=state_id_to_state))
 
     ultimate_generator.map_states_to_defense(state_id_to_state=state_id_to_state, id_to_defense=id_to_defense, all_defenses=all_defenses, all_states=all_states)
 
-    print(states_to_defense_parser.to_string_all_states_pretty(all_states=all_states))
+    #print(states_to_defense_parser.to_string_all_states_pretty(all_states=all_states))
 
     ultimate_generator.generate_state_rules(node_id_to_node, adt, all_states)
 
