@@ -2,3 +2,7 @@
 2024-11-10 14:03:01,835 - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on http://127.0.0.1:4700
 2024-11-10 14:03:01,835 - [33mPress CTRL+C to quit[0m
+2024-11-10 16:38:51,512 - ===== wazuh_adtmanagerd started =====
+2024-11-10 16:38:51,528 - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:4700
+2024-11-10 16:38:51,528 - [33mPress CTRL+C to quit[0m
