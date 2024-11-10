@@ -90,18 +90,19 @@ def process_new_alert():
     alert_infos = wazuh_adtmanagerd_utils.parse_alert_log_line(alert)
 
     # Update tree state
-    should_I_run_defense = update_tree_state(alert_infos)
+    should_I_look_for_defense = update_tree_state(alert_infos)
     # Raise defenses if a state is matched
-    if should_I_run_defense:
+    if should_I_look_for_defense:
         which_defenses_ran_and_wazuh_api_response = run_defenses_if_present(alert_infos)
 
-    if not should_I_run_defense:
+    if not should_I_look_for_defense:
         return jsonify({"status": "success", "message": f"Alert {alert_infos['rule_id']} was already raised, doing nothing."}), 200
     
+    curr_state = tree_name_to_structure_dict[alert_infos['tree_name']]['current_state']
     if not which_defenses_ran_and_wazuh_api_response:
-        return jsonify({"status": "success", "message": f"Alert {alert_infos['rule_id']} was not mapped to any defense, doing nothing."}), 200
+        return jsonify({"status": "success", "message": f"State {curr_state} was not mapped to any defense, doing nothing."}), 200
     
-    return jsonify({"status": "success", "message": f"Alert {alert_infos['rule_id']} led to the execution of some defenses." , "defenses_recap" : which_defenses_ran_and_wazuh_api_response}), 200
+    return jsonify({"status": "success", "message": f"State {curr_state} led to the execution of some defenses." , "defenses_recap" : which_defenses_ran_and_wazuh_api_response}), 200
 
 
 def update_tree_state(alert_infos) -> bool:
@@ -186,22 +187,22 @@ def launch_single_defense(defense : str, agent : str):
     # Replace these placeholders with actual values
     command = defense
 
-    # URL with query parameters
-    url = f"https://127.0.0.1:55000/agents?agents_list={agent}"
+    # Get agent ID having name by interrogating Wazuh api
+    agent = requests.get(url=f'https://127.0.0.1:55000/agents?name={agent}&select=id', headers={'Authorization' : f'Bearer {JWT_token}'}, verify=False).json()['data']['affected_items'][0]['id']
 
-    # JSON body
-    payload = {
-        "command": command
-    }
+    
+    url = f"https://127.0.0.1:55000/active-response?agents_list={agent}"
 
-    # Headers with Bearer token
     headers = {
         "Authorization": f"Bearer {JWT_token}",
-        "Content-Type": "application/json"
     }
 
-    # Send PUT request
-    response = requests.put(url, json=payload, headers=headers, verify=False)
+    # Sending the command "disable"
+    data = {
+        "command": "Launch_TA_Root_Def1.sh0"
+    }
+
+    response = requests.put(url, headers=headers, json=data, verify=False)
 
     code = response.status_code
 
