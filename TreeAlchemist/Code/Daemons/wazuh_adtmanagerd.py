@@ -92,15 +92,20 @@ def update_tree_state(alert_infos) -> bool:
         app.logger.info(f"Alert with rule id {curr_alert_id} has already been triggered: doing nothing.")
         return False
     
-    curr_id_to_list = list(curr_tree_structure_dict['current_state'])
-    curr_id_to_list.append(curr_alert_id)
-    curr_tree_structure_dict['current_state'] = tuple(curr_id_to_list) # It's as a tuple because the idea that mutating it is hard is very fitting.
+    curr_state_to_list = list(curr_tree_structure_dict['current_state'])
+    curr_state_to_list.append(curr_alert_id)
+    curr_tree_structure_dict['current_state'] = tuple(curr_state_to_list) # It's as a tuple because the idea that mutating it is hard is very fitting.
 
     return True
 
 
 def run_defense_if_present(alert_infos):
-    pass
+    global tree_name_to_structure_dict
+
+    tree_name = alert_infos['tree_name']
+    curr_tree_structure_dict = tree_name_to_structure_dict[tree_name]
+
+    
 
 
 @app.route('/', methods=['GET'])
