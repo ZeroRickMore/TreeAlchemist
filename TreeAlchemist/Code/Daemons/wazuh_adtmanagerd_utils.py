@@ -22,7 +22,7 @@ def parse_alert_log_line(log_line : str) -> dict[str, str]:
     log_line = log_line[rule_index + len('Rule : ') - 1:]
 
     rule_index = log_line.index(" ") # Until the next space, it's all rule_id
-    rule_id = int(log_line[:rule_index])
+    rule_id = str(int(log_line[:rule_index])) # Making it int then back to string helps because it throws errors in case the parsing is badly done
 
     # location gathering
     location_index = log_line.index('Location: (' ) # Previous information is already parsed
