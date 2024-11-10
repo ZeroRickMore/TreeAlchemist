@@ -73,5 +73,9 @@ def main():
 
 
 
+    print(adt.print_adt_name_with_node_ids())
+
+
+
 if __name__ == '__main__':
     main()
