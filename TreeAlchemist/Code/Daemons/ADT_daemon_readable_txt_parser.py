@@ -123,4 +123,3 @@ def is_valid_txt_file(filepath : str):
     return os.path.isfile(filepath) and filepath.lower().endswith('.txt')
 
 
-parse_all_daemon_readable_files(r'Z:\GitHub\TreeAlchemist\TreeAlchemist\Code\Daemons\Trees')
