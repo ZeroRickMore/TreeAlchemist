@@ -69,10 +69,15 @@ def process_new_alert():
     should_I_run_defense = update_tree_state(alert_infos)
     # Raise defenses if a state is matched
     if should_I_run_defense:
-        run_defense_if_present(alert_infos)
+        which_defenses_ran_and_wazuh_api_response = run_defense_if_present(alert_infos)
 
-    # You could add additional processing of the line here if needed
-    return jsonify({"status": "success", "message": "Alert received"}), 200
+    if not should_I_run_defense:
+        return jsonify({"status": "success", "message": f"Alert {alert_infos['rule_id']} was already raised, doing nothing."}), 200
+    
+    if not which_defenses_ran_and_wazuh_api_response:
+        return jsonify({"status": "success", "message": f"Alert {alert_infos['rule_id']} was not mapped to any defense, doing nothing."}), 200
+    
+    return jsonify({"status": "success", "message": f"Alert {alert_infos['rule_id']} led to the execution of some defenses." , "defenses_recap" : which_defenses_ran_and_wazuh_api_response}), 200
 
 
 def update_tree_state(alert_infos) -> bool:
@@ -99,10 +104,9 @@ def update_tree_state(alert_infos) -> bool:
     return True
 
 
-def run_defense_if_present(alert_infos) -> bool:
+def run_defense_if_present(alert_infos) -> dict[str, dict]:
     '''
-    Returns True if a defense was launched with success,
-    False if not.
+    Returns a dict of the defenses that were executed mapped to the raw response of Wazuh API .
     '''
     global tree_name_to_structure_dict
 
@@ -117,10 +121,17 @@ def run_defense_if_present(alert_infos) -> bool:
             return launch_defense_commands(defense_command=curr_tree_states_that_have_a_defense[state])
 
     app.logger.info(f'No defenses found for state [ {curr_state_to_set} ] in ADT = [ {tree_name} ]. Doing nothing.')
-    return False
+
+    return {}
         
     
+def launch_defense_commands(defense_command : str) -> dict[str, dict]:
+    # Insert the logic to manage the PUT inside of WazuhServer API.
+    '''
+    Executes the defense commands, and returns a dictionary with defense -> raw response of Wazuh API .
+    '''
 
+    pass
 
     
 
