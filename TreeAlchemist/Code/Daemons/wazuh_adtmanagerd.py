@@ -89,7 +89,7 @@ def update_tree_state(alert_infos) -> bool:
     curr_alert_id = alert_infos['rule_id']
 
     if curr_alert_id in curr_tree_structure_dict['current_state']:
-        app.logger.info(f"Alert with rule id {curr_alert_id} has already been triggered: doing nothing.")
+        app.logger.info(f"Alert with rule id {curr_alert_id} has already been triggered. Doing nothing.")
         return False
     
     curr_state_to_list = list(curr_tree_structure_dict['current_state'])
@@ -99,11 +99,28 @@ def update_tree_state(alert_infos) -> bool:
     return True
 
 
-def run_defense_if_present(alert_infos):
+def run_defense_if_present(alert_infos) -> bool:
+    '''
+    Returns True if a defense was launched with success,
+    False if not.
+    '''
     global tree_name_to_structure_dict
 
     tree_name = alert_infos['tree_name']
     curr_tree_structure_dict = tree_name_to_structure_dict[tree_name]
+    curr_state_to_set = set(curr_tree_structure_dict['current_state']) # To allow orderless comparison
+    curr_tree_states_that_have_a_defense = curr_tree_structure_dict['states_to_defenses']
+
+    for state in curr_tree_states_that_have_a_defense:
+        if curr_state_to_set == set(state):
+            app.logger.info(f'A defense has been matched for state [ {state} ] in ADT = [ {tree_name} ]. Trying to launch it.')
+            return launch_defense_commands(defense_command=curr_tree_states_that_have_a_defense[state])
+
+    app.logger.info(f'No defenses found for state [ {curr_state_to_set} ] in ADT = [ {tree_name} ]. Doing nothing.')
+    return False
+        
+    
+
 
     
 
