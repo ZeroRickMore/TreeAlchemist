@@ -8,7 +8,7 @@ def parse_daemon_readable_txt_file(path_to_daemon_file : str, tree_name_to_struc
     '''
     Works in-place with a dictionary like this:
 
-        {'Root': {'current_state': (),
+        {'Root': {
                 'states_to_defenses': {('100011',): ['Launch_TA_Root_Def1.sh0'],
                                         ('100012',): ['Launch_TA_Root_Def2.sh0'],
                                         ('100013',): ['Launch_TA_Root_Def3.sh0'],
@@ -64,8 +64,6 @@ def parse_daemon_readable_txt_file(path_to_daemon_file : str, tree_name_to_struc
             tree_name_to_structure_dict[tree_name] = {
                 'tree_nodes_list' : tree_nodes, 
                 'states_to_defenses' : {},
-                'current_state' : ()
-
             }
 
             continue
@@ -81,7 +79,7 @@ def parse_all_daemon_readable_files(folder_to_daemon_txt_files : str) -> dict[st
     '''
     Returns a structure like this:
 
-        {'Root': {'current_state': (),
+        {'Root': {
                 'states_to_defenses': {('100011',): ['Launch_TA_Root_Def1.sh0'],
                                         ('100012',): ['Launch_TA_Root_Def2.sh0'],
                                         ('100013',): ['Launch_TA_Root_Def3.sh0'],
