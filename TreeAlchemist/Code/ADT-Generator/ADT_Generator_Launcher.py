@@ -67,14 +67,16 @@ def main():
 
     wazuh_ready_def_nodes = wazuh_ready_printer.to_string_all_defenses_wazuh_ready(tree_name=root_name, all_defenses=all_defenses, tab_times=0)
 
-    writer.generate_guide_file()
+    
 
     print(wazuh_ready_def_nodes)
 
+    daemon_readable_file = wazuh_ready_printer.to_string_tree_for_daemon_read(adt=adt, all_states=all_states, node_id_to_node=node_id_to_node)
+    print(daemon_readable_file)
+    writer.create_daemon_readable_file(root_name=root_name, output_folder=output_dir, daemon_readable_file=daemon_readable_file)
 
-
-    print(adt.print_adt_name_with_node_ids())
-
+    print(writer.generate_guide_file_string())
+    writer.generate_guide_file()
 
 
 if __name__ == '__main__':
