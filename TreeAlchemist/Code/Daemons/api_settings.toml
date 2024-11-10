@@ -1,0 +1,2 @@
+# Settings for the Wazuh API
+JWT_refresh_time = 900 # Time in seconds
