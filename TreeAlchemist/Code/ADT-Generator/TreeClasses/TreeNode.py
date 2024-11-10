@@ -81,3 +81,17 @@ class TreeNode:
             string += child.to_string_with_subnodes()
         
         return string
+    
+
+    def to_string_with_subnodes_only_ids(self) -> str:
+        # Start the string for this node with indentation based on depth
+        if self is None:
+            return ''
+        string = ', '
+        string += str(self.get_informations().get_wazuh_rule_config().get_rule_id())
+
+        # Recursively add each child's string with increased depth
+        for child in self.children:
+            string += child.to_string_with_subnodes_only_ids()
+        
+        return string
