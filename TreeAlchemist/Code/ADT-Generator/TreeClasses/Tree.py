@@ -83,6 +83,27 @@ class Tree:
         string += self.get_root().to_string_with_subnodes()
         return string
 
+
+    def print_every_single_node_only_ids(self) -> str:
+        string = self.get_root().to_string_with_subnodes_only_ids()
+        string = string.replace(" ", "")
+        if string[0] == ',':
+            string = string[1:]
+        
+        string = f'[{string}]'
+        return string
+
+
+    def print_adt_name_with_node_ids(self) -> str:
+        string = self.get_root().get_informations().get_name()
+
+        string += ' :: '
+
+        string += self.print_every_single_node_only_ids()
+
+        return string
+
+
     def print_tree_for_debug(self):
         # Helper function to recursively print the tree
         def print_subtree(node : TreeNode, depth=0):
