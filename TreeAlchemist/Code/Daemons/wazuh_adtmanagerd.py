@@ -43,6 +43,11 @@ from requests.auth import HTTPBasicAuth
 from datetime import datetime, timedelta
 
 
+class AgentNotFoundException(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+
 
 debug = True
 
@@ -52,6 +57,9 @@ print("==========Gathering the Trees==========\n\n")
 this_script_dir = os.path.dirname(__file__)
 log_file_path = os.path.join(this_script_dir, 'Logs', 'wazuh_adtmanagerd.log')
 tree_name_to_structure_dict = ADT_daemon_readable_txt_parser.parse_all_daemon_readable_files(os.path.join(this_script_dir, 'Trees'))
+
+# This dictionary will have the agent name as key, then as value a dict going from tree_name to a tuple that is the state
+agent_to_trees : dict[str, dict[str, tuple]] = {}
 
 api_username = read_toml.get_api_username()
 api_pwd = read_toml.get_api_pwd()
@@ -89,21 +97,88 @@ def process_new_alert():
 
     alert_infos = wazuh_adtmanagerd_utils.parse_alert_log_line(alert)
 
+    # Check if everything exists
+
+    # TREE EXISTING CHECK
+    tree_name = alert_infos['tree_name']
+    if tree_name not in tree_name_to_structure_dict.keys():
+        # Non-existing tree
+        string = f"The tree [ {tree_name} ] does NOT exist in the daemon. Please insert the loading file of it into Trees folder! Nothing will be done now."
+        app.logger.error(string)
+        return jsonify({"status":"error", "message":string})
+
+    # AGENT FIRST TIME CHECK
+    agent_name = alert_infos['agent']
+    # The agent has never been activated once
+    if agent_name not in agent_to_trees.keys():
+        agent_to_trees[agent_name] = { tree_name : () }
+    # The agent has never had this tree activated once
+    elif tree_name not in agent_to_trees[agent_name].keys():
+        agent_to_trees[agent_name][tree_name] = ()
+
+    # RULE ID NOT IN THE TREE
+    rule_id = alert_infos['rule_id']
+    if rule_id not in tree_name_to_structure_dict[tree_name]['tree_nodes_list']:
+        string = f"The tree [ {tree_name} ] does NOT contain rule id {rule_id} in the daemon. Please update the loading file, if this is not intended, into Trees folder! Nothing will be done now."
+        app.logger.error(string)
+
+        if debug:
+            print("==================AGENT TO TREES==================\n")
+            pprint(agent_to_trees)
+            print("==================AGENT TO TREES==================\n")
+
+        return jsonify({"status":"error", "message":string})        
+
+
+
     # Update tree state
     should_I_look_for_defense = update_tree_state(alert_infos)
     # Raise defenses if a state is matched
     if should_I_look_for_defense:
-        which_defenses_ran_and_wazuh_api_response = run_defenses_if_present(alert_infos)
+        try:
+            which_defenses_ran_and_wazuh_api_response = run_defenses_if_present(alert_infos)
+        except AgentNotFoundException as e:
+            app.logger.error(str(e))
+            if debug:
+                print("==================AGENT TO TREES==================\n")
+                pprint(agent_to_trees)
+                print("==================AGENT TO TREES==================\n")
+            return jsonify({"status":"error", "message": str(e)})
+
 
     if not should_I_look_for_defense:
-        return jsonify({"status": "success", "message": f"Alert {alert_infos['rule_id']} was already raised, doing nothing."}), 200
+        if debug:
+            print("==================AGENT TO TREES==================\n")
+            pprint(agent_to_trees)
+            print("==================AGENT TO TREES==================\n")
+        return jsonify({"status": "success", "message": f"Alert {rule_id} was already raised, doing nothing."}), 200
     
-    curr_state = tree_name_to_structure_dict[alert_infos['tree_name']]['current_state']
+    curr_state = get_curr_state(alert_infos=alert_infos)
+
     if not which_defenses_ran_and_wazuh_api_response:
+        if debug:
+            print("==================AGENT TO TREES==================\n")
+            pprint(agent_to_trees)
+            print("==================AGENT TO TREES==================\n")
         return jsonify({"status": "success", "message": f"State {curr_state} was not mapped to any defense, doing nothing."}), 200
     
+    if debug:
+        print("==================AGENT TO TREES==================\n")
+        pprint(agent_to_trees)
+        print("==================AGENT TO TREES==================\n")
     return jsonify({"status": "success", "message": f"State {curr_state} led to the execution of some defenses." , "defenses_recap" : which_defenses_ran_and_wazuh_api_response}), 200
 
+
+def get_curr_state(alert_infos : dict):
+    curr_agent = alert_infos['agent']
+    curr_tree = alert_infos['tree_name']
+    return agent_to_trees[curr_agent][curr_tree]
+
+
+def set_curr_state(alert_infos : dict, state : tuple):
+    curr_agent = alert_infos['agent']
+    curr_tree = alert_infos['tree_name']
+    agent_to_trees[curr_agent][curr_tree] = state
 
 def update_tree_state(alert_infos) -> bool:
     '''
@@ -114,24 +189,26 @@ def update_tree_state(alert_infos) -> bool:
     global tree_name_to_structure_dict
 
     tree_name = alert_infos['tree_name']
-    curr_tree_structure_dict = tree_name_to_structure_dict[tree_name]
+    #curr_tree_structure_dict = tree_name_to_structure_dict[tree_name]
 
     curr_alert_id = alert_infos['rule_id']
 
-    if curr_alert_id in curr_tree_structure_dict['current_state']:
-        app.logger.info(f"Alert with rule id {curr_alert_id} has already been triggered. Doing nothing.")
+    curr_state = get_curr_state(alert_infos=alert_infos)
+
+    if curr_alert_id in curr_state:
+        app.logger.info(f"Alert with rule id {curr_alert_id} has already been triggered on agent {alert_infos['agent']}. Doing nothing.")
 
         if debug:
-            print(f"DEBUG: {curr_alert_id} IS ALREADY IN CURRENT STATE : {curr_tree_structure_dict['current_state']}")
+            print(f"DEBUG: {curr_alert_id} IS ALREADY IN CURRENT STATE FOR AGENT {alert_infos['agent']}: {curr_state}")
             
         return False
     
-    curr_state_to_list = list(curr_tree_structure_dict['current_state'])
+    curr_state_to_list = list(curr_state)
     curr_state_to_list.append(curr_alert_id)
-    curr_tree_structure_dict['current_state'] = tuple(curr_state_to_list) # It's as a tuple because the idea that mutating it is hard is very fitting.
+    set_curr_state(alert_infos=alert_infos, state=tuple(curr_state_to_list)) # It's as a tuple because the idea that mutating it is hard is very fitting.
     
     if debug:
-        print(f"DEBUG: UPDATING TREE STATE -> {curr_tree_structure_dict['current_state']}")
+        print(f"DEBUG: UPDATING TREE STATE -> {get_curr_state(alert_infos=alert_infos)}")
 
     return True
 
@@ -144,23 +221,24 @@ def run_defenses_if_present(alert_infos):
 
     tree_name = alert_infos['tree_name']
     curr_tree_structure_dict = tree_name_to_structure_dict[tree_name]
-    curr_state_to_set = set(curr_tree_structure_dict['current_state']) # To allow orderless comparison
+    curr_state_to_set = set(get_curr_state(alert_infos=alert_infos)) # To allow orderless comparison
     curr_tree_states_that_have_a_defense = curr_tree_structure_dict['states_to_defenses']
 
     for state in curr_tree_states_that_have_a_defense:
         if curr_state_to_set == set(state):
-
+            agent = alert_infos['agent']
             if debug:
-                print(f"DEBUG: A defense has been matched for state [ {state} ] in ADT = [ {tree_name} ]. Trying to launch it.")
+                print(f"DEBUG: A defense has been matched for state [ {state} ] in ADT = [ {tree_name} ]. Trying to launch it on agent {agent}.")
 
-            app.logger.info(f'A defense has been matched for state [ {state} ] in ADT = [ {tree_name} ]. Trying to launch it.')
+            app.logger.info(f'A defense has been matched for state [ {state} ] in ADT = [ {tree_name} ]. Trying to launch it on agent {agent}.')
             return launch_defense_commands(defense_commands=curr_tree_states_that_have_a_defense[state], agent=alert_infos['agent'])
             
-    curr_state = curr_tree_structure_dict['current_state']
+    curr_state = get_curr_state(alert_infos=alert_infos)
+    agent = alert_infos['agent']
     if debug:
-        print(f"DEBUG: No defenses found for state [ {curr_state} ] in ADT = [ {tree_name} ]. Doing nothing.")
+        print(f"DEBUG: No defenses found for state [ {curr_state} ] in ADT = [ {tree_name} ]. Doing nothing on agent {agent}.")
 
-    app.logger.info(f'No defenses found for state [ {curr_state} ] in ADT = [ {tree_name} ]. Doing nothing.')
+    app.logger.info(f'No defenses found for state [ {curr_state} ] in ADT = [ {tree_name} ]. Doing nothing on agent {agent}.')
 
     return {}
 
@@ -169,6 +247,8 @@ def launch_defense_commands(defense_commands : list[str], agent : str) -> dict[s
     # Insert the logic to manage the PUT inside of WazuhServer API.
     '''
     Executes the defense commands, and returns a dictionary with defense -> raw response of Wazuh API .
+
+    Raises AgentNotFoundException if the agent does not exist .
     '''
     defense_to_status = {}
     for defense in defense_commands:
@@ -184,12 +264,20 @@ def launch_defense_commands(defense_commands : list[str], agent : str) -> dict[s
 
 
 def launch_single_defense(defense : str, agent : str):
+    '''
+    Raises AgentNotFoundException if the agent does not exist .
+    '''
     # Replace these placeholders with actual values
     command = defense
 
     # Get agent ID having name by interrogating Wazuh api
-    agent = requests.get(url=f'https://127.0.0.1:55000/agents?name={agent}&select=id', headers={'Authorization' : f'Bearer {JWT_token}'}, verify=False).json()['data']['affected_items'][0]['id']
-
+    try:
+        agent = requests.get(url=f'https://127.0.0.1:55000/agents?name={agent}&select=id', headers={'Authorization' : f'Bearer {JWT_token}'}, verify=False).json()['data']['affected_items'][0]['id']
+    except:
+        string = f'The agent named [ {agent} ] does NOT exist inside of Wazuh. Doing nothing, this was most likely a trick request.'
+        app.logger.error(string)
+        raise AgentNotFoundException(string)
+        
     
     url = f"https://127.0.0.1:55000/active-response?agents_list={agent}"
 
@@ -236,7 +324,7 @@ def set_wazuh_jwt_token():
     try:
         response.raise_for_status()
     except Exception as e:
-        app.logger.error(f"THE API CREDENTIALS ARE WRONG OR THERE IS AN ERROR WITH THE WAZUH API: [ {e} ]")
+        app.logger.error(f"THE API CREDENTIALS ARE WRONG OR THERE IS AN ERROR WITH THE WAZUH API: [ {str(e)} ]")
     
     JWT_expire_timestamp = datetime.now() + timedelta(seconds=JWT_refresh_time)
     app.logger.info("Requested a new JWT token to Wazuh API succesfully.")
@@ -256,7 +344,7 @@ def show_dashboard():
 
 def run_webserver(port : int):
     global app   
-    app.run(threaded=True, port=port, debug=False, use_reloader=False)
+    app.run(threaded=True, port=port, debug=True, use_reloader=False)
 
 if __name__ == '__main__':
     run_webserver(read_toml.get_port())
