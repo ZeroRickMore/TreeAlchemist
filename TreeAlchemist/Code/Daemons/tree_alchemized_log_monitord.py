@@ -10,6 +10,7 @@ import logging
 import pyinotify
 import os
 import requests
+import read_toml
 
 
 class FileChangeHandler(pyinotify.ProcessEvent):
@@ -28,8 +29,8 @@ class FileChangeHandler(pyinotify.ProcessEvent):
         )
         self.logger = logging.getLogger()
 
-        
-        self.logger.info("\n===== tree_alchemized_log_monitord started =====\n")
+
+        self.logger.info("===== tree_alchemized_log_monitord started =====")
 
     def process_IN_MODIFY(self, event):
         if event.pathname == self.file_path:
@@ -93,4 +94,4 @@ def monitor_file(file_path : str, webserver_port : int):
 
 
 if __name__ == '__main__':
-    launch_log_monitoring(4700)
+    launch_log_monitoring(read_toml.get_port())
