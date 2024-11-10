@@ -62,18 +62,45 @@ app.logger.info("===== wazuh_adtmanagerd started =====")
 def process_new_alert():
     data = request.json
     alert = data.get('alert')
-    app.logger.info(f"Received new alert: {alert}")
+    app.logger.info(f"Processing new alert: [ {alert} ] ============")
 
     alert_infos = wazuh_adtmanagerd_utils.parse_alert_log_line(alert)
-
-    
+    # Update tree state
+    should_I_run_defense = update_tree_state(alert_infos)
+    # Raise defenses if a state is matched
+    if should_I_run_defense:
+        run_defense_if_present(alert_infos)
 
     # You could add additional processing of the line here if needed
     return jsonify({"status": "success", "message": "Alert received"}), 200
 
 
+def update_tree_state(alert_infos) -> bool:
+    '''
+    Returns False if the state was already present (you should NOT run defenses)
+
+    True if the state was NOT present (you MUST run defenses)
+    '''
+    global tree_name_to_structure_dict
+
+    tree_name = alert_infos['tree_name']
+    curr_tree_structure_dict = tree_name_to_structure_dict[tree_name]
+
+    curr_alert_id = alert_infos['rule_id']
+
+    if curr_alert_id in curr_tree_structure_dict['current_state']:
+        app.logger.info(f"Alert with rule id {curr_alert_id} has already been triggered: doing nothing.")
+        return False
+    
+    curr_id_to_list = list(curr_tree_structure_dict['current_state'])
+    curr_id_to_list.append(curr_alert_id)
+    curr_tree_structure_dict['current_state'] = tuple(curr_id_to_list) # It's as a tuple because the idea that mutating it is hard is very fitting.
+
+    return True
 
 
+def run_defense_if_present(alert_infos):
+    pass
 
 
 @app.route('/', methods=['GET'])
