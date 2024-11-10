@@ -30,10 +30,8 @@ This daemon updates the tree state (there is a dictionary containing Agent name,
 
 Please note that this version is Linux-specific, as it uses system calls.
 '''
-import toml
+
 import os
-import tree_alchemized_log_monitord
-import threading
 from flask import Flask, request, jsonify
 import logging
 import read_toml
