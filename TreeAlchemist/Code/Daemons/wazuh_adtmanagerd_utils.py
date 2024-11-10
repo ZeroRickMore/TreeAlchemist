@@ -48,6 +48,12 @@ def parse_alert_log_line(log_line : str) -> dict[str, str]:
 
 
 
+
+
+
+
+
+
 def test():
     # Test with the provided example
     log_line = 'Nov  7 00:01:52 WazuhServer ossec: Alert Level: 14; Rule: 100017 - An attacker has reached "Child4_1" node.; Location: (Ubuntu-Victim) any->/var/log/absolute_testing.log; classification: Root, TreeAlchemized, ; evil Child4_1 log'
