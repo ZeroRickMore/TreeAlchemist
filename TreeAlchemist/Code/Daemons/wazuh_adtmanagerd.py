@@ -17,6 +17,67 @@ States:
 [100018]=Def2
 [100017,100018]=Def3
 
+
+General idea:
+An alert is raised on Wazuh, and delivered to rsyslog, specifically on the file tree_alchemized_alerts.log
+as specified in rsyslog config.
+
+A tool watches the log file, and gathers the informations about the file modifications.
+Each line of the log contains an alert, and the only important sections are the rule ID, the Tree name, and the Agent that raised the alert.
+
+This daemon updates the tree state (there is a dictionary containing Agent name, with value another dict mapping a Tree Name to a list, the list being the state)
+
+
+Please note that this version is Linux-specific, as it uses system calls.
 '''
+
+
+import pyinotify
+
+class FileChangeHandler(pyinotify.ProcessEvent):
+    def __init__(self, file_path):
+        self.file_path = file_path
+        self._last_position = 0  # Tracks the last read position in the file
+
+    def process_IN_MODIFY(self, event):
+        if event.pathname == self.file_path:
+            self.process_new_lines()
+
+    def process_new_lines(self):
+        with open(self.file_path, 'r') as file:
+            # Move to the last read position
+            file.seek(self._last_position)
+
+            # Read and process new lines
+            for line in file:
+                self.process_line(line.strip())
+
+            # Update the last position
+            self._last_position = file.tell()
+
+    def process_line(self, line):
+        # Add your processing logic here
+        print(f"New line added: {line}")
+
+def monitor_file(file_path):
+    # Set up inotify and the handler
+    wm = pyinotify.WatchManager()
+    handler = FileChangeHandler(file_path)
+
+    # Watch the file for modifications only
+    notifier = pyinotify.Notifier(wm, handler)
+    wm.add_watch(file_path, pyinotify.IN_MODIFY)
+
+    print(f"Started monitoring {file_path}")
+
+    # Run the notifier loop to listen for events
+    notifier.loop()
+
+# Usage
+file_path = "path/to/your/file.txt"
+monitor_file(file_path)
+
+
+
 
 
