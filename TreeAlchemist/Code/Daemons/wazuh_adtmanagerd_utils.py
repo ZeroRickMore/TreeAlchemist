@@ -5,7 +5,7 @@ def parse_alert_log_line(log_line : str) -> dict[str, str]:
         parsed_data = {
             'rule_id' : 'unknown',
             'agent' : 'unknown',
-            'groups' : [],
+            'tree_name' : 'unknown',
         }
 
     '''
