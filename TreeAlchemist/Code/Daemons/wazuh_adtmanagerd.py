@@ -35,13 +35,15 @@ import os
 from flask import Flask, request, jsonify
 import logging
 import read_toml
-
-
+import ADT_daemon_readable_txt_parser
+import wazuh_adtmanagerd_utils
 
 app = Flask(__name__)
 
+this_script_dir = os.path.dirname(__file__)
+log_file_path = os.path.join(this_script_dir, 'Logs', 'wazuh_adtmanagerd.log')
+tree_name_to_structure_dict = ADT_daemon_readable_txt_parser.parse_all_daemon_readable_files(os.path.join(this_script_dir, 'Trees'))
 
-log_file_path = os.path.join(os.path.dirname(__file__), 'Logs', 'wazuh_adtmanagerd.log')
 
 logging.basicConfig(
             filename=log_file_path,
@@ -50,21 +52,34 @@ logging.basicConfig(
             level=logging.INFO # This captures INFO and higher
 )
 
+
 app.logger = logging.getLogger()
 app.logger.info("===== wazuh_adtmanagerd started =====")
+
 
 
 @app.route('/new-alert', methods=['POST'])
 def process_new_alert():
     data = request.json
     alert = data.get('alert')
-    print(f"Received new line from file: {alert}")
+    app.logger.info(f"Received new alert: {alert}")
+
+    alert_infos = wazuh_adtmanagerd_utils.parse_alert_log_line(alert)
+
+    
+
     # You could add additional processing of the line here if needed
     return jsonify({"status": "success", "message": "Alert received"}), 200
+
+
+
+
+
 
 @app.route('/', methods=['GET'])
 def show_dashboard():
     return 'Hello World!'        
+
 
 
 
