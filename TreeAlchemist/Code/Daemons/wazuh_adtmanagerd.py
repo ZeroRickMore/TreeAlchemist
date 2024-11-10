@@ -36,6 +36,7 @@ import tree_alchemized_log_monitord
 import threading
 from flask import Flask, request, jsonify
 import logging
+import read_toml
 
 
 
@@ -52,7 +53,7 @@ logging.basicConfig(
 )
 
 app.logger = logging.getLogger()
-app.logger.info("\n===== wazuh_adtmanagerd started =====\n")
+app.logger.info("===== wazuh_adtmanagerd started =====")
 
 
 @app.route('/new-alert', methods=['POST'])
@@ -61,7 +62,7 @@ def process_new_alert():
     alert = data.get('alert')
     print(f"Received new line from file: {alert}")
     # You could add additional processing of the line here if needed
-    return jsonify({"status": "success", "message": "Line received"}), 200
+    return jsonify({"status": "success", "message": "Alert received"}), 200
 
 @app.route('/', methods=['GET'])
 def show_dashboard():
@@ -76,4 +77,4 @@ def run_webserver(port : int):
     app.run(threaded=True, port=port, debug=False, use_reloader=False)
 
 if __name__ == '__main__':
-    run_webserver(4700)
+    run_webserver(read_toml.get_port())
