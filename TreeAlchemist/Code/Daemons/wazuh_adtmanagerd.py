@@ -37,12 +37,24 @@ import logging
 import read_toml
 import ADT_daemon_readable_txt_parser
 import wazuh_adtmanagerd_utils
+from pprint import pprint
+
+
+debug = True
 
 app = Flask(__name__)
+print("==========Gathering the Trees==========\n\n")
 
 this_script_dir = os.path.dirname(__file__)
 log_file_path = os.path.join(this_script_dir, 'Logs', 'wazuh_adtmanagerd.log')
 tree_name_to_structure_dict = ADT_daemon_readable_txt_parser.parse_all_daemon_readable_files(os.path.join(this_script_dir, 'Trees'))
+
+
+print("==========================================================================================\nThis is the dictionary that was gathered. Feel free to ignore it.\n==========================================================================================\n\n")
+
+pprint(tree_name_to_structure_dict)
+
+print("\n==========================================================================================\nThis is the dictionary that was gathered. Feel free to ignore it.\n==========================================================================================\n\n")
 
 
 logging.basicConfig(
@@ -57,7 +69,6 @@ app.logger = logging.getLogger()
 app.logger.info("===== wazuh_adtmanagerd started =====")
 
 
-
 @app.route('/new-alert', methods=['POST'])
 def process_new_alert():
     data = request.json
@@ -65,6 +76,7 @@ def process_new_alert():
     app.logger.info(f"Processing new alert: [ {alert} ] ============")
 
     alert_infos = wazuh_adtmanagerd_utils.parse_alert_log_line(alert)
+
     # Update tree state
     should_I_run_defense = update_tree_state(alert_infos)
     # Raise defenses if a state is matched
@@ -95,11 +107,18 @@ def update_tree_state(alert_infos) -> bool:
 
     if curr_alert_id in curr_tree_structure_dict['current_state']:
         app.logger.info(f"Alert with rule id {curr_alert_id} has already been triggered. Doing nothing.")
+
+        if debug:
+            print(f"DEBUG: {curr_alert_id} IS ALREADY IN CURRENT STATE : {curr_tree_structure_dict['current_state']}")
+            
         return False
     
     curr_state_to_list = list(curr_tree_structure_dict['current_state'])
     curr_state_to_list.append(curr_alert_id)
     curr_tree_structure_dict['current_state'] = tuple(curr_state_to_list) # It's as a tuple because the idea that mutating it is hard is very fitting.
+    
+    if debug:
+        print(f"DEBUG: UPDATING TREE STATE -> {curr_tree_structure_dict['current_state']}")
 
     return True
 
@@ -117,14 +136,21 @@ def run_defense_if_present(alert_infos) -> dict[str, dict]:
 
     for state in curr_tree_states_that_have_a_defense:
         if curr_state_to_set == set(state):
+
+            if debug:
+                print(f"DEBUG: A defense has been matched for state [ {state} ] in ADT = [ {tree_name} ]. Trying to launch it.")
+
             app.logger.info(f'A defense has been matched for state [ {state} ] in ADT = [ {tree_name} ]. Trying to launch it.')
             return launch_defense_commands(defense_command=curr_tree_states_that_have_a_defense[state])
 
-    app.logger.info(f'No defenses found for state [ {curr_state_to_set} ] in ADT = [ {tree_name} ]. Doing nothing.')
+    if debug:
+        print(f"DEBUG: No defenses found for state [ {curr_tree_structure_dict['current_state']} ] in ADT = [ {tree_name} ]. Doing nothing.")
+
+    app.logger.info(f'No defenses found for state [ {curr_tree_structure_dict['current_state']} ] in ADT = [ {tree_name} ]. Doing nothing.')
 
     return {}
-        
-    
+
+
 def launch_defense_commands(defense_command : str) -> dict[str, dict]:
     # Insert the logic to manage the PUT inside of WazuhServer API.
     '''
