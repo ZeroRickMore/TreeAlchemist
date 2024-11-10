@@ -3,7 +3,7 @@ Script to handle the defense launch, based off the current ADT state.
 
 It uses the same State and Tree classes used in TreeAlchemist,
 and maps each agent to a list of states based on the ADT.
-Realistically, it is a dictionary from {ADT_id (int) : state (list[int])
+Realistically, it is a dictionary from {ADT_name (str) : state (list[int])
 
 This manager gets the alerts raised from syslog
 
