@@ -53,6 +53,9 @@ this_script_dir = os.path.dirname(__file__)
 log_file_path = os.path.join(this_script_dir, 'Logs', 'wazuh_adtmanagerd.log')
 tree_name_to_structure_dict = ADT_daemon_readable_txt_parser.parse_all_daemon_readable_files(os.path.join(this_script_dir, 'Trees'))
 
+# This dictionary will have the agent name as key, then as value a dict going from tree_name to a tuple that is the state
+agent_to_trees : dict[str, dict[str, tuple]] = {}
+
 api_username = read_toml.get_api_username()
 api_pwd = read_toml.get_api_pwd()
 
@@ -89,6 +92,7 @@ def process_new_alert():
 
     alert_infos = wazuh_adtmanagerd_utils.parse_alert_log_line(alert)
 
+
     # Update tree state
     should_I_look_for_defense = update_tree_state(alert_infos)
     # Raise defenses if a state is matched
@@ -98,12 +102,24 @@ def process_new_alert():
     if not should_I_look_for_defense:
         return jsonify({"status": "success", "message": f"Alert {alert_infos['rule_id']} was already raised, doing nothing."}), 200
     
-    curr_state = tree_name_to_structure_dict[alert_infos['tree_name']]['current_state']
+    curr_state = get_curr_state(alert_infos=alert_infos)
+
     if not which_defenses_ran_and_wazuh_api_response:
         return jsonify({"status": "success", "message": f"State {curr_state} was not mapped to any defense, doing nothing."}), 200
     
     return jsonify({"status": "success", "message": f"State {curr_state} led to the execution of some defenses." , "defenses_recap" : which_defenses_ran_and_wazuh_api_response}), 200
 
+
+def get_curr_state(alert_infos : dict):
+    curr_agent = alert_infos['agent']
+    curr_tree = alert_infos['tree_name']
+    return agent_to_trees[curr_agent][curr_tree]
+
+
+def set_curr_state(alert_infos : dict, state : tuple):
+    curr_agent = alert_infos['agent']
+    curr_tree = alert_infos['tree_name']
+    agent_to_trees[curr_agent][curr_tree] = state
 
 def update_tree_state(alert_infos) -> bool:
     '''
@@ -118,20 +134,22 @@ def update_tree_state(alert_infos) -> bool:
 
     curr_alert_id = alert_infos['rule_id']
 
-    if curr_alert_id in curr_tree_structure_dict['current_state']:
-        app.logger.info(f"Alert with rule id {curr_alert_id} has already been triggered. Doing nothing.")
+    curr_state = get_curr_state(alert_infos=alert_infos)
+
+    if curr_alert_id in curr_state:
+        app.logger.info(f"Alert with rule id {curr_alert_id} has already been triggered on agent {alert_infos['agent']}. Doing nothing.")
 
         if debug:
-            print(f"DEBUG: {curr_alert_id} IS ALREADY IN CURRENT STATE : {curr_tree_structure_dict['current_state']}")
+            print(f"DEBUG: {curr_alert_id} IS ALREADY IN CURRENT STATE FOR AGENT {alert_infos['agent']}: {curr_state}")
             
         return False
     
-    curr_state_to_list = list(curr_tree_structure_dict['current_state'])
+    curr_state_to_list = list(curr_state)
     curr_state_to_list.append(curr_alert_id)
-    curr_tree_structure_dict['current_state'] = tuple(curr_state_to_list) # It's as a tuple because the idea that mutating it is hard is very fitting.
+    set_curr_state(alert_infos=alert_infos, state=tuple(curr_state_to_list)) # It's as a tuple because the idea that mutating it is hard is very fitting.
     
     if debug:
-        print(f"DEBUG: UPDATING TREE STATE -> {curr_tree_structure_dict['current_state']}")
+        print(f"DEBUG: UPDATING TREE STATE -> {get_curr_state(alert_infos=alert_infos)}")
 
     return True
 
@@ -144,23 +162,24 @@ def run_defenses_if_present(alert_infos):
 
     tree_name = alert_infos['tree_name']
     curr_tree_structure_dict = tree_name_to_structure_dict[tree_name]
-    curr_state_to_set = set(curr_tree_structure_dict['current_state']) # To allow orderless comparison
+    curr_state_to_set = set(get_curr_state(alert_infos=alert_infos)) # To allow orderless comparison
     curr_tree_states_that_have_a_defense = curr_tree_structure_dict['states_to_defenses']
 
     for state in curr_tree_states_that_have_a_defense:
         if curr_state_to_set == set(state):
-
+            agent = alert_infos['agent']
             if debug:
-                print(f"DEBUG: A defense has been matched for state [ {state} ] in ADT = [ {tree_name} ]. Trying to launch it.")
+                print(f"DEBUG: A defense has been matched for state [ {state} ] in ADT = [ {tree_name} ]. Trying to launch it on agent {agent}.")
 
-            app.logger.info(f'A defense has been matched for state [ {state} ] in ADT = [ {tree_name} ]. Trying to launch it.')
+            app.logger.info(f'A defense has been matched for state [ {state} ] in ADT = [ {tree_name} ]. Trying to launch it on agent {agent}.')
             return launch_defense_commands(defense_commands=curr_tree_states_that_have_a_defense[state], agent=alert_infos['agent'])
             
-    curr_state = curr_tree_structure_dict['current_state']
+    curr_state = get_curr_state(alert_infos=alert_infos)
+    agent = alert_infos['agent']
     if debug:
-        print(f"DEBUG: No defenses found for state [ {curr_state} ] in ADT = [ {tree_name} ]. Doing nothing.")
+        print(f"DEBUG: No defenses found for state [ {curr_state} ] in ADT = [ {tree_name} ]. Doing nothing on agent {agent}.")
 
-    app.logger.info(f'No defenses found for state [ {curr_state} ] in ADT = [ {tree_name} ]. Doing nothing.')
+    app.logger.info(f'No defenses found for state [ {curr_state} ] in ADT = [ {tree_name} ]. Doing nothing on agent {agent}.')
 
     return {}
 
