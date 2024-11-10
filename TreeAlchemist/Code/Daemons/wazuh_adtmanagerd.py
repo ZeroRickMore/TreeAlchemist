@@ -30,54 +30,50 @@ This daemon updates the tree state (there is a dictionary containing Agent name,
 
 Please note that this version is Linux-specific, as it uses system calls.
 '''
+import toml
+import os
+import tree_alchemized_log_monitord
+import threading
+from flask import Flask, request, jsonify
+import logging
 
 
-import pyinotify
 
-class FileChangeHandler(pyinotify.ProcessEvent):
-    def __init__(self, file_path):
-        self.file_path = file_path
-        self._last_position = 0  # Tracks the last read position in the file
+app = Flask(__name__)
 
-    def process_IN_MODIFY(self, event):
-        if event.pathname == self.file_path:
-            self.process_new_lines()
 
-    def process_new_lines(self):
-        with open(self.file_path, 'r') as file:
-            # Move to the last read position
-            file.seek(self._last_position)
+log_file_path = os.path.join(os.path.dirname(__file__), 'Logs', 'wazuh_adtmanagerd.log')
 
-            # Read and process new lines
-            for line in file:
-                self.process_line(line.strip())
+logging.basicConfig(
+            filename=log_file_path,
+            filemode='a',  # Append mode
+            format='%(asctime)s - %(message)s',
+            level=logging.INFO # This captures INFO and higher
+)
 
-            # Update the last position
-            self._last_position = file.tell()
+app.logger = logging.getLogger()
+app.logger.info("\n===== wazuh_adtmanagerd started =====\n")
 
-    def process_line(self, line):
-        # Add your processing logic here
-        print(f"New line added: {line}")
 
-def monitor_file(file_path):
-    # Set up inotify and the handler
-    wm = pyinotify.WatchManager()
-    handler = FileChangeHandler(file_path)
+@app.route('/new-alert', methods=['POST'])
+def process_new_alert():
+    data = request.json
+    alert = data.get('alert')
+    print(f"Received new line from file: {alert}")
+    # You could add additional processing of the line here if needed
+    return jsonify({"status": "success", "message": "Line received"}), 200
 
-    # Watch the file for modifications only
-    notifier = pyinotify.Notifier(wm, handler)
-    wm.add_watch(file_path, pyinotify.IN_MODIFY)
-
-    print(f"Started monitoring {file_path}")
-
-    # Run the notifier loop to listen for events
-    notifier.loop()
-
-# Usage
-file_path = "path/to/your/file.txt"
-monitor_file(file_path)
+@app.route('/', methods=['GET'])
+def show_dashboard():
+    return 'Hello World!'        
 
 
 
 
 
+def run_webserver(port : int):
+    global app   
+    app.run(threaded=True, port=port, debug=False, use_reloader=False)
+
+if __name__ == '__main__':
+    run_webserver(4700)
