@@ -109,7 +109,7 @@ def parse_all_daemon_readable_files(folder_to_daemon_txt_files : str) -> dict[st
     for daemon_txt_path in txt_files:
         parse_daemon_readable_txt_file(path_to_daemon_file=daemon_txt_path, tree_name_to_structure_dict=tree_name_to_structure_dict)
 
-    pprint(tree_name_to_structure_dict)
+    #pprint(tree_name_to_structure_dict)
     return tree_name_to_structure_dict
             
 
