@@ -1,4 +1,14 @@
-2024-11-10 21:47:19,719 - ===== wazuh_adtmanagerd started =====
-2024-11-10 21:47:19,736 - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
- * Running on http://127.0.0.1:4700
-2024-11-10 21:47:19,736 - [33mPress CTRL+C to quit[0m
+2024-11-11 13:40:54,076 - ===== wazuh_adtmanagerd started =====
+2024-11-11 13:44:45,329 - Processing new alert: [ Nov 11 13:44:44 WazuhServer ossec: Alert Level: 15; Rule: 100014 - An attacker has reached "Child4" node.; Location: (Ubuntu-Victim) any->/var/log/absolute_testing.log; classification: Root, TreeAlchemized, ; evil Child4 log ] ============
+2024-11-11 13:44:45,329 - No defenses found for state [ ('100014',) ] in ADT = [ Root ]. Doing nothing on agent Ubuntu-Victim.
+2024-11-11 13:44:45,330 - 127.0.0.1 - - [11/Nov/2024 13:44:45] "POST /new-alert HTTP/1.1" 200 -
+2024-11-11 13:45:39,372 - Processing new alert: [ Nov 11 13:45:34 WazuhServer ossec: Alert Level: 15; Rule: 100013 - An attacker has reached "Child3" node.; Location: (Ubuntu-Victim) any->/var/log/absolute_testing.log; classification: Root, TreeAlchemized, ; evil Child3 log ] ============
+2024-11-11 13:45:39,372 - No defenses found for state [ ('100014', '100013') ] in ADT = [ Root ]. Doing nothing on agent Ubuntu-Victim.
+2024-11-11 13:45:39,373 - 127.0.0.1 - - [11/Nov/2024 13:45:39] "POST /new-alert HTTP/1.1" 200 -
+2024-11-11 13:46:21,414 - Processing new alert: [ Nov 11 13:46:18 WazuhServer ossec: Alert Level: 14; Rule: 100016 - An attacker has reached "Child1_2" node.; Location: (Ubuntu-Victim) any->/var/log/absolute_testing.log; classification: Root, TreeAlchemized, ; evil Child1_2 log ] ============
+2024-11-11 13:46:21,414 - A defense has been matched for state [ ('100016', '100013', '100014') ] in ADT = [ Root ]. Trying to launch it on agent Ubuntu-Victim.
+2024-11-11 13:46:21,569 - Requested a new JWT token to Wazuh API succesfully.
+2024-11-11 13:46:21,638 - Defense Launch_TA_Root_Def1_1.sh0 launched with success on agent 002
+2024-11-11 13:46:21,699 - Defense Launch_TA_Root_Def3.sh0 launched with success on agent 002
+2024-11-11 13:46:21,699 - 127.0.0.1 - - [11/Nov/2024 13:46:21] "POST /new-alert HTTP/1.1" 200 -
+2024-11-11 13:49:08,905 - 127.0.0.1 - - [11/Nov/2024 13:49:08] "GET / HTTP/1.1" 200 -
