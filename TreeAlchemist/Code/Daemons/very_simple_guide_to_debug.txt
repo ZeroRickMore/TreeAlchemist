@@ -1,0 +1,5 @@
+The defense scripts are located on each defended host in the folder /var/ossec/active-response/bin
+
+The tree rules are located inside of /var/ossec/etc/rules
+
+ossec.conf is inside of /var/ossec/etc/ossec.conf
