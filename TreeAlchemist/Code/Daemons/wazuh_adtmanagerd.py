@@ -254,10 +254,11 @@ def launch_defense_commands(defense_commands : list[str], agent : str) -> dict[s
     for defense in defense_commands:
         set_wazuh_jwt_token() # Making extra sure the token is valid. We really want that defense to work, after all !
 
-        if defense in defense_to_status.keys():
+        if defense in defense_to_status.keys(): # If the defense had already been launched
             app.logger.warning(f"The defense {defense} is duplicated in one of the states, running it only once.")
             continue
 
+        if debug: print(f"Trying to launch defense: {defense}")
         defense_to_status[defense] = launch_single_defense(defense=defense, agent=agent)
     
     return defense_to_status
@@ -267,8 +268,6 @@ def launch_single_defense(defense : str, agent : str):
     '''
     Raises AgentNotFoundException if the agent does not exist .
     '''
-    # Replace these placeholders with actual values
-    command = defense
 
     # Get agent ID having name by interrogating Wazuh api
     try:
@@ -287,7 +286,7 @@ def launch_single_defense(defense : str, agent : str):
 
     # Sending the command "disable"
     data = {
-        "command": "Launch_TA_Root_Def1.sh0"
+        "command": defense
     }
 
     response = requests.put(url, headers=headers, json=data, verify=False)
@@ -295,8 +294,10 @@ def launch_single_defense(defense : str, agent : str):
     code = response.status_code
 
     if code == 200:
+        if debug: print(f"Defense {defense} launched with success on agent {agent}")
         app.logger.info(f"Defense {defense} launched with success on agent {agent}")
     else:
+        if debug: print(f"ERROR: {str(response.json())}")
         app.logger.error(response.json())
 
     # Print the response text
@@ -320,7 +321,7 @@ def set_wazuh_jwt_token():
     url = "https://127.0.0.1:55000/security/user/authenticate"
 
     # Disable SSL verification (similar to `-k` in curl)
-    response = requests.post(url, auth=HTTPBasicAuth(username, password), verify=False)
+    response = requests.post(url, auth=HTTPBasicAuth(username, password), verify=False, )
     try:
         response.raise_for_status()
     except Exception as e:
@@ -344,7 +345,7 @@ def show_dashboard():
 
 def run_webserver(port : int):
     global app   
-    app.run(threaded=True, port=port, debug=True, use_reloader=False)
+    app.run(threaded=True, port=port, debug=False, use_reloader=False)
 
 if __name__ == '__main__':
     run_webserver(read_toml.get_port())
