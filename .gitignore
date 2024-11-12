@@ -160,5 +160,4 @@ TreeAlchemist/Code/ADT-Generator/appoggio.py
 /TreeAlchemist/Code/ADT-Generator/Output-Files
 
 TreeAlchemist/Code/Daemons/api_credentials.toml
-TreeAlchemist/Code/ADT-Generator/appoggio.py
-TreeAlchemist/Code/Daemons/appoggio.py
+*appoggio.py
