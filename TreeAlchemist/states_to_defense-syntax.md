@@ -12,6 +12,11 @@
 
 
 When declaring a defense, utilize the above xml syntax.
+The nodes composing the state are COMPLETELY custom, so a parent node can trigger a state even if the children were not activated.
+It is all up to the configurator to handle every single state.
+Future implementation might consider adding a tag like "include_children" so that the system will autogenerate every
+single state.
+if not a tag here, maybe something for the daemon.
 
 ## <state>
 
