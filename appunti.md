@@ -9,7 +9,7 @@ Devo creare la documentazione fatta meglio
 # Scrittura dell'ADT
 
 1) Scrivere un ADT senza i nodi di difesa dentro un file seguendo la sintassi ADT-syntax-new.md. Il file è un file .xml
-Quello che viene dato in input non è un ADT, ma 
+Quello che viene dato in input non è un ADT, ma solo i nodi di attacco.
 
 2) Definire <command> e <active_response> di Wazuh all'interno di 
 defense_definition.xml
