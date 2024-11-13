@@ -49,7 +49,7 @@ class AgentNotFoundException(Exception):
 
 
 
-debug = True
+debug = False
 
 app = Flask(__name__)
 print("==========Gathering the Trees==========\n\n")
