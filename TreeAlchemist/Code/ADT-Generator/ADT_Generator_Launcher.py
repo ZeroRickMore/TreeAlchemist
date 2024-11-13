@@ -6,7 +6,6 @@ and obtain the Wazuh implementation of it.
 import user_input_parser
 import ADT_xml_parser
 import defense_definition_xml_parser
-from TreeClasses.Tree import Tree
 import wazuh_ready_printer
 import states_to_defense_parser
 import ultimate_generator
@@ -15,14 +14,21 @@ import os
 from terminal_UI_utils import ExitUtils
 
 
+
 def main():  
 
-    #tree_dir_path = user_input_parser.get_valid_tree_path() # The path to the directory containing the ADT files used for execution.
+    tree_dir_path,output_dir = user_input_parser.get_valid_tree_path() # The path to the directory containing the ADT files used for execution.
 
-    # TEMP
-    tree_dir_path = os.path.join(os.getcwd(), 'TreeAlchemist', 'Code', 'ADT-Generator', 'Input-Files', 'test-tree')
-    output_dir = os.path.join(os.getcwd(), 'TreeAlchemist', 'Code', 'ADT-Generator', 'Output-Files')
-    # TEMP
+    if output_dir is None:
+        cwd = os.getcwd()
+        splitter = os.path.join("TreeAlchemist", "TreeAlchemist")
+        if splitter in cwd:
+            ind = cwd.index(splitter)
+            cwd = cwd[:ind]
+            output_dir = os.path.join(cwd, 'TreeAlchemist', 'TreeAlchemist', 'Code', 'ADT-Generator', 'Output-Files')
+        else:
+            output_dir = os.path.join(cwd, 'TreeAlchemist', 'Code', 'ADT-Generator', 'Output-Files')
+            
 
     adt, node_id_to_node = ADT_xml_parser.get_ADT_from_tree_xml(tree_dir_path = tree_dir_path)
     root_name = adt.get_root().get_informations().get_name()
