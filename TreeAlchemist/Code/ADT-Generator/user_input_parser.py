@@ -2,7 +2,7 @@ import argparse
 import os
 from terminal_UI_utils import PrintUtils, ExitUtils
 
-def get_valid_tree_path() -> str:
+def get_user_input() -> tuple[str, str]:
     # ===========================================================================
     # Argument Parser
     # ===========================================================================
@@ -11,7 +11,7 @@ def get_valid_tree_path() -> str:
 
     # -tp and --treepath are used for the user to specify which Tree to use
     parser.add_argument("-tdp", "--treedirpath", type=str, required=True, help="The directory containins all the files useful for the script, according to the documentation.\nThe path can be absolute or relative. For relative paths, use the standard notation with the dot.\nTo use current working directory, type '.'\nFirst, absolute is checked, then current working directory is prepended to your input.\nBe careful about naming the containing files correctly.\nFear not, if the file names are incorrect, you will obtain adequate hints on how to fix.")
-    parser.add_argument("-o", "--outputdir", type=str, required=True, help="The directory that will contain the folder containing the generated files.\nThe path can be absolute or relative. For relative paths, use the standard notation with the dot.\nTo use current working directory, type '.'\nFirst, absolute is checked, then current working directory is prepended to your input.")
+    parser.add_argument("-o", "--outputdir", type=str, required=False, help="The directory that will contain the folder containing the generated files.\nThe path can be absolute or relative. For relative paths, use the standard notation with the dot.\nTo use current working directory, type '.'\nFirst, absolute is checked, then current working directory is prepended to your input.\nDefault is ./Output-Files .")
 
     args = parser.parse_args()
 
@@ -29,6 +29,8 @@ def get_valid_tree_path() -> str:
 
     PrintUtils.print_phase_start(f"Validating the given directory:\n\t[ {tree_dir_path} ]")
 
+
+    # Validate Tree Dir Path ================================================
     validate_dir_with_error_launch(tree_dir_path)
     
     # Check if the required files are present
@@ -48,16 +50,20 @@ def get_valid_tree_path() -> str:
 
     PrintUtils.print_phase_end(f"Finished validating the given directory: {tree_dir_path}")
 
+    # Validate output_dir ================================================
+    if output_dir :
+        PrintUtils.print_phase_start(f"Validating the given directory:\n\t[ {output_dir} ]")
 
-    PrintUtils.print_phase_start(f"Validating the given directory:\n\t[ {output_dir} ]")
+        validate_dir_with_error_launch(output_dir)
 
-    validate_dir_with_error_launch(output_dir)
+        PrintUtils.print_in_green(f"- You have provided a valid directory. I will use:\n  {output_dir}")
 
-    PrintUtils.print_in_green(f"- You have provided a valid directory. I will use:\n  {output_dir}")
+        PrintUtils.print_phase_end(f"Finished validating the given directory: {output_dir}")
+    else:
+        PrintUtils.print_warning("No output directory provided.\nUtilizing default Output-Files directory for the output.")
 
-    PrintUtils.print_phase_end(f"Finished validating the given directory: {output_dir}")
 
-    return tree_dir_path
+    return tree_dir_path, output_dir
 
 
 def validate_dir_with_error_launch(dir : str):
