@@ -17,7 +17,7 @@ from terminal_UI_utils import ExitUtils
 
 def main():  
 
-    tree_dir_path,output_dir = user_input_parser.get_valid_tree_path() # The path to the directory containing the ADT files used for execution.
+    tree_dir_path,output_dir = user_input_parser.get_user_input() # The path to the directory containing the ADT files used for execution.
 
     if output_dir is None:
         cwd = os.getcwd()
