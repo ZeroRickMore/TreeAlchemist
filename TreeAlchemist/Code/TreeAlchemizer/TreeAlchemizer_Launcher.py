@@ -25,9 +25,9 @@ def main():
         if splitter in cwd:
             ind = cwd.index(splitter)
             cwd = cwd[:ind]
-            output_dir = os.path.join(cwd, 'TreeAlchemist', 'TreeAlchemist', 'Code', 'ADT-Generator', 'Output-Files')
+            output_dir = os.path.join(cwd, 'TreeAlchemist', 'TreeAlchemist', 'Code', 'TreeAlchemizer', 'Output-Files')
         else:
-            output_dir = os.path.join(cwd, 'TreeAlchemist', 'Code', 'ADT-Generator', 'Output-Files')
+            output_dir = os.path.join(cwd, 'TreeAlchemist', 'Code', 'TreeAlchemizer', 'Output-Files')
             
 
     adt, node_id_to_node = ADT_xml_parser.get_ADT_from_tree_xml(tree_dir_path = tree_dir_path)

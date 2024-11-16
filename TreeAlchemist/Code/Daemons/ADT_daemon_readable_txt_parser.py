@@ -59,7 +59,7 @@ def parse_daemon_readable_txt_file(path_to_daemon_file : str, tree_name_to_struc
             current_tree_name = tree_name
             tree_nodes = tuple(line[1].replace("[", "").replace("]", "").split(","))
             if tree_name in tree_name_to_structure_dict.keys():
-                ExitUtils.exit_with_error(f"Duplicated tree name: {tree_name}.\nThis cannot happen!\nYou most likely generated the same ADT twice, and it is not possibe.\nYou can just change the name of one of the two in the _daemon_readable.txt file,\nbut if you generated them with ADT-Generator, it most likely means\nthat you messed up tree creations.\nIt is strongly recommended to check them out, specifically on Wazuh, to make sure the alerts work correctly.\n")
+                ExitUtils.exit_with_error(f"Duplicated tree name: {tree_name}.\nThis cannot happen!\nYou most likely generated the same ADT twice, and it is not possibe.\nYou can just change the name of one of the two in the _daemon_readable.txt file,\nbut if you generated them with TreeAlchemizer, it most likely means\nthat you messed up tree creations.\nIt is strongly recommended to check them out, specifically on Wazuh, to make sure the alerts work correctly.\n")
             
             tree_name_to_structure_dict[tree_name] = {
                 'tree_nodes_list' : tree_nodes, 
