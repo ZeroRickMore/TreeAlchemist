@@ -3,15 +3,18 @@ Launcher for the whole script to convert an ADT written in an xml file, that is 
 and obtain the Wazuh implementation of it.
 
 '''
+
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 import user_input_parser
-import ADT_xml_parser
+import TreeAlchemist.Code.TreeAlchemizer.tree_xml_parser as tree_xml_parser
 import defense_definition_xml_parser
 import wazuh_ready_printer
 import states_to_defense_parser
 import ultimate_generator
 from write_on_files import FilesWriter
-import os
-from terminal_UI_utils import ExitUtils
+
 
 
 
@@ -30,7 +33,7 @@ def main():
             output_dir = os.path.join(cwd, 'TreeAlchemist', 'Code', 'TreeAlchemizer', 'Output-Files')
             
 
-    adt, node_id_to_node = ADT_xml_parser.get_ADT_from_tree_xml(tree_dir_path = tree_dir_path)
+    adt, node_id_to_node = tree_xml_parser.get_ADT_from_tree_xml(tree_dir_path = tree_dir_path)
     root_name = adt.get_root().get_informations().get_name()
 
     wazuh_ready_atk_nodes_no_states : str = wazuh_ready_printer.to_string_all_attacks_single_nodes(adt)
