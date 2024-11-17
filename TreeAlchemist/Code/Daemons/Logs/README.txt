@@ -1,4 +1,4 @@
-tree_alchemized_log_monitord.log contains the logs coming from the daemon
+Observer.log contains the logs coming from the daemon
 that reads the log updates.
 
 

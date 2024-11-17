@@ -3,7 +3,7 @@ Daemon that, using pyinotify, monitors the log file
 changes and sends them via POST to the Athanor
 in order to make it process the request for the ADT
 
-Every process is also logged inside of Logs/tree_alchemized_log_monitord.log
+Every process is also logged inside of Logs/Observer.log
 '''
 
 import logging
@@ -20,7 +20,7 @@ class FileChangeHandler(pyinotify.ProcessEvent):
         self._last_position = 0  # Tracks the last read position in the file
 
         # Set up logging to file
-        log_file_path = os.path.join(os.path.dirname(__file__), 'Logs', 'tree_alchemized_log_monitord.log')
+        log_file_path = os.path.join(os.path.dirname(__file__), 'Logs', 'Observer.log')
         logging.basicConfig(
             filename=log_file_path,
             filemode='a',  # Append mode
@@ -30,7 +30,7 @@ class FileChangeHandler(pyinotify.ProcessEvent):
         self.logger = logging.getLogger()
 
 
-        self.logger.info("===== tree_alchemized_log_monitord started =====")
+        self.logger.info("===== Observer started =====")
 
     def process_IN_MODIFY(self, event):
         if event.pathname == self.file_path:
@@ -68,7 +68,7 @@ def launch_log_monitoring(webserver_port : int = 4700):
     with the json format {"alert": line}, one line at a time
     defaulting to port 4700
 
-    Logs every transaction with the webserver inside of ./Logs/tree_alchemized_log_monitord.log
+    Logs every transaction with the webserver inside of ./Logs/Observer.log
     
     '''
     log_path = os.path.join('/', 'var', 'log', 'tree_alchemized_alerts.log')
