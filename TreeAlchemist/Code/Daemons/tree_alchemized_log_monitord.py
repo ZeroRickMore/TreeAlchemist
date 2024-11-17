@@ -1,6 +1,6 @@
 '''
 Daemon that, using pyinotify, monitors the log file
-changes and sends them via POST to the wazuh_adtmanagerd
+changes and sends them via POST to the Athanor
 in order to make it process the request for the ADT
 
 Every process is also logged inside of Logs/tree_alchemized_log_monitord.log
@@ -49,14 +49,14 @@ class FileChangeHandler(pyinotify.ProcessEvent):
             self._last_position = file.tell()
 
     def process_line(self, line):
-        # Send the new line content to the wazuh_adtmanagerd web server
+        # Send the new line content to the Athanor web server
         # and log the details of the transaction
         try:
             response = requests.post(f"http://localhost:{self.webserver_port}/new-alert", json={"alert": line})
             response.raise_for_status()
-            self.logger.info(f"Sent alert to wazuh_adtmanagerd[{self.webserver_port}]: {line}")
+            self.logger.info(f"Sent alert to Athanor[{self.webserver_port}]: {line}")
         except requests.exceptions.RequestException as e:
-            self.logger.error(f"Error sending alert to wazuh_adtmanagerd[{self.webserver_port}]: {e}")
+            self.logger.error(f"Error sending alert to Athanor[{self.webserver_port}]: {e}")
 
 
 

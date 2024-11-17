@@ -1,4 +1,4 @@
-wazuh_adtmanagerd.py is a theorical daemon that constantly listens to alerts,
+Athanor.py is a theorical daemon that constantly listens to alerts,
 and handles the defenses launch through a calculation and then a PUT to launch the command
 for the chosen defense.
 

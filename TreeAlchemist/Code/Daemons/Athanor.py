@@ -36,7 +36,7 @@ from flask import Flask, request, jsonify
 import logging
 import read_toml
 import ADT_daemon_readable_txt_parser
-import wazuh_adtmanagerd_utils
+import athanor_utils
 from pprint import pprint
 import requests
 from requests.auth import HTTPBasicAuth
@@ -55,7 +55,7 @@ app = Flask(__name__)
 print("==========Gathering the Trees==========\n\n")
 
 this_script_dir = os.path.dirname(__file__)
-log_file_path = os.path.join(this_script_dir, 'Logs', 'wazuh_adtmanagerd.log')
+log_file_path = os.path.join(this_script_dir, 'Logs', 'Athanor.log')
 tree_name_to_structure_dict = ADT_daemon_readable_txt_parser.parse_all_daemon_readable_files(os.path.join(this_script_dir, 'Trees'))
 
 # This dictionary will have the agent name as key, then as value a dict going from tree_name to a tuple that is the state
@@ -86,7 +86,7 @@ logging.basicConfig(
 
 
 app.logger = logging.getLogger()
-app.logger.info("===== wazuh_adtmanagerd started =====")
+app.logger.info("===== Athanor started =====")
 
 
 @app.route('/new-alert', methods=['POST'])
@@ -95,7 +95,7 @@ def process_new_alert():
     alert = data.get('alert')
     app.logger.info(f"Processing new alert: [ {alert} ] ============")
 
-    alert_infos = wazuh_adtmanagerd_utils.parse_alert_log_line(alert)
+    alert_infos = athanor_utils.parse_alert_log_line(alert)
 
     # Check if everything exists
 
@@ -344,7 +344,7 @@ def show_dashboard():
 
 def run_webserver(port : int):
     global app   
-    app.run(threaded=True, port=port, debug=True, use_reloader=False)
+    app.run(threaded=True, port=port, debug=False, use_reloader=False)
 
 if __name__ == '__main__':
     run_webserver(read_toml.get_port())
