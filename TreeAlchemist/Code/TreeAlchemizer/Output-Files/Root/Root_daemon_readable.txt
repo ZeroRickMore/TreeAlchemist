@@ -1,0 +1,8 @@
+===START OF ADT===
+Root :: [100010,100011,100015,100016,100012,100013,100014,100017]
+[100011] :: [Launch_TA_Root_Def1.sh0]
+[100012] :: [Launch_TA_Root_Def2.sh0]
+[100013] :: [Launch_TA_Root_Def3.sh0]
+[100015] :: [Launch_TA_Root_Def1_1.sh0]
+[100016,100013,100014] :: [Launch_TA_Root_Def1_1.sh0,Launch_TA_Root_Def3.sh0]
+===END OF ADT===

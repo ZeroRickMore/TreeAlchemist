@@ -1,0 +1,43 @@
+<group name="Root, TreeAlchemized, ">
+
+	<rule id="100010" level="16">
+		<description>An attacker has reached "Root" node.</description>
+		<match negate="no" type="osmatch">evil root log</match>
+	</rule>
+
+	<rule id="100011" level="15">
+		<description>An attacker has reached "Child1 Conj" node.</description>
+		<match negate="no" type="osmatch">evil Child1 Conj log</match>
+	</rule>
+
+	<rule id="100015" level="14">
+		<description>An attacker has reached "Child1_1" node.</description>
+		<match negate="no" type="osmatch">evil Child1_1 log</match>
+	</rule>
+
+	<rule id="100016" level="14">
+		<description>An attacker has reached "Child1_2" node.</description>
+		<match negate="no" type="osmatch">evil Child1_2 log</match>
+	</rule>
+
+	<rule id="100012" level="15">
+		<description>An attacker has reached "Child2 Conj" node.</description>
+		<match negate="no" type="osmatch">evil Child2 Conj log</match>
+	</rule>
+
+	<rule id="100013" level="15">
+		<description>An attacker has reached "Child3" node.</description>
+		<match negate="no" type="osmatch">evil Child3 log</match>
+	</rule>
+
+	<rule id="100014" level="15">
+		<description>An attacker has reached "Child4" node.</description>
+		<match negate="no" type="osmatch">evil Child4 log</match>
+	</rule>
+
+	<rule id="100017" level="14">
+		<description>An attacker has reached "Child4_1" node.</description>
+		<match negate="no" type="osmatch">evil Child4_1 log</match>
+	</rule>
+
+</group>

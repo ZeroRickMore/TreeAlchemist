@@ -1,0 +1,66 @@
+<ossec_config>
+
+<!-- Start of <defense name="Def1.sh" id="1" -->
+
+	<command>
+		<name>Launch_TA_Root_Def1.sh</name>
+		<executable>Def1.sh</executable>
+	</command>
+
+	<active-response>
+		<command>Launch_TA_Root_Def1.sh</command>
+		<location>local</location>
+	</active-response>
+
+<!-- End of <defense name="Def1.sh" id="1" -->
+
+
+<!-- Start of <defense name="Def2.sh" id="2" -->
+
+	<command>
+		<name>Launch_TA_Root_Def2.sh</name>
+		<executable>Def2.sh</executable>
+	</command>
+
+	<active-response>
+		<command>Launch_TA_Root_Def2.sh</command>
+		<location>local</location>
+	</active-response>
+
+<!-- End of <defense name="Def2.sh" id="2" -->
+
+
+<!-- Start of <defense name="Def3.sh" id="3" -->
+
+	<command>
+		<name>Launch_TA_Root_Def3.sh</name>
+		<executable>Def3.sh</executable>
+	</command>
+
+	<active-response>
+		<command>Launch_TA_Root_Def3.sh</command>
+		<location>local</location>
+	</active-response>
+
+<!-- End of <defense name="Def3.sh" id="3" -->
+
+
+<!-- Start of <defense name="Def1_1.sh" id="4" -->
+
+	<command>
+		<name>Launch_TA_Root_Def1_1.sh</name>
+		<executable>Def1_1.sh</executable>
+	</command>
+
+	<active-response>
+		<command>Launch_TA_Root_Def1_1.sh</command>
+		<location>local</location>
+	</active-response>
+
+<!-- End of <defense name="Def1_1.sh" id="4" -->
+
+
+</ossec_config>
+
+<!-- End of Commands and Active-Response for ADT: [ Root ] .-->
+
