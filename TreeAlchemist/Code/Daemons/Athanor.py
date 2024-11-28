@@ -41,6 +41,7 @@ from pprint import pprint
 import requests
 from requests.auth import HTTPBasicAuth
 from datetime import datetime, timedelta
+from terminal_UI_utils import PrintUtils
 
 
 class AgentNotFoundException(Exception):
@@ -75,6 +76,42 @@ print("=========================================================================
 pprint(tree_name_to_structure_dict)
 
 print("\n==========================================================================================\nThis is the dictionary that was gathered. Feel free to ignore it.\n==========================================================================================\n\n")
+
+
+def get_banner():
+    return '''
+===========================================================================================
+
+  ___  _   _                              _                          _         _        
+ / _ \| | | |                            (_)                        | |       | |       
+/ /_\ \ |_| |__   __ _ _ __   ___  _ __   _ ___   _ __ ___  __ _  __| |_   _  | |_ ___  
+|  _  | __| '_ \ / _` | '_ \ / _ \| '__| | / __| | '__/ _ \/ _` |/ _` | | | | | __/ _ \ 
+| | | | |_| | | | (_| | | | | (_) | |    | \__ \ | | |  __/ (_| | (_| | |_| | | || (_) |
+\_| |_/\__|_| |_|\__,_|_| |_|\___/|_|    |_|___/ |_|  \___|\__,_|\__,_|\__, |  \__\___/ 
+                                                                        __/ |           
+                                                                       |___/            
+                 _                      _   _                        _                  
+                | |                    | | | |                      | |                 
+  ___ ___   ___ | | __   __ _ _ __   __| | | | __ _ _   _ _ __   ___| |__               
+ / __/ _ \ / _ \| |/ /  / _` | '_ \ / _` | | |/ _` | | | | '_ \ / __| '_ \              
+| (_| (_) | (_) |   <  | (_| | | | | (_| | | | (_| | |_| | | | | (__| | | |             
+ \___\___/ \___/|_|\_\  \__,_|_| |_|\__,_| |_|\__,_|\__,_|_| |_|\___|_| |_|             
+                                                                                        
+                                                                                        
+     _       __                                                                         
+    | |     / _|                                                                        
+  __| | ___| |_ ___ _ __  ___  ___  ___                                                 
+ / _` |/ _ \  _/ _ \ '_ \/ __|/ _ \/ __|                                                
+| (_| |  __/ ||  __/ | | \__ \  __/\__ \  _                                             
+ \__,_|\___|_| \___|_| |_|___/\___||___/ (_)                                            
+                                                                                        
+                                                                                                   
+===========================================================================================                                
+                                                                                        
+                                                                                        '''
+
+
+PrintUtils.print_in_sky_blue(get_banner())
 
 
 logging.basicConfig(
@@ -287,7 +324,7 @@ def launch_single_defense(defense : str, agent : str):
 
     # Sending the command "disable"
     data = {
-        "command": "Launch_TA_Root_Def1.sh0"
+        "command": command
     }
 
     response = requests.put(url, headers=headers, json=data, verify=False)
@@ -345,6 +382,11 @@ def show_dashboard():
 def run_webserver(port : int):
     global app   
     app.run(threaded=True, port=port, debug=False, use_reloader=False)
+
+
+
+
+
 
 if __name__ == '__main__':
     run_webserver(read_toml.get_port())
