@@ -14,7 +14,7 @@ import wazuh_ready_printer
 import states_to_defense_parser
 import ultimate_generator
 from write_on_files import FilesWriter
-
+from terminal_UI_utils import PrintUtils
 
 
 
@@ -23,14 +23,8 @@ def main():
     tree_dir_path,output_dir = user_input_parser.get_user_input() # The path to the directory containing the ADT files used for execution.
 
     if output_dir is None:
-        cwd = os.getcwd()
-        splitter = os.path.join("TreeAlchemist", "TreeAlchemist")
-        if splitter in cwd:
-            ind = cwd.index(splitter)
-            cwd = cwd[:ind]
-            output_dir = os.path.join(cwd, 'TreeAlchemist', 'TreeAlchemist', 'Code', 'TreeAlchemizer', 'Output-Files')
-        else:
-            output_dir = os.path.join(cwd, 'TreeAlchemist', 'Code', 'TreeAlchemizer', 'Output-Files')
+        curr_dir = os.path.dirname(os.path.abspath(__file__))
+        output_dir = os.path.join(curr_dir, 'Output-Files')
             
 
     adt, node_id_to_node = tree_xml_parser.get_ADT_from_tree_xml(tree_dir_path = tree_dir_path)
@@ -69,8 +63,8 @@ def main():
     # The node rules are placed inside of the State's node_ids
 
 
-    for _ in all_states:
-        print(_.get_description(),_.get_node_ids(), _.get_state_defense().get_defense().get_name())
+    #for _ in all_states:
+    #    print(_.get_description(),_.get_node_ids(), _.get_state_defense().get_defense().get_name())
 
 
 
@@ -78,14 +72,33 @@ def main():
 
     
 
-    print(wazuh_ready_def_nodes)
+    #print(wazuh_ready_def_nodes)
 
     daemon_readable_file = wazuh_ready_printer.to_string_tree_for_daemon_read(adt=adt, all_states=all_states, node_id_to_node=node_id_to_node)
-    print(daemon_readable_file)
+    #print(daemon_readable_file)
     writer.create_daemon_readable_file(root_name=root_name, output_folder=output_dir, daemon_readable_file=daemon_readable_file)
-
-    print(writer.generate_guide_file_string())
+    PrintUtils.print_in_sky_blue(get_finish_banner())
+    PrintUtils.print_in_yellow(f"\nThis is the content of file \n\t{os.path.join(output_dir, 'README.txt')} .\n\n")
+    PrintUtils.print_in_sky_blue(writer.generate_guide_file_string())
     writer.generate_guide_file()
+
+def get_finish_banner():
+    return '''
+
+
+========================================================
+______ _____ _   _ _____ _____ _   _  ___________    _ 
+|  ___|_   _| \ | |_   _/  ___| | | ||  ___|  _  \  | |
+| |_    | | |  \| | | | \ `--.| |_| || |__ | | | |  | |
+|  _|   | | | . ` | | |  `--. \  _  ||  __|| | | |  | |
+| |    _| |_| |\  |_| |_/\__/ / | | || |___| |/ /   |_|
+\_|    \___/\_| \_/\___/\____/\_| |_/\____/|___/    (_)
+
+========================================================                                                 
+                                                       
+                                                       '''
+
+
 
 
 if __name__ == '__main__':
