@@ -226,7 +226,7 @@ def set_active_response(defense : ET.Element, exit_error_prefix : str, curr_def 
             activeres_obj.set_timeout(timeout)
         curr_def.set_active_response(activeres_obj)
 
-        print(curr_def.to_string_active_response())
+        # print(curr_def.to_string_active_response())
     # END OF Check active_response ===========
 
     
