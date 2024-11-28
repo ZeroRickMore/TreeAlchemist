@@ -11,6 +11,7 @@ import pyinotify
 import os
 import requests
 import read_toml
+from terminal_UI_utils import PrintUtils
 
 
 class FileChangeHandler(pyinotify.ProcessEvent):
@@ -71,9 +72,32 @@ def launch_log_monitoring(webserver_port : int = 4700):
     Logs every transaction with the webserver inside of ./Logs/Observer.log
     
     '''
+
+
     log_path = os.path.join('/', 'var', 'log', 'tree_alchemized_alerts.log')
     monitor_file(log_path, webserver_port)
 
+
+def get_banner():
+    return r'''
+=========================================================
+ _____ _                                         _
+|  _  | |                                       (_)    
+| | | | |__   ___ _ __ ___  _____   _____ _ __   _ ___ 
+| | | | '_ \ / _ \ '__/ __|/ _ \ \ / / _ \ '__| | / __|
+\ \_/ / |_) |  __/ |  \__ \  __/\ V /  __/ |    | \__ \
+ \___/|_.__/ \___|_|  |___/\___| \_/ \___|_|    |_|___/                               
+                    _                                  
+                   | |                                 
+ _ __ ___  __ _  __| |_   _                            
+| '__/ _ \/ _` |/ _` | | | |                           
+| | |  __/ (_| | (_| | |_| |  _                        
+|_|  \___|\__,_|\__,_|\__, | (_)                       
+                       __/ |                           
+                      |___/                            
+=========================================================
+\n\n
+'''
 
 
 def monitor_file(file_path : str, webserver_port : int):
@@ -84,6 +108,8 @@ def monitor_file(file_path : str, webserver_port : int):
     # Watch the file for modifications only
     notifier = pyinotify.Notifier(wm, handler)
     wm.add_watch(file_path, pyinotify.IN_MODIFY)
+
+    PrintUtils.print_in_sky_blue(get_banner())
 
     print(f"Started monitoring {file_path}")
 
