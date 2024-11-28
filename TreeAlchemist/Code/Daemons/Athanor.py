@@ -49,8 +49,7 @@ class AgentNotFoundException(Exception):
         super().__init__(message)
 
 
-
-debug = False
+debug = True
 
 app = Flask(__name__)
 print("==========Gathering the Trees==========\n\n")
@@ -291,7 +290,7 @@ def launch_defense_commands(defense_commands : list[str], agent : str) -> dict[s
     for defense in defense_commands:
         set_wazuh_jwt_token() # Making extra sure the token is valid. We really want that defense to work, after all !
 
-        if defense in defense_to_status.keys():
+        if defense in defense_to_status.keys(): # The defense has already been launched
             app.logger.warning(f"The defense {defense} is duplicated in one of the states, running it only once.")
             continue
 
