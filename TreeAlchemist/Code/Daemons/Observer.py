@@ -13,12 +13,16 @@ import requests
 import read_toml
 from terminal_UI_utils import PrintUtils
 
+debug = True
 
 class FileChangeHandler(pyinotify.ProcessEvent):
     def __init__(self, file_path : str, webserver_port : int):
         self.webserver_port = webserver_port
         self.file_path = file_path
-        self._last_position = 0  # Tracks the last read position in the file
+        
+        with open(self.file_path, 'r') as file:
+            file.seek(0, 2)
+            self._last_position = file.tell()
 
         # Set up logging to file
         log_file_path = os.path.join(os.path.dirname(__file__), 'Logs', 'Observer.log')
@@ -33,7 +37,10 @@ class FileChangeHandler(pyinotify.ProcessEvent):
         self.logger.info("===== Observer started =====")
 
     def process_IN_MODIFY(self, event):
+        if debug:
+            print(f"NEW EVENT: {event.pathname}")
         if event.pathname == self.file_path:
+            print("Processing it...")
             self.process_new_lines()
 
     def process_new_lines(self):
@@ -52,7 +59,9 @@ class FileChangeHandler(pyinotify.ProcessEvent):
         # Send the new line content to the Athanor web server
         # and log the details of the transaction
         try:
+            if debug: print(f"SENDING LINE: {line}")
             response = requests.post(f"http://localhost:{self.webserver_port}/new-alert", json={"alert": line})
+            if debug: print(f"Response: {response.text}")
             response.raise_for_status()
             self.logger.info(f"Sent alert to Athanor[{self.webserver_port}]: {line}")
         except requests.exceptions.RequestException as e:
