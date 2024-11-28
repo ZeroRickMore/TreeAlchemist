@@ -30,7 +30,6 @@ class FileChangeHandler(pyinotify.ProcessEvent):
         )
         self.logger = logging.getLogger()
 
-
         self.logger.info("===== Observer started =====")
 
     def process_IN_MODIFY(self, event):
