@@ -84,10 +84,6 @@ Un vero nodo è MOLTO più snello.
     <node>
         <!-- Another node like before -->
     </node>
-    <!-- Conjunctions section -->
-    <conjunction>#4,5#</conjunction>
-    <!-- Other conjunctions one after another -->
-    <conjunction>#Files access,, very bad , Other node#</conjunction>
 </tree>
 
 

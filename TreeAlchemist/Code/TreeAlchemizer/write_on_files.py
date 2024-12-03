@@ -61,7 +61,7 @@ class FilesWriter:
             except:
                 ExitUtils.exit_with_error(f"The folder {root_name} already exist, cannot generate the files.\nIf you want to generate the files, rename or remove the folder.")
 
-        file_name = f'Command-Activeres-{root_name}_manually_put_into_ossec_conf.xml'
+        file_name = f'defenses-{root_name}.xml'
 
         full_defs_file = os.path.join(tree_folder, file_name)
         with open(full_defs_file, "w") as f:
@@ -85,7 +85,7 @@ class FilesWriter:
             except:
                 ExitUtils.exit_with_error(f"The folder {root_name} already exist, cannot generate the files.\nIf you want to generate the files, rename or remove the folder.")
    
-        file_name = f'{root_name}_daemon_readable.txt'
+        file_name = f'{root_name}_athanor.txt'
         full_file_path = os.path.join(tree_folder, file_name)
         
         with open(full_file_path, "w") as f:
@@ -100,14 +100,17 @@ class FilesWriter:
     def generate_guide_file_string(self):
         string = ''
 
-        string += 'Hello, and welcome to the TreeAlchemist guide!\nThis is an extremely short text to guide you through the upload of these files inside of Wazuh.\n\n'
+        string += 'Hello, and welcome to the TreeAlchemist guide!\nThis is an extremely short text to guide you through the utilization of the generated files.\n\n'
 
-        string += f'\n\nRules File=======================\n\n\t- Go into /var/ossec/etc/rules/\n\t- Move the rules file \n\t\t[ {self.rules_file} ]\n\t inside of it, and job done!\n\nElse, just copy these commands:\n\n\tsudo su\n\tcp {self.rules_file} /var/ossec/etc/rules\n\n'
+        path_separator = os.path.join('a', 'a').replace("a", "")
+        rules_file_name = (self.rules_file)[self.rules_file.rfind(path_separator) + 1 : ]
 
-        string += f'\n\nCommand Active-Response File=======================\n\n\t- Modify content of /var/ossec/etc/ossec.conf\n\t- Copypaste all of the content of \n\t\t[ {self.def_file} ]\n\t inside of it, at the very end, and job done!\n\n'
+        string += f'\n\nRules File: [ { rules_file_name } ] =======================\n\n\t- Go into /var/ossec/etc/rules/\n\t- Move the rules file \n\t\t[ {self.rules_file} ]\n\t inside of it, and job done!\n\nElse, just copy these commands:\n\n\tsudo su\n\tcp {self.rules_file} /var/ossec/etc/rules\n\n'
+
+        string += f'\n\nDefenses File: [ { self.def_file[self.rules_file.rfind(path_separator) + 1 :] } ] =======================\n\n\t- Modify content of /var/ossec/etc/ossec.conf\n\t- Copypaste all of the content of \n\t\t[ {self.def_file} ]\n\t inside of it, at the very end, and job done!\n\n'
 
         daemon_trees_directory_path = self.daemon_file.replace(os.path.join('TreeAlchemizer', 'Output-Files', self.root_name, f'{self.root_name}_daemon_readable.txt'), os.path.join('Daemons', 'Trees'))
-        string += f'\n\nDaemon readable txt=======================\n\n\t- Go into the directory where the daemon reads file from.\n\tIt is the "Trees" directory located where Athanor.py is located.\n\tIf you did not touch the github code, it is inside /TreeAlchemist/Code/Daemons/ .\n\t- Move \n\t\t[ {self.daemon_file} ]\n\t inside of it.\n\nCommands for untouched github folders:\n\n\tcp {self.daemon_file} {daemon_trees_directory_path}'
+        string += f'\n\nAthanor File: [ { self.daemon_file[self.rules_file.rfind(path_separator) + 1 :] } ]=======================\n\n\t- Go into the directory where the daemon reads file from.\n\tIt is the "Trees" directory located where Athanor.py is located.\n\tIf you did not touch the github code, it is inside /TreeAlchemist/Code/Daemons/ .\n\t- Move \n\t\t[ {self.daemon_file} ]\n\t inside of it.\n\nSo, commands for an untouched github folder:\n\n\tcp {self.daemon_file} {daemon_trees_directory_path}'
 
         string += f'\n\n\n===[ DO NOT FORGET ]===\n\nPlace the defensive scripts inside of the watched hosts (NOT THE WAZUH SERVER) in /var/ossec/active-response/bin !!!\n\nThe name of the script MUST be what you find inside of each <executable> in the file\n\t[ {self.def_file} ]\nplus a file extension if you did not declare it in the tag!!\nREMEMBER to change permissions of the scripts with these commands:\n\n\tsudo chmod 750 /var/ossec/active-response/bin/your_script_name.extension\n\tsudo chown root:wazuh /var/ossec/active-response/bin/your_script_name.extension\n\nIn the end, doing [ls -l] should show same permissions for each script.\nALSO DO NOT FORGET TO sudo systemctl restart wazuh-manager !!!\nElse the changes will have no impact.\n'
 
@@ -118,6 +121,6 @@ class FilesWriter:
     def generate_guide_file(self):
         string = self.generate_guide_file_string()
 
-        guide_file = os.path.join(self.tree_folder, 'README.txt')
+        guide_file = os.path.join(self.tree_folder, 'setup_guide.txt')
         with open(guide_file, "w") as f:
             f.write(string)

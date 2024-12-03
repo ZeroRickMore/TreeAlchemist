@@ -1,43 +1,43 @@
 Hello, and welcome to the TreeAlchemist guide!
-This is an extremely short text to guide you through the upload of these files inside of Wazuh.
+This is an extremely short text to guide you through the utilization of the generated files.
 
 
 
-Rules File=======================
+Rules File: [ 100010-TreeAlchemized-Root.xml ] =======================
 
 	- Go into /var/ossec/etc/rules/
 	- Move the rules file 
-		[ /home/wazuhserver/Desktop/TreeAlchemist/TreeAlchemist/Code/TreeAlchemizer/Output-Files/Root/100010-TreeAlchemized-Root.xml ]
+		[ z:\GitHub\TreeAlchemist\TreeAlchemist\Code\TreeAlchemizer\Output-Files\Root\100010-TreeAlchemized-Root.xml ]
 	 inside of it, and job done!
 
 Else, just copy these commands:
 
 	sudo su
-	cp /home/wazuhserver/Desktop/TreeAlchemist/TreeAlchemist/Code/TreeAlchemizer/Output-Files/Root/100010-TreeAlchemized-Root.xml /var/ossec/etc/rules
+	cp z:\GitHub\TreeAlchemist\TreeAlchemist\Code\TreeAlchemizer\Output-Files\Root\100010-TreeAlchemized-Root.xml /var/ossec/etc/rules
 
 
 
-Command Active-Response File=======================
+Defenses File: [ defenses-Root.xml ] =======================
 
 	- Modify content of /var/ossec/etc/ossec.conf
 	- Copypaste all of the content of 
-		[ /home/wazuhserver/Desktop/TreeAlchemist/TreeAlchemist/Code/TreeAlchemizer/Output-Files/Root/Command-Activeres-Root_manually_put_into_ossec_conf.xml ]
+		[ z:\GitHub\TreeAlchemist\TreeAlchemist\Code\TreeAlchemizer\Output-Files\Root\defenses-Root.xml ]
 	 inside of it, at the very end, and job done!
 
 
 
-Daemon readable txt=======================
+Athanor File: [ Root_athanor.txt ]=======================
 
 	- Go into the directory where the daemon reads file from.
 	It is the "Trees" directory located where Athanor.py is located.
 	If you did not touch the github code, it is inside /TreeAlchemist/Code/Daemons/ .
 	- Move 
-		[ /home/wazuhserver/Desktop/TreeAlchemist/TreeAlchemist/Code/TreeAlchemizer/Output-Files/Root/Root_daemon_readable.txt ]
+		[ z:\GitHub\TreeAlchemist\TreeAlchemist\Code\TreeAlchemizer\Output-Files\Root\Root_athanor.txt ]
 	 inside of it.
 
-Commands for untouched github folders:
+So, commands for an untouched github folder:
 
-	cp /home/wazuhserver/Desktop/TreeAlchemist/TreeAlchemist/Code/TreeAlchemizer/Output-Files/Root/Root_daemon_readable.txt /home/wazuhserver/Desktop/TreeAlchemist/TreeAlchemist/Code/Daemons/Trees
+	cp z:\GitHub\TreeAlchemist\TreeAlchemist\Code\TreeAlchemizer\Output-Files\Root\Root_athanor.txt z:\GitHub\TreeAlchemist\TreeAlchemist\Code\TreeAlchemizer\Output-Files\Root\Root_athanor.txt
 
 
 ===[ DO NOT FORGET ]===
@@ -45,7 +45,7 @@ Commands for untouched github folders:
 Place the defensive scripts inside of the watched hosts (NOT THE WAZUH SERVER) in /var/ossec/active-response/bin !!!
 
 The name of the script MUST be what you find inside of each <executable> in the file
-	[ /home/wazuhserver/Desktop/TreeAlchemist/TreeAlchemist/Code/TreeAlchemizer/Output-Files/Root/Command-Activeres-Root_manually_put_into_ossec_conf.xml ]
+	[ z:\GitHub\TreeAlchemist\TreeAlchemist\Code\TreeAlchemizer\Output-Files\Root\defenses-Root.xml ]
 plus a file extension if you did not declare it in the tag!!
 REMEMBER to change permissions of the scripts with these commands:
 
