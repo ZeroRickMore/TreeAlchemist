@@ -1,2 +1,2 @@
 # TreeAlchemist
- Ever thought of implementing an Attack Defense Tree into the Open-Source Wazuh? This tool is a perfect suit for you. Give an xml written ADT, a xml written defenses file, and a map between defense and ADT nodes in input, and get the fully converted tree into Wazuh-ready rules, including Active Responses too, with an intuitive syntax strongly based off Wazuh's syntaxes.
+A tool that allows a user to utilize an Attack-Defense Tree to handle Wazuh's Active Responses, allowing for a more suited response based on the history of events, rather than Wazuh's default behavior of counteracting each single event on its own, losing crucial context information.
